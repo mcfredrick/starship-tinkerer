@@ -2,8 +2,9 @@
 
 A cozy starship repair shop on a small orbital dock. Friendly pilots bring in their ships with a
 need, a budget and a story. You diagnose, repair, modify and paint each ship to suit its owner, and
-get paid in pebs, spare parts or snacks. Between jobs you take tea breaks and read on a translucent
-tablet. After hours you rebuild your own battered ship, and if you feel like it, you race it.
+get paid in pebs, spare parts or snacks. You can also buy junk, fix it up and flip it, whole ships
+included. Between jobs you take tea breaks and read on a translucent tablet. After hours you rebuild
+your own battered ship, and if you feel like it, you race it.
 
 Inspirations: Dressmaker for the commission loop and the cast of regulars with their own arcs, Becky
 Chambers' Monk and Robot books for the gentle solarpunk mood (and the pebs), Mario Kart for how
@@ -19,6 +20,8 @@ racing feels, and Gran Turismo and Need for Speed for how much upgrades matter.
    and see in the numbers.
 4. **Nothing is urgent.** There's no rent, no failure and no timer you can lose to. Racing is
    optional, and a player who only ever works on ships can finish every story.
+5. **Cozy with a wink.** The tone is warm and kind, and the writing and mischief have enough bite to
+   keep adults entertained. Violence stays at Mario Kart level.
 
 ## Setting
 
@@ -30,6 +33,10 @@ are the common currency, though half the dock would rather pay in jam.
 You've just inherited a cluttered hangar shop from an old tinkerer named Halloran, who retired to a
 comet-watching outpost. Halloran writes you letters on the tablet now and then, and the shop is full
 of their half-finished projects, including the wreck you'll rebuild as your own ship.
+
+**You** are never shown on screen, as in Dressmaker. At the start you choose a name and pronouns
+(she/her, he/him, they/them, or custom), and pilots, letters and gossip use them. The story is told
+through the pilots, the ships and the work on your bench.
 
 ## The day
 
@@ -72,6 +79,22 @@ Good results raise your **rapport** with that pilot, which unlocks the next step
 Weak results never lock you out. The pilot comes back with a smaller follow-up job and the story
 waits.
 
+### Mischief
+
+When a pilot is rude, haggles you down or is unkind to someone, you can get even. Sabotage is real
+and has real consequences, but its damage stays at Mario Kart level, cartoonish and survivable.
+
+- **Pranks** at the gentle end: a horn that honks like a goose, upholstery in eye-watering plaid, a
+  dashboard bobblehead of the pilot's rival.
+- **Sabotage** at the sharper end: a drive that coughs smoke rings at takeoff, a cockpit that
+  slowly fills with packing foam, a race ship that spins out on the first hairpin while the stands
+  cheer.
+
+Mischief costs rapport and some reputation around the dock, and hawkers and pilots gossip about it.
+It also opens story branches of its own. Some pilots take the hint and soften, some escalate into a
+long-running prank war, and a few turn out to have deserved it more than you knew. Nobody gets hurt,
+and every ship can be fixed (by you, for a fee, with a knowing look).
+
 ## Workbench
 
 The ship sits on a slowly turning cradle in 3D. You orbit the camera, click a section, and work on
@@ -104,6 +127,42 @@ the welds, but the bead forgives more.
 - **Tips and gifts** follow great results and story milestones.
 
 There are no bills, so pebs only ever buy you things you want.
+
+## Trading and flipping
+
+Anything you own can be bought, sold or swapped: parts, whole ships, gadgets, trinkets, teas and
+oddities.
+
+- **Hawkers** drop by the shop now and then with a cart of wares: a box of mystery fittings, a
+  cracked but antique cockpit dome, a crate of "probably working" thrusters. Some of it is junk,
+  some is treasure, and Diagnostics helps you tell which. Hawkers are characters too, with running
+  jokes and a few small arcs of their own.
+- **Upcycling.** Restore, rebuild or combine what you buy and sell it on. A rusted fin restored and
+  repainted is worth far more than you paid. Some combinations make unique parts.
+- **Junker ships.** The dock's salvage yard and the occasional desperate seller offer whole ships
+  that barely fly. Buy one, trick it out, then sell it to a pilot looking for exactly that kind of
+  ship, keep it as a second race ship, or strip it for parts. Flipped ships go to buyers with their
+  own tastes, the way commissions do, so a well-matched build sells for more.
+- **The market** sets prices that drift with what's in demand around the dock. A race series on
+  Bramble's rings pushes up the price of grippy fins, and the bulletin hints at what's coming.
+- **Selling** goes through the market board, through hawkers who'll buy as well as sell, or straight
+  to pilots whose wish lists you've learned.
+
+Flipping is another way to play. A player can earn mostly from commissions, mostly from flipping,
+or mix the two.
+
+## Easter eggs and secrets
+
+The dock rewards poking around.
+
+- Ships that come in for work sometimes hide things: a note tucked behind a panel, an old pilot's
+  lucky charm, a stowaway space-moth, a part far rarer than the ship it's in. Finds can be kept,
+  returned to the owner (who may have a story about it), or sold.
+- Halloran's hangar is full of half-finished projects, locked drawers and labeled boxes that open as
+  your skills and knowledge grow.
+- Some gadgets and parts are secrets themselves: a horn that plays a tune from the serialized novel,
+  a paint finish that only appears in Bramble's shadow, a thruster that sneezes.
+- Callbacks reward attention, like a trinket from one pilot's story turning up in another's ship.
 
 ## Tea breaks and the tablet
 
@@ -167,6 +226,11 @@ Arcade handling at Mario Kart's level of accessibility, on 3D tracks wrapped aro
 through Bramble's rings and down the dock's service tunnels.
 
 - **Feel**: forgiving steering, drift-to-boost, slipstreaming, with the build deciding the ceiling.
+- **Gadgets come from your build.** There are no pickups on the track. You fit gadgets as ship parts
+  (a bubble shield emitter, a slipstream ribbon launcher, a confetti cannon that wobbles whoever's
+  behind you), and each one costs a socket and mass like any other part. Gadgets recharge over a lap,
+  so choosing and tuning them is part of building a race ship. Rivals bring the gadgets you fitted
+  for them, which can come back to haunt you.
 - **Rivals** are the cast. The pilots you work for race in their own ships, which you may have
   tuned yourself. Beating a ship you built is a recurring delight.
 - **Events**: a weekly club race, plus cups that unlock with your reputation. Prizes are pebs, rare
@@ -226,13 +290,31 @@ really left.
 - **Palette**: warm hangar light (amber, brass, cream) against Bramble's cool bands (teal, dusk
   violet), with soft pastel paints for the ships.
 
+## Music and sound
+
+- **Bundled music** for each place and mood: the shop, the tea nook, the market, race themes and
+  story moments. Tracks are written or picked by ttam and ship with the game.
+- **The shop radio** is the template's SoundCloud player, presented as a radio on the workbench
+  shelf. Switching it on plays ttam's instrumentals and quiets the bundled shop music. Races and
+  story scenes always use bundled music. The radio drives the existing `music-feature.js` player through
+  `JavaScriptBridge`.
+- **Sound effects** carry the tactile pillar: the hiss of the torch, the click of a lead seating,
+  the clink of a teacup.
+
 ## Technical plan
 
 - Godot 4.5, Compatibility renderer, web export for crap.games, from the crap-games template.
+- **Controls aim for parity across desktop and touch, with desktop winning any conflict.** Minigames
+  and menus are built on pointer drags and taps, so mouse and touch share one code path. Racing is
+  designed for keyboard and gamepad, with on-screen touch controls (the virtual joystick addon Snail
+  Sim uses) as a supported second option. Layouts are landscape. When a design only works well on
+  one platform, desktop decides.
 - Content is data: pilots, jobs, parts, teas, cakes and reading live in JSON under
   `godot_web_game/data/`, so writing a new arc means adding data and dialogue without touching code.
 - Dialogue in a small line-based script format with speaker, expression, choices and flags, parsed
-  by our own loader. We'll write our own because the needs are small.
+  by our own loader. We'll write our own because the needs are small. Lines use tokens for the
+  player's name and pronouns (`{name}`, `{they}`, `{them}`, `{their}`, `{theyre}`), including verb
+  agreement ("{they} {is|are}"), so the writing never assumes a gender.
 - Saves go to `user://save.json` (IndexedDB on web), as in Graffiti Pets.
 - Blender pipeline in `blender/`, run headless:
   - `ship_kit.py` builds hulls and parts and exports `assets/ships/kit.glb`.
@@ -248,18 +330,10 @@ really left.
    Brindle and Ilse on one track. Blender kit with one hull and a handful of parts, plus Odessa's
    portrait sheet.
 3. **Workbench depth.** All repair minigames, tuning, the paint shop, skills and perks.
-4. **Racing.** Physics tuning so stats drive handling, three tracks, class ratings, the club race.
-5. **The cast.** All six pilots with their full arcs, letters and reading content.
-6. **Polish and launch** on starship-tinkerer.crap.games.
-
-## Open questions
-
-- **Race items.** Mario Kart has items. Do we want gentle ones (a bubble shield, a slipstream
-  ribbon), or pure driving where the build is the only edge?
-- **Mischief.** Dressmaker lets you sabotage work for rude customers. Do we want something
-  similar, like a squeaky horn for the pilot who haggled you down?
-- **The player character.** Named and customizable, or a fixed tinkerer with a portrait of their
-  own?
-- **Controls.** How much should mobile and touch matter? It affects the minigame and racing input
-  design early.
-- **Music.** Keep the template's SoundCloud player, or write a shop soundtrack?
+   Mischief options on the bench.
+4. **Trading.** The market board, hawkers, upcycling, junker ships to flip, and the first easter
+   eggs hidden in ships and the hangar.
+5. **Racing.** Physics tuning so stats drive handling, build gadgets, three tracks, class ratings,
+   the club race.
+6. **The cast.** All six pilots with their full arcs, letters and reading content.
+7. **Polish and launch** on starship-tinkerer.crap.games.
