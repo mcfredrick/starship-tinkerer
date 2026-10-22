@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$GODOT_PROJECT_NAME</title>
+    $GODOT_HEAD_INCLUDE
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            overflow: hidden;
+        }
+
+        #canvas {
+            display: block;
+            margin: 0;
+            color: white;
+        }
+
+        #canvas:focus {
+            outline: none;
+        }
+
+        /* Music toggle button styling */
+        #music-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #music-toggle:hover {
+            background: rgba(0, 0, 0, 0.7);
+            transform: scale(1.1);
+        }
+
+        #music-toggle svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        /* Hidden iframe for SoundCloud player */
+        #soundcloud-widget {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+        }
+
+        /* Start screen overlay */
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            color: white;
+        }
+
+        #start-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-top: 20px;
+        }
+
+        #start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        #start-button:active {
+            transform: translateY(0);
+        }
+
+        #start-screen h1 {
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+
+        #start-screen p {
+            margin: 10px 0;
+            opacity: 0.8;
+        }
+
+        /* Loading indicator */
+        .godot-loader {
+            color: white;
+            text-align: center;
+        }
+        .godot-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        /* Share screenshot button styling */
+        #share-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #share-button:hover {
+            background: rgba(0, 0, 0, 0.7);
+            transform: scale(1.1);
+        }
+
+        #share-button svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        /* URL overlay for screenshots */
+        #url-overlay {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 12px;
+            border-radius: 8px;
+            z-index: 999;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://traffic.dayjob.dev/js/pa-5EhDklWtg_4h6h7wJR9Wl.js"></script>
+    <!-- QR Code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="js/share-feature.js"></script>
+    <script src="js/music-feature.js"></script>
+    <script>
+        window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments) }, plausible.init = plausible.init || function (i) { plausible.o = i || {} };
+        plausible.init()
+    </script>
+</head>
+<body>
+    <!-- Share screenshot button -->
+    <button id="share-button" title="Share Screenshot">
+        <!-- Share icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+        </svg>
+    </button>
+
+    <!-- Godot canvas -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Music toggle button (starts muted) -->
+    <button id="music-toggle" title="Unmute Music">
+        <!-- Muted icon (speaker with X) -->
+        <svg id="icon-muted" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+        </svg>
+        <!-- Unmuted icon (speaker) - hidden by default -->
+        <svg id="icon-unmuted" style="display: none;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+    </button>
+
+    <!-- Hidden SoundCloud player (no autoplay initially) -->
+    <iframe id="soundcloud-widget" 
+            scrolling="no" 
+            frameborder="no" 
+            allow="autoplay"
+            src="https://w.soundcloud.com/player/?url=https://soundcloud.com/ttamiam/sets/instrumentals&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false">
+    </iframe>
+
+    <!-- Godot engine loader -->
+    <script src="$GODOT_URL"></script>
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+
+    <script>
+        // Godot engine initialization
+        const engine = new Engine($GODOT_CONFIG);
+
+        // Auto-start the game on page load
+        engine.startGame({
+            canvas: canvas,
+            
+            // Handle engine output
+            onPrint: function(text) {
+                console.log(text);
+            },
+            
+            onPrintError: function(text) {
+                console.error(text);
+            }
+        }).then(() => {
+            // Game loaded successfully
+            console.log('Game started successfully');
+            canvas.focus(); // Focus the canvas when game is ready
+        }).catch((error) => {
+            // Handle loading errors
+            console.error('Failed to start game:', error);
+        });
+    </script>
+</body>
+</html>

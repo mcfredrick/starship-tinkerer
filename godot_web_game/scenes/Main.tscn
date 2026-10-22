@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/Main.gd" id="1_9o0j8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(200, 100)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_9o0j8")
+
+[node name="Label" type="Label" parent="."]
+position = Vector2(300, 200)
+size = Vector2(400, 200)
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Starship Tinkerer"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="."]
+position = Vector2(200, 150)
+size = Vector2(600, 200)
+color = Color(0.2, 0.2, 0.2, 1)
+z_index = -1

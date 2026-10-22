@@ -1,0 +1,24 @@
+name: Update Game Registry
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  update-registry:
+    uses: mcfredrick/crap_games/.github/workflows/update-registry.yml@main
+    with:
+      game-name: "Starship Tinkerer"
+      subdomain: "starship-tinkerer"
+      description: "A cozy starship repair shop. Fix, mod and upgrade ships for friendly pilots, earn pebs, and race your own ship if you like."
+      category: "simulation"
+      tags: "cozy, crafting, racing, story, godot"
+      thumbnail-url: "https://starship-tinkerer.crap.games/assets/icon.png"
+      author: "ttam"
+      repo-url: "https://github.com/mcfredrick/starship-tinkerer"
+      version: "0.1.0"
+    secrets: inherit

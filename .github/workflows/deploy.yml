@@ -1,0 +1,21 @@
+name: Deploy Web Build
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy-godot:
+    uses: mcfredrick/crap_games/.github/workflows/deploy_godot_web.yml@main
+    with:
+      project_dir: "godot_web_game"
+      export_preset: "Web"
+      godot_version: "4.5.1"
+      build_dir: "godot_web_game/build/web"

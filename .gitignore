@@ -1,0 +1,49 @@
+# Godot-specific ignores
+.godot/
+.import/
+
+# Build output
+**/build/
+**/export.cfg
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Local development files
+.env
+*.local
+
+# System Files
+*.swp
+*~
+*#
+
+# Project specific
+/export.log
+/export_verbose.log
+
+# Template specific
+.template/
+.copier-answers.yml
+.template-*
+
+# Blender scripts
+__pycache__/
+*.blend1

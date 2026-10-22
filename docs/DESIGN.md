@@ -1,0 +1,265 @@
+# Starship Tinkerer: Design
+
+A cozy starship repair shop on a small orbital dock. Friendly pilots bring in their ships with a
+need, a budget and a story. You diagnose, repair, modify and paint each ship to suit its owner, and
+get paid in pebs, spare parts or snacks. Between jobs you take tea breaks and read on a translucent
+tablet. After hours you rebuild your own battered ship, and if you feel like it, you race it.
+
+Inspirations: Dressmaker for the commission loop and the cast of regulars with their own arcs, Becky
+Chambers' Monk and Robot books for the gentle solarpunk mood (and the pebs), Mario Kart for how
+racing feels, and Gran Turismo and Need for Speed for how much upgrades matter.
+
+## Pillars
+
+1. **Craft feels good in your hands.** Every repair is a small tactile act: tightening, soldering,
+   aligning, painting. Doing it well is satisfying, and doing it badly is still fine.
+2. **People come first.** Each job belongs to someone. What they ask for reveals who they are, and
+   the ship you hand back changes what happens to them next.
+3. **Upgrades really matter.** A part changes how a ship drives in ways you can feel on the track
+   and see in the numbers.
+4. **Nothing is urgent.** There's no rent, no failure and no timer you can lose to. Racing is
+   optional, and a player who only ever works on ships can finish every story.
+
+## Setting
+
+**Quietwater Dock** is a small repair-and-supply ring circling Bramble, a banded gas giant at the
+edge of a settled system. Haulers, pilgrims, retirees and hobby racers stop here. The station grows
+its own food in drum gardens, runs on sunlight and patience, and settles most debts by trade. Pebs
+are the common currency, though half the dock would rather pay in jam.
+
+You've just inherited a cluttered hangar shop from an old tinkerer named Halloran, who retired to a
+comet-watching outpost. Halloran writes you letters on the tablet now and then, and the shop is full
+of their half-finished projects, including the wreck you'll rebuild as your own ship.
+
+## The day
+
+A day is a sequence of moments you move through at your own pace. The clock only advances when you
+choose an activity.
+
+| Moment | What happens |
+| --- | --- |
+| Morning | Open the shop. The tablet has mail, the station bulletin and new commission requests. |
+| Commissions | A pilot arrives, tells you what they need, and agrees on a budget or barter. You can take up to two jobs a day. |
+| Workbench | Diagnose, repair, modify, tune and paint. This is the core of the game. |
+| Handoff | The pilot looks over the ship, takes it for a spin, and reacts. Payment, gifts and story beats follow. |
+| Tea break | Any time between jobs. Pick a tea and a cake, read something, and get a gentle buff for the next task. |
+| Evening | Work on your own ship, shop the parts market, or head to the track if a race is on. |
+| Night | Sleep. The day's skill XP is added up and a short scene may play. |
+
+## Commissions
+
+Modeled on Dressmaker's commissions. A pilot comes in with three things.
+
+- **A need** tied to something in their life: "I'm taking my grandkids to see the comet bloom and the
+  cabin rattles so loud they can't hear me."
+- **A taste** you learn over repeat visits: some like it shiny, some like it quiet, some want every
+  dial labeled.
+- **A budget**, in pebs, barter or both.
+
+The job board shows each request in the pilot's own words. Reading between the lines is part of the
+skill. "Can't hear me" points to a loose panel or a worn dampener, plus a chance to install a quieter
+drive the pilot didn't think to ask for.
+
+### Grading the result
+
+Each finished job scores on three axes, shown after the handoff as the pilot's reaction:
+
+- **Fit**: did the ship meet the need and suit their taste?
+- **Quality**: how well were the repairs and mods done (skill level plus how the minigames went)?
+- **Value**: did you stay within budget, or give them a gift by going over?
+
+Good results raise your **rapport** with that pilot, which unlocks the next step in their story.
+Weak results never lock you out. The pilot comes back with a smaller follow-up job and the story
+waits.
+
+## Workbench
+
+The ship sits on a slowly turning cradle in 3D. You orbit the camera, click a section, and work on
+it.
+
+1. **Diagnose.** Sweep a scanner over the hull. Faults show up as warm spots, rattles and flickers.
+   A higher Diagnostics skill shows faults sooner and lists their cause.
+2. **Repair.** Each fault type has a short tactile minigame:
+   - Seam welding: trace a bead along a seam at a steady speed.
+   - Rewiring: match colored leads to terminals before the capacitor drains (it refills gently if you
+     run out).
+   - Calibration: turn two dials until the waveforms line up.
+   - Dent pulling: tap around a dent from the outside in.
+3. **Modify.** Swap parts into the ship's sockets (engine, thrusters, fins, cockpit, cabin, cargo,
+   lights, horn). Parts come from your inventory, the market or barter.
+4. **Tune.** Sliders with real trade-offs: gear ratio (acceleration against top speed), fin angle
+   (grip against drag), drive damping (comfort against response).
+5. **Paint and dress.** Paint zones, decals, cabin upholstery, dashboard trinkets. This is how you
+   match a pilot's taste.
+
+Teas and skills make minigames gentler without removing them. A fully skilled tinkerer still does
+the welds, but the bead forgives more.
+
+## Payment and barter
+
+- **Pebs** buy parts, tools, teas, cakes and books.
+- **Barter** comes from pilots who'd rather trade: a crate of salvaged thrusters, a jar of moon-plum
+  jam, a rare tea, a paperback for the tablet. Some barter items can't be bought anywhere else, which
+  makes barter jobs worth taking even when they pay less.
+- **Tips and gifts** follow great results and story milestones.
+
+There are no bills, so pebs only ever buy you things you want.
+
+## Tea breaks and the tablet
+
+The tea nook is a sunny corner of the hangar with a window onto Bramble's bands.
+
+- **Teas** each give a small buff for the next task: Steady Leaf (calmer welding hand), Bright
+  Ember (faster diagnosis), Drift Bloom (better tuning feel). New teas come from barter and the
+  market.
+- **Cakes** are collectible and cute. Each one restores a little **spark**, the energy that limits
+  how many jobs you can take in a day. Running low on spark just means it's time for a break.
+- **The tablet** is a translucent pane you hold up to the window. It holds:
+  - **Leisure reading**: a serialized novel delivered a chapter at a time, poems, recipes, the
+    station bulletin's gossip column.
+  - **Letters** from Halloran and from pilots you've helped, which carry their stories forward
+    between visits.
+  - **Manuals**: technical books that teach you things. Reading one unlocks a blueprint, a tuning
+    insight or a skill perk. Manuals are the main way knowledge grows, beside XP.
+
+Reading is never required, but manuals and letters reward it.
+
+## Your progression
+
+Five skills level up from use, RPG style:
+
+| Skill | Grows from | Improves |
+| --- | --- | --- |
+| Mechanics | Welding, dent pulling, part swaps | Repair minigame tolerance, install speed |
+| Electronics | Rewiring, calibration | Electrical minigames, unlocks electrical mods |
+| Diagnostics | Scanning | Faults revealed sooner, causes explained |
+| Craft | Painting, upholstery, trinkets | More paint finishes and decals, better Fit with picky pilots |
+| Piloting | Test flights and races | Handling assists, better test-flight feedback on your own tunes |
+
+Each skill level offers a choice of two perks. **Knowledge** (blueprints and insights from manuals,
+pilots and Halloran's notes) unlocks new parts to fabricate and new tuning options. Tools also
+upgrade (a better scanner, a finer torch), bought with pebs or traded for.
+
+## Your ship
+
+Halloran's wreck, the *Kettle*, sits under a tarp in the back bay. It's slow, loud and endearing.
+
+Ship stats, shared by every ship in the game:
+
+| Stat | Meaning |
+| --- | --- |
+| Thrust | Acceleration |
+| Top speed | Speed ceiling |
+| Handling | Turn rate and responsiveness |
+| Grip | Stability in corners and drafts |
+| Boost | Capacity and recharge |
+| Mass | Affects all of the above |
+| Comfort | Matters to clients, ignored by racers |
+
+Parts come in tiers and families with distinct personalities, so two ships with the same total rating
+can feel very different. Tuning sliders shape the ship further. Racing classes cap a ship's
+performance rating (like Gran Turismo's PP), so the question is always how to build the best ship
+within the class, which keeps upgrades meaningful at every stage.
+
+## Racing (optional)
+
+Arcade handling at Mario Kart's level of accessibility, on 3D tracks wrapped around the station,
+through Bramble's rings and down the dock's service tunnels.
+
+- **Feel**: forgiving steering, drift-to-boost, slipstreaming, with the build deciding the ceiling.
+- **Rivals** are the cast. The pilots you work for race in their own ships, which you may have
+  tuned yourself. Beating a ship you built is a recurring delight.
+- **Events**: a weekly club race, plus cups that unlock with your reputation. Prizes are pebs, rare
+  parts and occasionally a trophy for the shop shelf.
+- **No penalty for skipping.** Every story arc can be finished in the shop. Races add extra scenes
+  and rewards for players who enjoy them.
+
+## The cast
+
+Each pilot has a 5 to 7 step arc that moves forward through commissions, letters and (optionally)
+races. These are starting sketches.
+
+**Odessa Vell** (she/her). A retired long-haul courier who flies the *Pocket Moth*, a sturdy little
+hauler. She wants it made comfortable so she can visit her grandchildren, who are scattered across
+three moons. Her arc is about deciding whether to keep roaming or put down roots near one of them.
+Pays in pebs and seed cakes. Doesn't race, until a late beat where she enters the Slow Sunday Cup
+for fun.
+
+**Brindle** (it/its). A maintenance robot that left its station crew to find out what racing feels
+like. It's earnest, literal and very curious about why people want the things they want. Pays in
+salvaged parts, which are often surprisingly good. Its arc follows it working out what it actually
+enjoys, which may turn out to be cheering from the stands.
+
+**Captain Ilse Marrow** (she/her). The dock's reigning racing champion, who flies the *Heron*. Gruff,
+generous and secretly worried about getting slower. She brings you her race ship for exacting tune-ups
+and pays very well. Her arc moves from rivalry toward mentorship, and possibly retirement.
+
+**Tam and Juniper Okafor** (he/him, she/her). Siblings who run a noodle cart out of a converted
+tug, the *Brothy*. They need kitchen fittings, cargo cooling and a bigger serving hatch. Pays mostly in
+snacks. Their arc is a gentle disagreement about whether to expand into a real restaurant or stay
+small and keep flying.
+
+**Pip Arkwright** (they/them). A nervous new pilot with a fresh license, a tiny budget and a
+secondhand racer called the *Dandelion*. Their arc is about confidence, from their first terrified
+test flight to their first podium in the novice cup, if you help them get there.
+
+**Dr. Sol Yaneva** (he/him). A traveling botanist whose ship, the *Glasshouse*, is half greenhouse.
+He needs humidity control, grow lights and a gentler drive for his seedlings. Pays in teas he grows
+himself and books for your tablet. His arc is a search for a plant species thought to be extinct.
+
+**Halloran** (they/them). Your predecessor, present only through letters, notes in the margins of
+the manuals, and the projects they left behind. Their letters frame the larger story of why they
+really left.
+
+## Art direction
+
+- **Ships** are real-time 3D, built in Godot from a Blender parts kit, as in Graffiti Pets. Hulls
+  carry named sockets (`engine`, `fin_l`, `cockpit`, `cabin`, `lights`...) and parts snap onto them.
+  Mesh names end in a material role (`_paint`, `_trim`, `_glass`, `_metal`, `_glow`) so the paint
+  shop can recolor any part. Cel shading plus an outline pass, warm and soft.
+- **Characters** are 2D portraits rendered from Blender: toon-shaded busts with a set of expressions
+  each (neutral, happy, thoughtful, surprised, sad, laughing), shown visual-novel style during
+  conversations.
+- **The shop, the tea nook and the tracks** are simple 3D scenes with the same toon look. Teas,
+  cakes and trinkets are small Blender models rendered as icons.
+- **The tablet** is a UI panel with a frosted, faintly tinted glass shader over the scene behind it.
+- **Palette**: warm hangar light (amber, brass, cream) against Bramble's cool bands (teal, dusk
+  violet), with soft pastel paints for the ships.
+
+## Technical plan
+
+- Godot 4.5, Compatibility renderer, web export for crap.games, from the crap-games template.
+- Content is data: pilots, jobs, parts, teas, cakes and reading live in JSON under
+  `godot_web_game/data/`, so writing a new arc means adding data and dialogue without touching code.
+- Dialogue in a small line-based script format with speaker, expression, choices and flags, parsed
+  by our own loader. We'll write our own because the needs are small.
+- Saves go to `user://save.json` (IndexedDB on web), as in Graffiti Pets.
+- Blender pipeline in `blender/`, run headless:
+  - `ship_kit.py` builds hulls and parts and exports `assets/ships/kit.glb`.
+  - `portraits.py` renders each character's expression sheet to PNG.
+  - `props.py` renders tea, cake and trinket icons.
+  - Generated assets are committed, so the game builds without Blender.
+
+## Milestones
+
+1. **Scaffold and design.** This document, the template scaffold, and a working web export.
+2. **Vertical slice: one day.** Odessa's first commission (diagnose, two repair minigames, one part
+   swap, paint), a tea break with one book, one upgrade on the *Kettle*, and one race against
+   Brindle and Ilse on one track. Blender kit with one hull and a handful of parts, plus Odessa's
+   portrait sheet.
+3. **Workbench depth.** All repair minigames, tuning, the paint shop, skills and perks.
+4. **Racing.** Physics tuning so stats drive handling, three tracks, class ratings, the club race.
+5. **The cast.** All six pilots with their full arcs, letters and reading content.
+6. **Polish and launch** on starship-tinkerer.crap.games.
+
+## Open questions
+
+- **Race items.** Mario Kart has items. Do we want gentle ones (a bubble shield, a slipstream
+  ribbon), or pure driving where the build is the only edge?
+- **Mischief.** Dressmaker lets you sabotage work for rude customers. Do we want something
+  similar, like a squeaky horn for the pilot who haggled you down?
+- **The player character.** Named and customizable, or a fixed tinkerer with a portrait of their
+  own?
+- **Controls.** How much should mobile and touch matter? It affects the minigame and racing input
+  design early.
+- **Music.** Keep the template's SoundCloud player, or write a shop soundtrack?
