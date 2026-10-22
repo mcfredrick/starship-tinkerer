@@ -41,7 +41,6 @@ Thumbs.db
 
 # Template specific
 .template/
-.copier-answers.yml
 .template-*
 
 # Blender scripts

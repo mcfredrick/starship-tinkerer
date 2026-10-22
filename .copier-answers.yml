@@ -1,0 +1,13 @@
+# Changes here will be overwritten by Copier
+_commit: d7c8fef
+_src_path: gh:mcfredrick/crap-games-template
+author: ttam
+category: simulation
+description: A cozy starship repair shop. Fix, mod and upgrade ships for friendly
+    pilots, earn pebs, and race your own ship if you like.
+game_name: Starship Tinkerer
+godot_version: 4.5.1
+repo_url: https://github.com/mcfredrick/starship-tinkerer
+subdomain: starship-tinkerer
+tags: cozy, crafting, racing, story, godot
+version: 0.1.0
