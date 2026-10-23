@@ -51,6 +51,7 @@ func _run(run_seed: int) -> void:
 func _morning(rng: RandomNumberGenerator) -> void:
 	for id in GameState.stories.keys():
 		_story(id, "morning")
+	GameState.bond_morning()
 	if GameState.cat_morning() and GameState.cat.event:
 		GameState.run_command("cat", [GameState.cat.event])
 	if rng.randf() < 0.5:

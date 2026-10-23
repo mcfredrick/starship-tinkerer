@@ -530,6 +530,35 @@ func test_every_authored_job_is_winnable() -> void:
 		check(won, "job %s can be won with market parts and tuning" % job_id)
 
 
+func test_bonds_drift_with_your_friendships_and_set_flags() -> void:
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/bonds.json"))
+	for key in data.pairs:
+		for name in key.split("|"):
+			check(world.pilots.has(name) or data.pets.has(name), "bond %s names a real character or pet: %s" % [key, name])
+	var met := {}
+	for spec in data.pairs.values():
+		met[spec.after] = true
+	var totals := {}
+	for warmth in [0, 8]:
+		var rapport := {}
+		for p in world.pilots:
+			rapport[p] = warmth
+		var bonds := {}
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 5
+		for day in 60:
+			Bonds.morning(rng, bonds, rapport, met, data)
+		var total := 0
+		for key in data.pairs:
+			var v := Bonds.value(bonds, key, data)
+			check(v >= Bonds.MIN and v <= Bonds.MAX, "bond %s stays in range" % key)
+			total += v
+		totals[warmth] = total
+	check(totals[8] > totals[0], "being close to people brings them closer to each other: %s" % [totals])
+	var flags := Bonds.flags_for({"ilse|pip": 4, "odessa|crake": -3}, data)
+	check(flags.bond_ilse_pip_close and flags.bond_odessa_crake_cold and not flags.bond_ilse_pip_cold, "thresholds set flags")
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1
@@ -623,6 +652,9 @@ func test_every_story_flag_can_be_set() -> void:
 				can[w.flag] = true
 	for id in world.races:
 		can["won_" + id] = true
+	var bonds: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/bonds.json"))
+	for key in Bonds.flags_for({}, bonds):
+		can[key] = true
 	for id in world.events:
 		can["event_" + id] = true
 		if world.events[id].has("unlock"):

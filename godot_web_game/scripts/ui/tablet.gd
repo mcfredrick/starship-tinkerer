@@ -34,7 +34,49 @@ static func available() -> Array:
 		if e.has("excludes") and GameState.flags.has(e.excludes):
 			continue
 		out.append(id)
+	# Generated pages: today's gossip (its own id each day, so it reads as new) and who's who.
+	if GameState.gossip.get("lines", []):
+		out.append(_gossip_id())
+	if _known_pairs():
+		out.append("whos_who")
 	return out
+
+
+static func _gossip_id() -> String:
+	return "gossip_%d" % int(GameState.gossip.day)
+
+
+static func _known_pairs() -> Array:
+	return Content.bonds.pairs.keys().filter(func(k): return GameState.flags.has(Content.bonds.pairs[k].after))
+
+
+## A reading entry by id: from data/reading.json, or one of the generated pages.
+static func entry(id: String) -> Dictionary:
+	if Content.reading.entries.has(id):
+		return Content.reading.entries[id]
+	if id.begins_with("gossip_"):
+		return {"kind": "bulletin", "title": "Dock gossip", "from": "Overheard on the spine", "day": GameState.day,
+			"body": "\n\n".join(GameState.gossip.lines)}
+	var lines: Array = []
+	for key in _known_pairs():
+		var names: Array = Array(key.split("|")).map(func(n): return _display(n))
+		var v := Bonds.value(GameState.bonds, key, Content.bonds)
+		lines.append("[b]%s and %s[/b]: %s" % [names[0], names[1], Bonds.describe(v, Content.bonds)])
+	var pets: Array = []
+	for id2 in Content.bonds.pets:
+		var pet: Dictionary = Content.bonds.pets[id2]
+		if GameState.flags.has("met_pet_" + id2):
+			pets.append("[b]%s[/b], %s\n%s" % [pet.name, pet.kind, pet.about])
+	var body := "How everyone's getting on, as far as the dock can tell.\n\n" + "\n".join(lines)
+	if pets:
+		body += "\n\n[b]Pets of the dock[/b]\n\n" + "\n\n".join(pets)
+	return {"kind": "guide", "title": "Who's who", "from": "Dock gossip, compiled", "day": GameState.day, "body": body}
+
+
+static func _display(id: String) -> String:
+	if Content.bonds.pets.has(id):
+		return Content.bonds.pets[id].name
+	return GameState.pilot(id).short
 
 
 static func unread() -> int:
@@ -107,7 +149,7 @@ func _fill_list() -> void:
 			_open_finds, 17)
 		_list.add_child(finds)
 	for id in ids:
-		var e: Dictionary = Content.reading.entries[id]
+		var e: Dictionary = entry(id)
 		var unread_mark := "" if GameState.flags.has("read_" + id) else "● "
 		var b := Button.new()
 		b.text = "%s%s\n%s · %s" % [unread_mark, e.title, KINDS[e.kind], e.from]
@@ -141,7 +183,7 @@ func _open_finds() -> void:
 
 
 func _open(id: String) -> void:
-	var e: Dictionary = Content.reading.entries[id]
+	var e: Dictionary = entry(id)
 	_title.text = e.title
 	var picture := ""
 	if e.has("image"):

@@ -22,6 +22,9 @@ pip happy: Oh. Okay. That helps, actually.
 => fix
 -- fix
 pip: I have a hundred and sixty pebs. And a tin of Steady Leaf. Somebody said it helps your hands.
+* A silver moth crawls out of Pip's scarf, flexes its wings, and settles on their shoulder.
+pip happy: Oh, and that's Flutter. She hatched in my air filter. I think she thinks I'm her mum. I don't have the heart to tell her.
+! set met_pet_flutter
 ! job pip_1
 end
 
@@ -81,6 +84,11 @@ end
 end
 -- podium
 * Underneath, in big wobbly handwriting: "THIRD!!! A PODIUM!!! In the DARK!!! Ilse cried. She says she didn't. She did. Pip."
+? bond_brindle_pip_close => called
+=> after_called
+-- called
+* There's a postscript: "Brindle called the race. You could hear it shouting DANDELION every single time I went past. I think it lost its voice. Can robots lose their voices?"
+-- after_called
 ? pip_encouraged => brave
 end
 -- brave
@@ -97,6 +105,9 @@ end
 tam laughing: HELLO, Quietwater's newest tinkerer! Tam Okafor! This is my sister Juniper! This is our noodle cart! It's called the Brothy!
 juniper happy: Hello. Sorry. He's always like this. Even at funerals.
 tam happy: ESPECIALLY at funerals!
+* A small orange lizard peers out from the serving hatch, sniffs the air, and retreats to the warm kitchen.
+juniper: That's Chili. She only eats ginger. Mind your fingers if you smell of ginger.
+! set met_pet_chili
 juniper thoughtful: Every time we take a corner the soup goes everywhere. The ceiling has soup on it.
 tam sad: The ceiling has a lot of soup on it.
 juniper: Smooth and steady, please, for the soup's sake. Two hundred and thirty pebs, and Tam's nebula rolls.
@@ -171,6 +182,9 @@ end
 * A tall, leafy figure in a lab coat climbs down, carrying a seedling tray as if it were made of soap bubbles.
 yaneva happy: Good morning! Dr. Sol Yaneva. Botanist. Please excuse the leaves, they're mine.
 yaneva thoughtful: These are my seedlings. They dislike vibration. Also noise, also sudden turns, also me humming. I can't help the humming.
+* On the dashboard, a large fern in a terracotta pot turns, slowly and very deliberately, to look at you.
+yaneva happy: And that's Gerald. He's a carnivorous fern. He's very polite about it. He's only ever eaten one glove, and that was a misunderstanding.
+! set met_pet_gerald
 > What are you growing? => growing
 > I can help the rest. => help
 -- growing

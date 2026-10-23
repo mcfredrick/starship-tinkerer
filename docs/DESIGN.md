@@ -252,6 +252,26 @@ Events are data like everything else: a date (or condition), a scene to load, wh
 dialogue that plays. Playthroughs vary which minor events happen in which season, while the story
 events stay fixed.
 
+## How everyone gets on
+
+The cast have relationships with each other, not only with you. Pairs like Odessa and Crake
+(prickly), Ilse and Brindle (old racing friends), Ilse and Pip (coach and student) or Sprocket and
+Chili (sworn enemies over a sunbeam) each have a bond that shifts:
+
+- **By chance**, some mornings, with a line of dock gossip on the tablet.
+- **Through you.** The odds lean warmer when you're close to both people, so a well-liked tinkerer
+  slowly knits the dock together. How you spend a scene matters too: drafting Crake into Odessa's
+  plum-picking brings them closer.
+- **With consequences.** Close and frosty bonds change scenes: who sits with whom at the Close Pass,
+  who calls Pip's race, what Ilse says about Brindle.
+
+The tablet's Who's who page shows how every known pair is getting on.
+
+**Pets.** Most of the cast have one: Biscuit (Odessa's moon-tortoise), Hob (Ilse's one-eyed
+starling), Lord Pemberton (Crake's mother's lapdog), Flutter (Pip's space-moth), Chili (the
+Okafors' ginger lizard) and Gerald (Dr. Yaneva's polite carnivorous fern). They have bonds too,
+mostly with Sprocket.
+
 ## Sprocket the shop cat
 
 Halloran's cat came with the hangar and will not be leaving: a moody tuxedo with green eyes, a

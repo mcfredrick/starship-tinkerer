@@ -23,6 +23,9 @@ var worn := {}
 var finds := {}
 ## Today's hawker visit: {day, id, cart, bought: [offer indices]}.
 var hawker := {}
+## How the dock's characters get on (see Bonds), and this morning's gossip: {day, lines}.
+var bonds := {}
+var gossip := {}
 ## The ship you race: the Kettle, or any project ship you've fixed up.
 var race_ship := "kettle"
 var items := {}
@@ -65,6 +68,8 @@ func new_game(name: String, pronouns: Variant) -> void:
 	finds = {}
 	hawker = {}
 	race_ship = "kettle"
+	bonds = {}
+	gossip = {}
 	items = start.items.duplicate()
 	ships = Content.world.ships.duplicate(true)
 	skills = {}
@@ -108,7 +113,7 @@ func to_dict() -> Dictionary:
 		"items": items, "ships": ships, "skills": skills, "rapport": rapport, "flags": flags, "buff": buff,
 		"job": job, "today": today, "perks": perks, "reputation": reputation, "seed": run_seed, "cast": cast,
 		"jobs": jobs, "board": board, "board_day": board_day, "next_id": next_id,
-		"stories": stories, "cat": cat, "worn": worn, "finds": finds, "hawker": hawker, "race_ship": race_ship,
+		"stories": stories, "cat": cat, "worn": worn, "finds": finds, "hawker": hawker, "race_ship": race_ship, "bonds": bonds, "gossip": gossip,
 	}
 
 
@@ -146,6 +151,8 @@ func from_dict(d: Dictionary) -> void:
 	if hawker.has("bought"):
 		hawker.bought = hawker.bought.map(func(i): return int(i))
 	race_ship = d.get("race_ship", "kettle")
+	bonds = d.get("bonds", {})
+	gossip = d.get("gossip", {})
 
 
 ## JSON numbers load as floats; counts should stay ints.
@@ -482,6 +489,28 @@ func race_block(race_id: String) -> String:
 	return ""
 
 
+## This morning's moments between characters, once per day. Returns the number of gossip lines.
+func bond_morning() -> int:
+	if int(gossip.get("day", 0)) == day:
+		return 0
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([run_seed, day, "bonds"])
+	var moments := Bonds.morning(rng, bonds, rapport, flags, Content.bonds)
+	gossip = {"day": day, "lines": moments.map(func(m): return m.line)}
+	_apply_bond_flags()
+	save()
+	return moments.size()
+
+
+func _apply_bond_flags() -> void:
+	var now := Bonds.flags_for(bonds, Content.bonds)
+	for f in now:
+		if now[f]:
+			flags[f] = true
+		else:
+			flags.erase(f)
+
+
 ## Today's hawker visit, or {} if nobody's parked outside.
 func hawker_today() -> Dictionary:
 	if int(hawker.get("day", 0)) != day:
@@ -594,6 +623,9 @@ func run_command(cmd: String, args: Array) -> void:
 			job.budget = int(args[0])
 		"cat":
 			_cat_effect(args[0])
+		"bond":
+			Bonds.shift(bonds, Bonds.pair(args[0], args[1], Content.bonds), int(args[2]), Content.bonds)
+			_apply_bond_flags()
 		_:
 			assert(false, "unknown dialogue command: " + cmd)
 	save()

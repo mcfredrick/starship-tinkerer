@@ -67,6 +67,8 @@ func _play_beats() -> void:
 	if GameState.phase == "morning":
 		for id in GameState.stories.keys():
 			await Router.story(id, "morning")
+		if GameState.bond_morning() > 0:
+			Router.toast("There's fresh dock gossip on your tablet.")
 		var cat_scene := GameState.cat_morning()
 		if cat_scene:
 			await Router.talk(cat_scene)

@@ -93,9 +93,12 @@ static func apply(name: String) -> void:
 			for f in ["seen_intro", "seen_sprocket_intro", "seen_day4_morning", "seen_ilse_arrives", "ilse_1_done",
 					"ilse_1_delighted", "seen_odessa_returns", "odessa_2_done", "odessa_roots", "seen_brindle_returns",
 					"brindle_2_done", "seen_crake_returns", "crake_2_done", "crake_2_delighted", "seen_close_pass_eve",
-					"race_open", "odessa_1_done", "brindle_1_done", "crake_1_done"]:
+					"race_open", "odessa_1_done", "brindle_1_done", "crake_1_done", "seen_crake_arrives", "seen_racers_visit",
+					"met_pet_biscuit", "met_pet_hob", "met_pet_lord_pemberton"]:
 				GameState.flags[f] = true
 			GameState.day = 11
+			GameState.bonds = {"odessa|crake": 3, "ilse|brindle": 4, "ilse|crake": -2}
+			GameState.bond_morning()
 		"lumen":
 			# Day fifteen, Themba's letter read, ready to fly out to the lighthouse.
 			for f in ["seen_intro", "seen_sprocket_intro", "seen_day4_morning", "read_novel_5", "read_lumen_invite"]:

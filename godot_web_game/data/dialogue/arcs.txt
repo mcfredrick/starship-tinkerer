@@ -4,7 +4,8 @@
 # ---------------------------------------------------------------- Ilse: getting slower
 
 == ilse_arrives
-* The Heron slides into the bay before the doors are fully open. Ilse climbs out and checks over her shoulder.
+* The Heron slides into the bay before the doors are fully open. Ilse climbs out and checks over her shoulder. A scruffy one-eyed starling rides on her shoulder and glares at everything.
+! set met_pet_hob
 ilse grumpy: Close the doors. I don't want the whole dock watching.
 ilse thoughtful: The Heron's lost a tenth of a second a lap. Every lap. For a month.
 > Could be the coupling. Could be a dozen things. => ship
@@ -46,6 +47,9 @@ end
 == odessa_returns
 * A familiar rattle-free hum. The Pocket Moth noses into the bay, and Odessa waves through the window before she's even parked.
 odessa happy: {name}! I told you I'd be back through Quietwater. I've been thinking, like I said.
+* A small domed head pokes out of a knitted cosy on the Moth's dashboard and blinks at you, unhurried.
+odessa laughing: Oh, and this is Biscuit. My moon-tortoise. She's older than the Moth. Don't let her near your lettuce.
+! set met_pet_biscuit
 odessa thoughtful: Sixty years I've been flying. Every moon in the system, and a few that aren't on maps. But the grandkids are growing up three moons apart, and I keep arriving just after the important bits.
 odessa: So. I could settle somewhere. Near one of them. Or all of them could come to me, and we keep flying, the lot of us, in the summers.
 > Put down roots. They'll come to you. => roots
@@ -201,7 +205,18 @@ brindle happy: I would like to describe it to someone instead. Out loud. With a 
 * The Magnificence drifts over, close enough to talk. An elderly lady in a feathered hat waves to you from the window.
 crake thoughtful: Mother wants to know who made the cabin so quiet. I told her. She says I'm to be nicer to you.
 crake happy: I said I'd consider it. Thank you, {name}. Truly.
+* A small white lapdog pokes its head over the window ledge, yaps once at the comet, and is lifted back inside. Lord Pemberton, apparently, disapproves of comets.
+! set met_pet_lord_pemberton
 -- finale
+? bond_odessa_crake_close => warm_pair
+? bond_odessa_crake_cold => cold_pair
+=> sweep
+-- warm_pair
+* Somewhere in the circle, the Pocket Moth has drifted close to the Magnificence, and Odessa is passing seed cake through the windows to Crake and his mother. Crake is pretending he isn't eating it.
+=> sweep
+-- cold_pair
+* The Pocket Moth and the Magnificence are parked as far apart as the circle allows. Odessa and Crake are watching the same comet very pointedly in different directions.
+-- sweep
 * The comet's tail sweeps over the dock, and for a moment every hull in the circle glitters silver.
 * Back home, you'll find a little of that silver stays in your eyes. You could mix a paint like that.
 end
@@ -218,6 +233,11 @@ end
 ilse laughing: Beaten in the gardens. By Halloran's teakettle. I'll never hear the end of it.
 ilse happy: I'm stepping back. Not stopping. There's a nervous kid on the dock with a secondhand racer and nobody to show them the lines. I'm going to coach.
 ilse thoughtful: It wasn't the ship slowing down, and it wasn't me, either. It was time. That's all right.
+? bond_ilse_brindle_cold => frosty
+* Hob the starling hops onto the counter, inspects your tea, and approves of nothing.
+end
+-- frosty
+ilse grumpy: And if Brindle announces my retirement over the speakers before I do, I'm unplugging it.
 end
 
 == brindle_commentator
@@ -278,6 +298,8 @@ ilse grumpy: Fritter contest at the bandstand. I've won it nine years running. C
 odessa laughing: Don't look straight up, love, you'll go dizzy. Look along the curve. There!
 odessa happy: The grandkids used to pick here every autumn. They'd fill one basket and eat two.
 * By the time the sun-line goes amber, your basket is full and your hands smell of plums.
+* Partway through, Odessa drafts Thaddeus Crake into holding the basket. He complains the whole time, and holds it perfectly steady.
+! bond odessa crake 1
 ! give cake_moon_plum 2
 ! set harvest_plums
 => finale
@@ -286,6 +308,8 @@ odessa happy: The grandkids used to pick here every autumn. They'd fill one bask
 brindle thoughtful: Seven. Nine. Eleven. Twelve! {name}, twelve! A new record!
 brindle happy: I would like you to have the twelfth one. You cannot keep a rainbow. But you can keep that you were here when it happened.
 * Sprocket walks straight through the mist, gets very wet, and looks betrayed by the entire universe.
+* Ilse wanders over to see what the fuss is about and ends up holding Brindle's stopwatch for the last three rainbows.
+! bond ilse brindle 1
 ! set harvest_rainbows
 => finale
 -- fritters
@@ -300,6 +324,8 @@ ilse happy: Not bad. Next year, maybe.
 ilse surprised: Beaten on the track AND at the fritters. In one season.
 ilse laughing: I'm retiring from fritters. Effective immediately. Take the prize before I change my mind.
 -- fritter_prize
+* In the crowd, Thaddeus Crake is cheering. For Ilse. He'll deny it later.
+! bond ilse crake 1
 ! give cake_nebula_roll 1
 ! pebs 40
 ! set harvest_fritters
