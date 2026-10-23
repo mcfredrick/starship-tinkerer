@@ -13,8 +13,10 @@ var _tablet: Button
 
 func _ready() -> void:
 	add_theme_stylebox_override("panel", UI.box(Color(UI.CREAM, 0.94), 16, 8, true))
-	# Inset so the web shell's share and music buttons in the top corners stay clear.
-	UI.place(self, Control.PRESET_TOP_WIDE, Vector2(84, 12), Vector2(-168, 0))
+	# On desktop the web shell's share and music buttons sit in the top corners, so the bar keeps
+	# clear of them. Touch screens fold those buttons into a pill on the right edge instead.
+	var inset := 16.0 if UI.touch else 84.0
+	UI.place(self, Control.PRESET_TOP_WIDE, Vector2(inset, 12), Vector2(-inset * 2, 0))
 	_day = UI.heading("", 22)
 	_pebs = UI.heading("", 22, UI.AMBER_DARK)
 	_spark = UI.label("", 20, UI.TEAL)
