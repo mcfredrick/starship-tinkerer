@@ -76,6 +76,16 @@
     "metallic": {"name": "Metallic", "gloss": 0.9, "shadow": 0.48, "craft": 2},
     "pearl": {"name": "Pearl", "gloss": 0.6, "shadow": 0.62, "pearl": 1.0, "knowledge": "knows_pearl"}
   },
+  "liveries": {
+    "solid": {"name": "Solid", "pattern": 0},
+    "stripe": {"name": "Racing stripes", "pattern": 1},
+    "two_tone": {"name": "Two-tone", "pattern": 2},
+    "bands": {"name": "Bands", "pattern": 3},
+    "dots": {"name": "Polka dots", "pattern": 4},
+    "zigzag": {"name": "Zigzag", "pattern": 5},
+    "checker": {"name": "Checkers", "pattern": 6, "craft": 2},
+    "flames": {"name": "Flames", "pattern": 7, "craft": 3}
+  },
   "mischief": {
     "goose_horn": {"name": "Goose horn", "kind": "prank", "rapport": -1,
       "desc": "The horn now honks like an affronted goose."},

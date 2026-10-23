@@ -14,6 +14,10 @@ uniform vec3 sweep_origin = vec3(0.0);
 uniform vec3 sweep_axis = vec3(0.0, 0.0, 1.0);
 uniform float sweep = 1000.0;
 
+// Livery: a pattern laid over the paint in the ship's own space (nose toward -Z), in `pattern_color`.
+uniform int pattern = 0;
+uniform vec3 pattern_color : source_color = vec3(1.0);
+
 // Grime: blotchy dirt fixed in the ship's own space, minus the patches scrubbed clean.
 uniform float grime = 0.0;
 uniform mat4 ship_inverse;
@@ -41,6 +45,30 @@ float noise(vec3 p) {
 		mix(mix(hash(i + vec3(0, 0, 1)), hash(i + vec3(1, 0, 1)), f.x), mix(hash(i + vec3(0, 1, 1)), hash(i + vec3(1, 1, 1)), f.x), f.y), f.z);
 }
 
+float livery() {
+	vec3 p = ship_pos;
+	if (pattern == 1) {
+		return float(p.y > 0.0 && abs(abs(p.x) - 0.17) < 0.07);
+	} else if (pattern == 2) {
+		return float(p.y < -0.05);
+	} else if (pattern == 3) {
+		return float(fract(p.z * 0.9) < 0.22);
+	} else if (pattern == 4) {
+		vec3 cell = fract(p * 2.4) - 0.5;
+		return float(length(cell.yz) < 0.2 && abs(p.x) > 0.15);
+	} else if (pattern == 5) {
+		float wave = abs(fract(p.z * 1.6) - 0.5) * 0.5 - 0.12;
+		return float(abs(p.x) > 0.3 && abs(p.y - wave) < 0.06);
+	} else if (pattern == 6) {
+		vec3 c = floor(p * 3.0);
+		return mod(c.x + c.y + c.z, 2.0);
+	} else if (pattern == 7) {
+		float tongue = 0.35 * sin(atan(p.y, p.x) * 7.0) + 0.25 * sin(p.y * 13.0);
+		return float(p.z < -0.6 + tongue);
+	}
+	return 0.0;
+}
+
 float dirt() {
 	if (grime <= 0.0) {
 		return 0.0;
@@ -56,6 +84,7 @@ float dirt() {
 
 void fragment() {
 	vec3 base = along < sweep ? color : old_color;
+	base = mix(base, pattern_color, livery());
 	float wet = 1.0 - smoothstep(0.0, 0.25, abs(along - sweep));
 	base = mix(base, vec3(0.34, 0.28, 0.22), dirt() * 0.8);
 	ALBEDO = mix(base, vec3(1.0), wet * 0.5) * (1.0 + highlight * 0.5);

@@ -9,20 +9,14 @@ const remarks = [
 
 // Function to hide UI elements for screenshot
 function hideUIForScreenshot() {
-    const shareButton = document.getElementById('share-button');
-    const musicToggle = document.getElementById('music-toggle');
-    
-    if (shareButton) shareButton.style.display = 'none';
-    if (musicToggle) musicToggle.style.display = 'none';
+    const chrome = document.getElementById('game-chrome');
+    if (chrome) chrome.style.display = 'none';
 }
 
 // Function to restore UI elements after screenshot
 function restoreUIAfterScreenshot() {
-    const shareButton = document.getElementById('share-button');
-    const musicToggle = document.getElementById('music-toggle');
-    
-    if (shareButton) shareButton.style.display = 'flex';
-    if (musicToggle) musicToggle.style.display = 'flex';
+    const chrome = document.getElementById('game-chrome');
+    if (chrome) chrome.style.display = '';
 }
 
 // Function to capture screenshot

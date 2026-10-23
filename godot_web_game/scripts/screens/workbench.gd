@@ -116,7 +116,7 @@ func _ready() -> void:
 	if _fix_demo >= 0:
 		_demo_fix.call_deferred(_fix_demo)
 	# Screenshot aids for the animated actions: `paint` repaints, `part` swaps the engine, `scrub`
-	# strokes the brush across the middle of the screen.
+	# strokes the brush across the middle of the screen, and a livery id puts that livery on.
 	match _demo:
 		"scrub":
 			_demo_scrub.call_deferred()
@@ -124,6 +124,8 @@ func _ready() -> void:
 			_paint.call_deferred("paint", "plum" if build.paint != "plum" else "teal")
 		"part":
 			_install.call_deferred("engine", _candidates("engine", build.parts.engine)[0])
+	if _demo in Content.parts.liveries:
+		_livery.call_deferred(_demo)
 
 
 func _faults() -> Array:
@@ -478,23 +480,37 @@ func _paint_tab() -> void:
 			b.pressed.connect(_paint.bind(zone, name))
 			grid.add_child(b)
 		_content.add_child(grid)
-	_content.add_child(UI.heading("Finish", 19))
+	_choice_row("Finish", Content.parts.finishes, build.get("finish", "gloss"), _finish_paint)
+	_choice_row("Livery (in the trim color)", Content.parts.liveries, build.get("livery", "solid"), _livery)
+
+
+## A row of toggle buttons for paint options, locked by Craft level or knowledge where they say so.
+func _choice_row(title: String, options: Dictionary, current: String, action: Callable) -> void:
+	_content.add_child(UI.heading(title, 19))
 	var row := HFlowContainer.new()
 	row.add_theme_constant_override("h_separation", 6)
-	var current: String = build.get("finish", "gloss")
-	for id in Content.parts.finishes:
-		var f: Dictionary = Content.parts.finishes[id]
-		var b := UI.button(f.name, _finish_paint.bind(id), 16)
+	row.add_theme_constant_override("v_separation", 6)
+	for id in options:
+		var o: Dictionary = options[id]
+		var b := UI.button(o.name, action.bind(id), 16)
 		b.toggle_mode = true
 		b.button_pressed = id == current
-		if f.has("craft") and Skills.level(GameState.skills.craft) < f.craft:
+		if o.has("craft") and Skills.level(GameState.skills.craft) < o.craft:
 			b.disabled = true
-			b.tooltip_text = "Needs Craft level %d" % f.craft
-		elif f.has("knowledge") and not GameState.flags.has(f.knowledge):
+			b.tooltip_text = "Needs Craft level %d" % o.craft
+		elif o.has("knowledge") and not GameState.flags.has(o.knowledge):
 			b.disabled = true
 			b.tooltip_text = "You don't know how to lay this one down yet."
 		row.add_child(b)
 	_content.add_child(row)
+
+
+func _livery(id: String) -> void:
+	build["livery"] = id
+	GameState.add_xp("craft", 2)
+	GameState.save()
+	_rebuild()
+	Fx.puff(model, model.global_position + Vector3.UP, Vector3.UP, Content.color(build.trim))
 
 
 func _finish_paint(id: String) -> void:

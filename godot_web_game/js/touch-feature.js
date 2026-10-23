@@ -50,7 +50,47 @@ function initKeyboardSettle() {
     window.addEventListener('orientationchange', () => setTimeout(settle, 300));
 }
 
+// Full screen hides the browser's address bar. Android browsers and iPadOS allow it from a tap;
+// iPhone Safari doesn't let pages do it at all, so there the button explains the home screen route.
+// Already running from a home screen, there's nothing to do and the button goes away.
+function initFullscreen() {
+    const button = document.getElementById('fullscreen-button');
+    const tip = document.getElementById('fullscreen-tip');
+    if (!button) return;
+    const installed = navigator.standalone ||
+        window.matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
+    if (installed) {
+        button.remove();
+        return;
+    }
+    const supported = document.fullscreenEnabled || document.webkitFullscreenEnabled;
+    const current = () => document.fullscreenElement || document.webkitFullscreenElement;
+    const showIcon = () => {
+        document.getElementById('icon-fullscreen').style.display = current() ? 'none' : 'block';
+        document.getElementById('icon-fullscreen-exit').style.display = current() ? 'block' : 'none';
+    };
+    document.addEventListener('fullscreenchange', showIcon);
+    document.addEventListener('webkitfullscreenchange', showIcon);
+
+    button.addEventListener('click', () => {
+        if (!supported) {
+            tip.classList.add('shown');
+            setTimeout(() => tip.classList.remove('shown'), 6000);
+            return;
+        }
+        const root = document.documentElement;
+        if (current()) {
+            (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        } else if (root.requestFullscreen) {
+            root.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
+        } else {
+            root.webkitRequestFullscreen();
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initTouchChrome();
     initKeyboardSettle();
+    initFullscreen();
 });

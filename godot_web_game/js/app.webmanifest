@@ -1,0 +1,14 @@
+{
+  "name": "Starship Tinkerer",
+  "short_name": "Starship Tinkerer",
+  "description": "A cozy starship repair shop. Fix, mod and upgrade ships for friendly pilots, earn pebs, and race your own ship if you like.",
+  "start_url": "../",
+  "scope": "../",
+  "display": "fullscreen",
+  "background_color": "#222222",
+  "theme_color": "#222222",
+  "icons": [
+    {"src": "../index.icon.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "../index.apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}
+  ]
+}

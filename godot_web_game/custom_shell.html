@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- Launched from a home screen, the game opens without browser chrome (the only way to get
+         full screen on iPhone, where web pages can't request it). -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="js/app.webmanifest">
     <title>$GODOT_PROJECT_NAME</title>
     $GODOT_HEAD_INCLUDE
     <style>
@@ -171,6 +177,11 @@
             display: contents;
         }
 
+        #fullscreen-button,
+        #fullscreen-tip {
+            display: none;
+        }
+
         /* On touch screens they share a pill on the right edge that tucks away to a grip tab. */
         @media (pointer: coarse) {
             #game-chrome {
@@ -188,8 +199,40 @@
                 transition: transform 0.3s ease;
             }
 
+            #game-chrome #fullscreen-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+            }
+
+            #game-chrome #fullscreen-button svg {
+                width: 28px;
+                height: 28px;
+                fill: white;
+            }
+
+            #fullscreen-tip.shown {
+                display: block;
+                position: fixed;
+                top: 50%;
+                right: calc(env(safe-area-inset-right, 0px) + 72px);
+                transform: translateY(-50%);
+                max-width: 230px;
+                padding: 10px 14px;
+                border-radius: 12px;
+                background: rgba(0, 0, 0, 0.82);
+                color: white;
+                font-size: 15px;
+                line-height: 1.35;
+                z-index: 1001;
+            }
+
             #game-chrome #share-button,
-            #game-chrome #music-toggle {
+            #game-chrome #music-toggle,
+            #game-chrome #fullscreen-button {
                 position: static;
                 width: 40px;
                 height: 40px;
@@ -264,6 +307,16 @@
 
     <!-- Page buttons: corners on desktop, a tuck-away pill on touch screens (js/touch-feature.js) -->
     <div id="game-chrome">
+        <!-- Full screen toggle (touch screens only) -->
+        <button id="fullscreen-button" title="Full Screen">
+            <svg id="icon-fullscreen" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+            <svg id="icon-fullscreen-exit" style="display: none;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+            </svg>
+        </button>
+
         <!-- Share screenshot button -->
         <button id="share-button" title="Share Screenshot">
             <!-- Share icon -->
@@ -284,6 +337,7 @@
             </svg>
         </button>
     </div>
+    <div id="fullscreen-tip">For full screen on iPhone, tap Share, then Add to Home Screen, and play from there.</div>
 
     <!-- Hidden SoundCloud player (no autoplay initially) -->
     <iframe id="soundcloud-widget" 

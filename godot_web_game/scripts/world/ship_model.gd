@@ -57,12 +57,12 @@ func build(b: Dictionary) -> void:
 	_apply_grime()
 
 
+## Grime and liveries are drawn in the ship's own space, so materials track it as it turns.
 func _process(_delta: float) -> void:
-	if _build.get("grime", 0.0) > 0:
-		var inverse := global_transform.affine_inverse()
-		for m in _materials.values():
-			if m.shader == TOON:
-				m.set_shader_parameter("ship_inverse", inverse)
+	var inverse := global_transform.affine_inverse()
+	for m in _materials.values():
+		if m.shader == TOON:
+			m.set_shader_parameter("ship_inverse", inverse)
 
 
 func _apply_grime() -> void:
@@ -208,6 +208,8 @@ func _material(role: String, b: Dictionary) -> Material:
 			m.set_shader_parameter("gloss", finish.gloss)
 			m.set_shader_parameter("shadow", finish.shadow)
 			m.set_shader_parameter("pearl", finish.get("pearl", 0.0))
+			m.set_shader_parameter("pattern", Content.parts.liveries[b.get("livery", "solid")].pattern)
+			m.set_shader_parameter("pattern_color", Content.color(b.trim))
 		m.set_shader_parameter("highlight", _highlight)
 		var outline := ShaderMaterial.new()
 		outline.shader = OUTLINE
