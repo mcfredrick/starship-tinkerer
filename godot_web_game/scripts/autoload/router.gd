@@ -59,6 +59,8 @@ func talk(scene_id: String) -> void:
 
 
 func toast(text: String, color := UI.TEAL) -> void:
+	if color == UI.BAD:
+		Sfx.play("bonk")
 	var p := UI.panel(UI.label(text, 20, UI.CREAM), color, 10)
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_toasts.add_child(p)

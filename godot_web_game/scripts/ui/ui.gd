@@ -112,6 +112,7 @@ static func button(text: String, action: Callable, size := 20) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.add_theme_font_size_override("font_size", size)
+	b.pressed.connect(func(): Sfx.play("click", randf_range(0.95, 1.08)))
 	b.pressed.connect(action)
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return b

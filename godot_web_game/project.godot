@@ -28,6 +28,7 @@ anti_aliasing/quality/msaa_3d=2
 Content="*res://scripts/autoload/content.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 Router="*res://scripts/autoload/router.gd"
+Sfx="*res://scripts/autoload/sfx.gd"
 
 [input]
 

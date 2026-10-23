@@ -24,6 +24,8 @@ var _big: Label
 var _results: PanelContainer
 var _touch := {}
 var _done := false
+var _engine: AudioStreamPlayer
+var _count := 4
 
 
 func _ready() -> void:
@@ -41,6 +43,8 @@ func _ready() -> void:
 	_build_hud()
 	if DisplayServer.is_touchscreen_available():
 		_build_touch()
+	_engine = Sfx.loop("engine", self, -10.0)
+	_engine.play()
 
 
 # ---------------------------------------------------------------- world
@@ -267,7 +271,10 @@ func _physics_process(delta: float) -> void:
 		if e.id != "player":
 			continue
 		match e.type:
+			"wall":
+				Sfx.play("bump", randf_range(0.9, 1.1))
 			"miniboost":
+				Sfx.play("whoosh")
 				_flash_text("Whoosh!")
 			"gadget":
 				_flash_text("Ribbon out!" if e.gadget == "ribbon" else "Pop!")
@@ -294,6 +301,11 @@ func _input_state() -> Dictionary:
 func _process(delta: float) -> void:
 	_update_visuals(minf(delta * 5.0, 1.0))
 	_update_hud()
+	_engine.pitch_scale = 0.6 + player.v / 40.0 + (0.25 if player.boosting or player.mini > 0 else 0.0)
+	var count := ceili(-sim.time)
+	if count != _count and count >= 0:
+		_count = count
+		Sfx.play("go" if count == 0 else "beep")
 
 
 func _update_visuals(follow: float) -> void:

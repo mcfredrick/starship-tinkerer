@@ -75,6 +75,7 @@ func _card(id: String, count: int, action: Callable) -> Control:
 func _brew(id: String) -> void:
 	GameState.take(GameState.items, id)
 	GameState.buff = id
+	Sfx.play("pour")
 	GameState.save()
 	var tea: Dictionary = Content.comforts.teas[id]
 	_note.text = "You brew a pot of %s. %s" % [tea.name, tea.desc]

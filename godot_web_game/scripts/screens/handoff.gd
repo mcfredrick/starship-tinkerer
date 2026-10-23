@@ -55,6 +55,7 @@ func _play() -> void:
 
 
 func _pay() -> void:
+	Sfx.play("coins")
 	GameState.add_pebs(_grade.pay, "%s paid %s" % [_pilot.short, UI.pebs(_grade.pay)])
 	var gifts: Array = []
 	for item in _job.barter:

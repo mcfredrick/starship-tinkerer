@@ -88,6 +88,7 @@ func _buy_item(id: String) -> void:
 
 
 func _sell_part(id: String, price: int) -> void:
+	Sfx.play("coins")
 	GameState.take(GameState.parts, id)
 	GameState.add_pebs(price, "Sold a %s" % Content.part(id).name)
 	GameState.save()

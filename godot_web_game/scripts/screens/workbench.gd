@@ -150,9 +150,13 @@ func _update_scan(delta: float) -> void:
 			continue
 		var s := _screen_spot(f)
 		if s[1] and mouse.distance_to(s[0]) < SCAN_RADIUS:
-			_scan[i] = _scan.get(i, 0.0) + delta * leniency
+			var before: float = _scan.get(i, 0.0)
+			_scan[i] = before + delta * leniency
+			if fmod(_scan[i], 0.35) < fmod(before, 0.35):
+				Sfx.play("ping", 0.8 + _scan[i] / SCAN_TIME * 0.6)
 			if _scan[i] >= SCAN_TIME:
 				f.found = true
+				Sfx.play("found")
 				GameState.add_xp("diagnostics", 12)
 				GameState.save()
 				Router.toast("Found it: %s.  Diagnostics +12" % Content.parts.faults[f.type].name)
@@ -244,6 +248,7 @@ func _on_repaired(score: float, i: int) -> void:
 	var spec: Dictionary = Content.parts.faults[f.type]
 	f.fixed = true
 	f.score = score
+	Sfx.play("success")
 	var xp := 10 + roundi(20 * score)
 	GameState.add_xp(spec.skill, xp)
 	GameState.save()

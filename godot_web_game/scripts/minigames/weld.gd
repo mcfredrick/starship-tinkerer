@@ -15,6 +15,7 @@ var _holding := false
 var _torch := Vector2.ZERO
 var _last_time := 0.0
 var _seed := 0
+var _sizzle: AudioStreamPlayer
 
 
 func setup(spot: int) -> void:
@@ -44,6 +45,7 @@ func _ready() -> void:
 		_path.append(p)
 		_lengths.append(total)
 	status("Ready when you are.")
+	_sizzle = Sfx.loop("weld", self, -6.0)
 
 
 func _tolerance() -> float:
@@ -52,6 +54,10 @@ func _tolerance() -> float:
 
 func _process(_delta: float) -> void:
 	area.queue_redraw()
+	if _holding and not _sizzle.playing:
+		_sizzle.play()
+	elif not _holding and _sizzle.playing:
+		_sizzle.stop()
 
 
 func _area_input(event: InputEvent) -> void:

@@ -82,6 +82,8 @@ func _dial_at(p: Vector2) -> int:
 
 
 func _turn(dial: int, amount: float) -> void:
+	if randf() < absf(amount) * 0.08:
+		Sfx.play("tick", randf_range(0.9, 1.2))
 	if dial == 0:
 		_value.x = clampf(_value.x + amount * 0.012, FREQ_RANGE.x, FREQ_RANGE.y)
 	else:
