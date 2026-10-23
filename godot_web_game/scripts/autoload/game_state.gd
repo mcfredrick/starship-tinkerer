@@ -142,6 +142,9 @@ func from_dict(d: Dictionary) -> void:
 	worn = _ints(d.get("worn", {}))
 	finds = d.get("finds", {})
 	hawker = d.get("hawker", {})
+	# JSON brings numbers back as floats, and `in` won't match an int against a float.
+	if hawker.has("bought"):
+		hawker.bought = hawker.bought.map(func(i): return int(i))
 	race_ship = d.get("race_ship", "kettle")
 
 
