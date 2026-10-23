@@ -1,0 +1,51 @@
+{
+  "ships": {
+    "pocket_moth": {"name": "Pocket Moth", "owner": "odessa", "hull": "moth",
+      "parts": {"engine": "engine_rattler", "fins": "fin_stub", "cockpit": "cockpit_bubble", "lights": "lights_round"},
+      "paint": "slate", "trim": "cream"},
+    "kettle": {"name": "Kettle", "owner": "player", "hull": "kettle",
+      "parts": {"engine": "engine_rattler", "fins": "fin_stub", "cockpit": "cockpit_bubble", "lights": "lights_round"},
+      "paint": "teal", "trim": "brass"},
+    "heron": {"name": "Heron", "owner": "ilse", "hull": "heron",
+      "parts": {"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_visor", "lights": "lights_bar", "top": "gadget_ribbon"},
+      "paint": "scarlet", "trim": "cream"},
+    "bucket": {"name": "Bucket", "owner": "brindle", "hull": "bucket",
+      "parts": {"engine": "engine_rattler", "fins": "fin_wing", "cockpit": "cockpit_bubble", "lights": "lights_round", "top": "gadget_bubble"},
+      "paint": "marigold", "trim": "slate"}
+  },
+  "pilots": {
+    "odessa": {"name": "Odessa Vell", "short": "Odessa", "pronouns": "she", "ship": "pocket_moth",
+      "taste": ["marigold", "terracotta", "sage", "cream", "rose"],
+      "blurb": "Retired long-haul courier. Grandchildren on three moons."},
+    "ilse": {"name": "Captain Ilse Marrow", "short": "Ilse", "pronouns": "she", "ship": "heron",
+      "taste": ["scarlet", "cream", "slate"],
+      "blurb": "Reigning dock champion. Gruff, generous, secretly worried about getting slower."},
+    "brindle": {"name": "Brindle", "short": "Brindle", "pronouns": "it", "ship": "bucket",
+      "taste": ["marigold", "mint", "teal"],
+      "blurb": "A maintenance robot who wants to know what racing feels like."}
+  },
+  "jobs": {
+    "odessa_1": {
+      "pilot": "odessa", "ship": "pocket_moth", "budget": 220,
+      "request": "I'm taking my grandkids to see the comet bloom next week, and the old Moth rattles so loud they can't hear a word I say. Could you make her quieter? Comfier wouldn't hurt either.",
+      "faults": [{"type": "weld", "spot": 2}, {"type": "calibrate", "spot": 5}],
+      "wants": [
+        {"stat": "noise", "max": 40, "label": "Quiet enough to talk", "weight": 2, "flag": "odessa_1_quiet"},
+        {"stat": "comfort", "min": 56, "label": "Comfier ride", "weight": 1},
+        {"taste": true, "label": "Looks like her", "weight": 1}
+      ],
+      "barter": {"cake_seed": 2},
+      "dialogue": "odessa_1"
+    }
+  },
+  "race": {
+    "club": {"name": "Quietwater Club Race", "laps": 3, "rivals": ["ilse", "brindle"],
+      "prizes": [140, 80, 40], "pr_limit": 420}
+  },
+  "start": {
+    "pebs": 150,
+    "parts": {"engine_hush": 1, "fin_swept": 1, "lights_bar": 1, "gadget_ribbon": 1},
+    "items": {"tea_steady_leaf": 3, "tea_bright_ember": 2, "tea_drift_bloom": 1, "cake_moon_plum": 1, "cake_nebula_roll": 1}
+  },
+  "market": ["engine_hush", "engine_sprint", "fin_stub", "fin_swept", "fin_wing", "cockpit_bubble", "cockpit_visor", "cockpit_bay", "lights_round", "lights_bar", "gadget_ribbon", "gadget_bubble"]
+}

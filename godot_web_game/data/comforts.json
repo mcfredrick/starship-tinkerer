@@ -1,0 +1,23 @@
+{
+  "teas": {
+    "tea_steady_leaf": {"name": "Steady Leaf", "icon": "tea_steady_leaf", "buff": "steady", "price": 12,
+      "desc": "Grassy and calm. Your welding hand stops shaking."},
+    "tea_bright_ember": {"name": "Bright Ember", "icon": "tea_bright_ember", "buff": "bright", "price": 12,
+      "desc": "Smoky citrus. Faults jump out at you on the scanner."},
+    "tea_drift_bloom": {"name": "Drift Bloom", "icon": "tea_drift_bloom", "buff": "drift", "price": 18,
+      "desc": "Floral and dreamy. Dials and waveforms feel easy to read."}
+  },
+  "cakes": {
+    "cake_seed": {"name": "Odessa's seed cake", "icon": "cake_seed", "spark": 2, "price": 0,
+      "desc": "Dense, nutty and still warm from her galley oven."},
+    "cake_moon_plum": {"name": "Moon-plum tart", "icon": "cake_moon_plum", "spark": 1, "price": 10,
+      "desc": "Glossy violet plums from the drum gardens, with a curl of cream."},
+    "cake_nebula_roll": {"name": "Nebula roll", "icon": "cake_nebula_roll", "spark": 1, "price": 10,
+      "desc": "A pink sponge rolled around blueberry jam, with sugar stars on top."}
+  },
+  "buffs": {
+    "steady": {"label": "Steady hands", "weld": 0.35},
+    "bright": {"label": "Bright eyes", "scan": 0.5},
+    "drift": {"label": "Easy reading", "calibrate": 0.35}
+  }
+}

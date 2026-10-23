@@ -1,0 +1,105 @@
+# Day one: arriving, Odessa's first commission, the club race invitation.
+
+== intro
+* The hangar doors grind open on Quietwater Dock. Dust motes drift through a slab of Bramble-light.
+* Workbenches. A tea nook with a dented kettle. Drawers labeled things like "BOLTS (MOSTLY)" and "DO NOT."
+* And in the back bay, under a tarp, something round and stubborn-looking.
+* Your tablet chimes. There's a letter from Halloran, and the dock bulletin.
+! set intro_seen
+end
+
+== odessa_arrives
+* The shop bell jangles. A small grey hauler noses into the bay, rattling like a drawer full of spoons.
+odessa happy: Hello, hello! Oh, you must be {name}. Halloran said you'd be here.
+odessa: I'm Odessa. Odessa Vell. And this is the Pocket Moth. Say hello, Moth.
+* The Moth's exhaust coughs a sad little smoke ring.
+odessa thoughtful: She's not as young as she was. Neither am I, mind you, but at least I don't rattle.
+> What can I do for you? => ask
+> Halloran told me about you. => halloran
+-- halloran
+odessa laughing: Did they! All good things, I hope. Or at least funny things.
+odessa: Halloran fixed this old girl more times than I can count. I suppose it's your turn now.
+=> ask
+-- ask
+odessa: It's my grandkids. Three of them, scattered across three moons. I'm taking them to see the comet bloom next week.
+odessa sad: But the cabin rattles so loud they can't hear a word I say. Last trip my grandson told me a whole story about a comet and I just nodded along.
+odessa sad: I nodded at a story. About a comet. To a seven-year-old.
+odessa: Could you make her quieter? Comfier wouldn't hurt either. I've got two hundred and twenty pebs, and I'll throw in a seed cake or two.
+> Leave it with me. => accept
+> Two hundred and twenty is a bit tight... => haggle
+-- haggle
+odessa thoughtful: Is it? Well. It's what I've got, love. But the cakes are very good. Ask anyone on the dock.
+> All right, deal. => accept
+-- accept
+odessa happy: Wonderful! I'll go get a cocoa at the drum gardens and come back this afternoon.
+odessa: Oh, and {name}? She's got a few quirks. Give her a good scan first. Halloran always did.
+! job odessa_1
+end
+
+== odessa_1_delighted
+* Odessa walks a slow circle around the Moth, one hand trailing along the hull.
+odessa surprised: Is that... is she running? I can barely hear her!
+odessa laughing: Listen to that! It's like a cat thinking about a nap!
+odessa happy: Oh, {name}. The grandkids are going to talk my ears off and I'm going to hear every single word.
+odessa happy: Here. Your pebs, a little extra for the trouble, and two seed cakes. Don't argue. You're too skinny for a tinkerer.
+end
+
+== odessa_1_pleased
+odessa happy: Well now! That's a real improvement. She sounds like a ship that's had a good night's sleep.
+odessa: Here's your pebs, and the seed cakes as promised. Thank you, {name}.
+end
+
+== odessa_1_lukewarm
+odessa thoughtful: Hmm. She's... a little better, I think? It's hard to tell over the noise.
+odessa: Well. I'll make do. I've made do for sixty years, I can make do for a comet.
+odessa: Here's what we agreed, and the seed cakes. Maybe next time, eh?
+end
+
+== racers_visit
+* The bay lights flicker as a long scarlet racer glides past the doors and settles with a click.
+ilse grumpy: So you're the new tinkerer. Halloran's pick.
+ilse thoughtful: Hm. Your hands look like they know what they're doing. That's something.
+* A boxy yellow tug clanks in behind her. A small robot pops its head out of the hatch.
+brindle happy: Hello! I am Brindle. I am here to observe you. In a friendly way.
+ilse: Brindle follows me around. It's studying racing.
+brindle surprised: I am studying joy. Racing is where I keep finding it.
+ilse: Club race tonight. Three laps round the ring. You've got that wreck in the back, haven't you? Halloran's Kettle.
+> She's not a wreck. She's a project. => proud
+> She's... very much a wreck. => honest
+-- proud
+ilse laughing: Ha! Halloran said exactly that. Every week, for eleven years.
+=> invite
+-- honest
+brindle happy: I like her. She is round. Round things are friendly.
+=> invite
+-- invite
+ilse: Bring her out tonight if you're brave. Prize pebs for the podium. Bring her out next week if you're sensible.
+brindle: I will fit my bubble emitter. It goes pop. Pop is my favorite sound.
+ilse grumpy: Don't tell the competition about your gadgets, Brindle.
+brindle thoughtful: Oh. Is {name} the competition? I thought {name} was a friend.
+ilse happy: Both, if we're lucky.
+! set race_open
+end
+
+== race_won
+ilse surprised: The Kettle! Beat the Heron! In a straight race!
+ilse laughing: Halloran is going to be insufferable when they hear about this.
+brindle laughing: That was the most joy I have ever measured. I need a bigger unit.
+end
+
+== race_podium
+ilse happy: Not bad for a teakettle. Not bad at all.
+brindle happy: You went zoom. I went zoom. We all went zoom!
+end
+
+== race_back
+ilse thoughtful: Well, you finished. Most first-timers spin out on the sun-hairpin and cry.
+brindle happy: Your Kettle has a very nice whistle when it is being passed.
+ilse: Tune her up. Come back next week.
+end
+
+== day2_morning
+* Morning on Quietwater. The drum gardens hiss with misters and somebody is frying moon-plum fritters.
+* Your tablet has new mail.
+* (That's the end of the vertical slice. You can keep tinkering on the Kettle, buy and sell parts, take tea, and race again.)
+end

@@ -1,0 +1,28 @@
+{
+  "entries": {
+    "halloran_1": {
+      "kind": "letter", "title": "Welcome to the shop", "from": "Halloran", "day": 1,
+      "body": "Dear {name},\n\nIf you're reading this, the dock office found you, and the hangar is yours. I'm sorry about the state of it. Every drawer has a story and most of them end in \"I'll finish that later.\"\n\nA few things you should know. The kettle in the tea nook is temperamental, so tap it twice. The Kettle under the tarp in the back bay is a different kettle, and it's yours too. She was going to be my last project. She's slow, she's loud and I love her. Make her fly.\n\nPilots will come. They always do. Listen to what they ask for, then listen again for what they mean. The ship always tells you the rest.\n\nI'm out past the comet line now, watching ice turn into fireworks. The tea here is terrible. I've never been happier.\n\nWith grease under every fingernail,\nHalloran\n\nP.S. Odessa Vell will stop by soon. Be kind to her Moth. That ship has carried more birthday presents than any freighter in the system."
+    },
+    "bulletin_1": {
+      "kind": "bulletin", "title": "Quietwater Dock Bulletin", "from": "Dock office", "day": 1,
+      "body": "DRUM GARDEN NEWS\nThe moon-plums are early this cycle. The gardeners ask that you stop eating them off the vine. You know who you are.\n\nCLUB RACE TONIGHT\nThe weekly Quietwater Club Race runs three laps around the ring at last bell. Entry is free and so is the cocoa. Captain Marrow is defending her title for the forty-first week running and would like everyone to stop counting.\n\nLOST AND FOUND\nOne (1) hat, knitted, with ear holes. Not for a human. Ask at the office.\n\nGOSSIP CORNER\nA certain maintenance unit was seen watching race replays through the observation glass until third shift. When asked, it said it was \"studying joy.\" We have no further questions."
+    },
+    "novel_1": {
+      "kind": "story", "title": "The Lighthouse Keeper of Lumen Reach, Chapter 1", "from": "Serial by T. Okonkwo-Hale", "day": 1,
+      "body": "Nobody had needed a lighthouse in Lumen Reach for ninety years, which is exactly why Wren Abara took the job.\n\nThe beacon still turned, out of habit more than purpose, sweeping its slow gold arm across a field of drifting ice. Ships had beacons of their own now, and maps, and minds that never got lost. Wren had a kettle, a cat named Corollary, and a logbook that the previous keeper had filled with nothing but weather.\n\n\"Calm,\" read one entry. \"Calm again,\" read the next. Then, three hundred pages in, in handwriting gone wobbly with excitement: \"A whale.\"\n\nWren read that entry four times. Then Wren put the kettle on, wrapped a blanket around both shoulders, and went up to the lamp room to wait.\n\nCorollary, who did not believe in whales, went to sleep on the logbook.\n\n(Chapter 2 arrives tomorrow.)"
+    },
+    "manual_hush": {
+      "kind": "manual", "title": "Hushdrive Owner's Pamphlet", "from": "Softwind Drive Co.", "day": 1, "unlock": "knows_hush",
+      "body": "CONGRATULATIONS on your Hushdrive!\n\nThe Hushdrive's teardrop shell is lined with a woven dampening mesh that turns rattle into purr. Fitted to a small hauler it can cut cabin noise by half, and passengers report it \"sounds like a cat thinking about a nap.\"\n\nTINKERER'S NOTE (in Halloran's handwriting): Noise isn't just the drive. Cracked seams sing at speed. Weld them first, then swap the drive, and you'll hear the difference.\n\nREADING THIS PAMPHLET: you'll recognize Hushdrive fittings at a glance, and quiet-ride requests will make more sense to you."
+    },
+    "odessa_letter_1": {
+      "kind": "letter", "title": "From the comet bloom", "from": "Odessa Vell", "day": 2, "requires": "odessa_1_quiet",
+      "body": "Dear {name},\n\nWe saw it! The whole sky went silver and pink, and the little ones pressed their noses to the glass and narrated every single sparkle. I heard every word. Every word! Do you know how long it's been since I heard a whole sentence from my grandson? He has opinions about comets. Many opinions.\n\nThe Moth hums now. My granddaughter says it sounds like a cat thinking about a nap. I don't know where she got that.\n\nI'm thinking about something, and I'll tell you about it when I'm back through Quietwater. Keep the kettle warm.\n\nYours, with seed cake crumbs on the page,\nOdessa"
+    },
+    "odessa_letter_1b": {
+      "kind": "letter", "title": "From the comet bloom", "from": "Odessa Vell", "day": 2, "requires": "odessa_1_done", "excludes": "odessa_1_quiet",
+      "body": "Dear {name},\n\nWe saw it! The whole sky went silver and pink. The little ones pressed their noses to the glass and talked the whole way through. I caught about half of it, which is half more than last time.\n\nThe Moth still grumbles, bless her. Next time I'm through Quietwater, I think she and I need another visit.\n\nYours, with seed cake crumbs on the page,\nOdessa"
+    }
+  }
+}

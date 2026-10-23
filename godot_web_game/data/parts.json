@@ -1,0 +1,60 @@
+{
+  "hulls": {
+    "moth": {"name": "Moth-class hauler", "stats": {"thrust": 30, "top_speed": 38, "handling": 34, "grip": 40, "boost": 20, "mass": 62, "comfort": 46, "noise": 30}},
+    "kettle": {"name": "Kettle", "stats": {"thrust": 28, "top_speed": 34, "handling": 36, "grip": 34, "boost": 22, "mass": 55, "comfort": 30, "noise": 34}},
+    "heron": {"name": "Heron-class racer", "stats": {"thrust": 46, "top_speed": 60, "handling": 52, "grip": 44, "boost": 34, "mass": 38, "comfort": 20, "noise": 40}},
+    "bucket": {"name": "Salvage tug", "stats": {"thrust": 40, "top_speed": 44, "handling": 38, "grip": 46, "boost": 28, "mass": 60, "comfort": 28, "noise": 38}}
+  },
+  "parts": {
+    "engine_rattler": {"name": "Rattler drive", "slot": "engine", "price": 30, "model": "part_engine_rattler",
+      "desc": "An old ribbed drive. Gets you there, loudly.",
+      "stats": {"thrust": 6, "top_speed": 4, "mass": 8, "noise": 24, "comfort": -8}},
+    "engine_hush": {"name": "Hushdrive", "slot": "engine", "price": 140, "model": "part_engine_hush",
+      "desc": "Muffled teardrop drive. Purrs instead of rattling.",
+      "stats": {"thrust": 8, "top_speed": 8, "mass": 6, "noise": -4, "comfort": 14}},
+    "engine_sprint": {"name": "Sprint twin", "slot": "engine", "price": 260, "model": "part_engine_sprint",
+      "desc": "Twin racing nozzles. Loud and proud.",
+      "stats": {"thrust": 20, "top_speed": 18, "boost": 8, "mass": 10, "noise": 30, "comfort": -10}},
+    "fin_stub": {"name": "Stub fins", "slot": "fins", "price": 20, "model": "part_fin_stub",
+      "desc": "Short and sturdy.",
+      "stats": {"handling": 4, "grip": 4, "mass": 2}},
+    "fin_swept": {"name": "Swept fins", "slot": "fins", "price": 90, "model": "part_fin_swept",
+      "desc": "Swept back for speed, with a little bite in the corners.",
+      "stats": {"handling": 10, "grip": 6, "top_speed": 4, "mass": 3}},
+    "fin_wing": {"name": "Endplate wings", "slot": "fins", "price": 150, "model": "part_fin_wing",
+      "desc": "Broad wings with endplates. Sticks to corners, drags on straights.",
+      "stats": {"handling": 8, "grip": 18, "top_speed": -4, "mass": 5}},
+    "cockpit_bubble": {"name": "Bubble dome", "slot": "cockpit", "price": 40, "model": "part_cockpit_bubble",
+      "desc": "A classic glass dome.",
+      "stats": {"comfort": 4, "mass": 3}},
+    "cockpit_visor": {"name": "Racing visor", "slot": "cockpit", "price": 120, "model": "part_cockpit_visor",
+      "desc": "Low and slippery. Not much legroom.",
+      "stats": {"top_speed": 6, "handling": 4, "comfort": -6, "mass": 1}},
+    "cockpit_bay": {"name": "Bay-window cabin", "slot": "cockpit", "price": 110, "model": "part_cockpit_bay",
+      "desc": "A wide picture window and room for passengers.",
+      "stats": {"comfort": 16, "mass": 8, "top_speed": -2, "view": 1}},
+    "lights_round": {"name": "Round lamps", "slot": "lights", "price": 15, "model": "part_lights_round",
+      "desc": "A friendly pair of headlamps.",
+      "stats": {}},
+    "lights_bar": {"name": "Light bar", "slot": "lights", "price": 45, "model": "part_lights_bar",
+      "desc": "A bright bar that makes rivals squint.",
+      "stats": {"handling": 2}},
+    "gadget_ribbon": {"name": "Ribbon launcher", "slot": "top", "price": 180, "model": "part_gadget_ribbon", "gadget": "ribbon",
+      "desc": "Race gadget. Unspools a shimmering slipstream ribbon ahead of you to ride.",
+      "stats": {"mass": 3}},
+    "gadget_bubble": {"name": "Bubble emitter", "slot": "top", "price": 160, "model": "part_gadget_bubble", "gadget": "bubble",
+      "desc": "Race gadget. Pops a shield bubble that shrugs off bumps.",
+      "stats": {"mass": 3}}
+  },
+  "faults": {
+    "weld": {"name": "Cracked seam", "minigame": "weld", "skill": "mechanics",
+      "stats": {"noise": 14, "comfort": -10}},
+    "calibrate": {"name": "Drifting drive timing", "minigame": "calibrate", "skill": "electronics",
+      "stats": {"thrust": -8, "noise": 8}}
+  },
+  "palette": {
+    "marigold": "e8a33d", "terracotta": "c8643f", "sage": "8fae7e", "teal": "3f8f8f", "dusk": "6b5a9e",
+    "rose": "e48aa0", "cream": "f1e6cc", "brass": "c9a24b", "slate": "5d6b78", "plum": "7d3f6e",
+    "mint": "9fd8c0", "scarlet": "c63b3b"
+  }
+}
