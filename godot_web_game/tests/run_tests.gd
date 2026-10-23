@@ -132,6 +132,13 @@ func test_skill_levels() -> void:
 
 func test_content_matches_kit() -> void:
 	var kit: Node = load("res://assets/ships/kit.glb").instantiate()
+	for id in parts_data.hulls:
+		var hull: Node = kit.get_node_or_null("hull_" + id)
+		check(hull != null, "hull %s is in the kit" % id)
+		for socket in ["engine", "fin_l", "fin_r", "cockpit", "lights", "top"]:
+			check(hull.has_node("hull_%s__socket_%s" % [id, socket]), "hull %s has a %s socket" % [id, socket])
+		for spot in range(1, 7):
+			check(hull.has_node("hull_%s__spot_%d" % [id, spot]), "hull %s has spot %d" % [id, spot])
 	for id in parts_data.parts:
 		var model: String = parts_data.parts[id].model
 		check(kit.has_node(model), "part %s has kit model %s" % [id, model])

@@ -12,7 +12,7 @@
     "bucket": {"name": "Bucket", "owner": "brindle", "hull": "bucket",
       "parts": {"engine": "engine_rattler", "fins": "fin_wing", "cockpit": "cockpit_bubble", "lights": "lights_round", "top": "gadget_bubble"},
       "paint": "marigold", "trim": "slate", "livery": "checker", "grime": 0.6},
-    "magnificence": {"name": "The Magnificence", "owner": "crake", "hull": "heron",
+    "magnificence": {"name": "The Magnificence", "owner": "crake", "hull": "manta",
       "parts": {"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_bay", "lights": "lights_bar"},
       "paint": "plum", "trim": "brass", "livery": "two_tone", "grime": 0.3}
   },
@@ -91,5 +91,5 @@
     "parts": {"engine_hush": 1, "fin_swept": 1, "lights_bar": 1, "gadget_ribbon": 1},
     "items": {"tea_steady_leaf": 3, "tea_bright_ember": 2, "tea_drift_bloom": 1, "cake_moon_plum": 1, "cake_nebula_roll": 1}
   },
-  "market": ["engine_hush", "engine_sprint", "fin_stub", "fin_swept", "fin_wing", "cockpit_bubble", "cockpit_visor", "cockpit_bay", "lights_round", "lights_bar", "gadget_ribbon", "gadget_bubble"]
+  "market": ["engine_hush", "engine_sprint", "fin_stub", "fin_swept", "fin_wing", "cockpit_bubble", "cockpit_visor", "cockpit_bay", "lights_round", "lights_bar", "gadget_ribbon", "gadget_bubble", "engine_ring", "fin_feather", "cockpit_eye", "lights_stalks"]
 }

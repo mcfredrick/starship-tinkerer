@@ -175,6 +175,164 @@ def hull_bucket():
     return h
 
 
+def disc_height(profile, x, y):
+    """Height of the top skin of a disc lathed around Z, at (x, y)."""
+    r = math.hypot(x, y)
+    top = sorted(((rad, z) for z, rad in profile if z >= 0), key=lambda p: p[0])
+    for (r0, z0), (r1, z1) in zip(top, top[1:]):
+        if r0 <= r <= r1:
+            return z0 + (z1 - z0) * (r - r0) / (r1 - r0)
+    return top[0][1]
+
+
+def hull_saucer():
+    """A classic flying saucer: a wide disc with rim lights and a glowing ring underneath."""
+    h = empty("hull_saucer")
+    prof = [(-0.35, 0.3), (-0.3, 1.2), (-0.12, 1.9), (0.0, 2.05), (0.1, 1.9), (0.26, 1.2), (0.36, 0.6),
+            (0.4, 0.001)]
+    mesh_obj("body_paint", lathe_bm(prof, segments=48, axis="z"), h)
+    mesh_obj("rim_trim", lathe_bm([(0.05, 2.1), (-0.05, 2.1)], segments=48, axis="z"), h)
+    mesh_obj("beam_glow", lathe_bm([(-0.36, 0.75), (-0.4, 0.55)], segments=32, axis="z"), h)
+    for i in range(10):
+        a = 2 * math.pi * i / 10
+        lamp = sphere_bm(0.08, 10, 5)
+        mesh_obj(f"rimlight{i}_glow", transform_bm(lamp, lambda v, a=a: v + Vector((math.cos(a) * 2.13,
+                                                                                     math.sin(a) * 2.13, 0))), h)
+    sockets(h, {
+        "engine": ((0, -2.0, 0.0), 0.9),
+        "fin_l": ((-1.55, -1.1, 0.0), 0.7),
+        "fin_r": ((1.55, -1.1, 0.0), 0.7),
+        "cockpit": ((0, 0.25, 0.36), 1.0),
+        "lights": ((0, 2.08, 0.0), 0.8),
+        "top": ((0, -1.0, 0.28), 0.7),
+    })
+    spots(h, [(x, y, disc_height(prof, x, y) + 0.02) for x, y in
+              ((1.2, 0.6), (-1.0, 1.0), (0.8, -1.2), (-1.4, -0.5), (1.6, 0.3), (-0.6, -1.5))])
+    return h
+
+
+def hull_manta():
+    """A manta-ray yacht: a broad swept wing-body with curled head fins and a tail spike."""
+    h = empty("hull_manta")
+
+    def wing(v):
+        x, y, z = v.x * 2.4, v.y * 2.0, v.z * 0.42
+        y -= 0.55 * abs(v.x) ** 2
+        return Vector((x, y, z * (1 - 0.65 * abs(v.x))))
+    mesh_obj("body_paint", sphere_bm(1.0, 48, 24, wing), h)
+    ridge = [(0, 1.4 - 0.2 * i, 0.38 + 0.06 * math.sin(math.pi * i / 14)) for i in range(15)]
+    mesh_obj("ridge_trim", tube_bm(ridge, [0.08 - 0.003 * i for i in range(15)], 10), h)
+    for side in (-1, 1):
+        curl = []
+        for i in range(12):
+            a = i / 11 * math.pi * 1.2
+            curl.append((side * (0.45 + 0.1 * math.sin(a)), 1.75 + 0.35 * math.sin(a), -0.1 + 0.3 * (1 - math.cos(a))))
+        mesh_obj(f"lobe{'lr'[side > 0]}_trim", tube_bm(curl, [0.11 - 0.006 * i for i in range(12)], 10), h)
+        eye = sphere_bm(0.09, 12, 6)
+        mesh_obj(f"eye{'lr'[side > 0]}_glow", transform_bm(eye, lambda v, s=side: v + Vector((s * 0.55, 1.45, 0.18))), h)
+    tail = [(0, -1.9 - 0.25 * i, 0.05 * i) for i in range(9)]
+    mesh_obj("tail_metal", tube_bm(tail, [0.12 * (1 - i / 9) + 0.01 for i in range(9)], 8), h)
+    sockets(h, {
+        "engine": ((0, -1.75, 0.0), 0.95),
+        "fin_l": ((-1.9, -1.4, 0.0), 0.75),
+        "fin_r": ((1.9, -1.4, 0.0), 0.75),
+        "cockpit": ((0, 0.7, 0.36), 0.9),
+        "lights": ((0, 1.98, 0.0), 0.8),
+        "top": ((0, -0.8, 0.36), 0.7),
+    })
+    spots(h, [(1.0, 0.6, 0.3), (-1.1, 0.1, 0.28), (0.5, -0.9, 0.36), (-1.6, -0.9, 0.15), (1.7, -0.6, 0.14),
+              (-0.4, 1.1, 0.33)])
+    return h
+
+
+def hull_barge():
+    """A long hauler: a bridge tower up front and a stack of cargo pods behind it."""
+    h = empty("hull_barge")
+    mesh_obj("body_paint", box_bm((1.5, 4.8, 0.9), bevel=0.2), h)
+    mesh_obj("keel_dark", transform_bm(box_bm((1.1, 4.2, 0.3), bevel=0.1), lambda v: v + Vector((0, 0, -0.55))), h)
+    for i in range(3):
+        pod = box_bm((1.3, 0.95, 0.75), bevel=0.12)
+        mesh_obj(f"pod{i}_trim", transform_bm(pod, lambda v, i=i: v + Vector((0, -1.75 + i * 1.05, 0.8))), h)
+        strap = box_bm((1.36, 0.12, 0.8), bevel=0.03)
+        mesh_obj(f"strap{i}_dark", transform_bm(strap, lambda v, i=i: v + Vector((0, -1.75 + i * 1.05, 0.8))), h)
+    tower = box_bm((1.0, 0.8, 0.8), bevel=0.15)
+    mesh_obj("tower_paint", transform_bm(tower, lambda v: v + Vector((0, 1.6, 0.8))), h)
+    sockets(h, {
+        "engine": ((0, -2.42, 0.0), 1.2),
+        "fin_l": ((-0.76, -1.6, -0.1), 1.0),
+        "fin_r": ((0.76, -1.6, -0.1), 1.0),
+        "cockpit": ((0, 1.85, 1.15), 0.8),
+        "lights": ((0, 2.42, 0.1), 1.0),
+        "top": ((0, -1.75, 1.2), 0.8),
+    })
+    spots(h, [(0.77, 1.2, 0.1), (-0.77, 0.2, 0.0), (0.77, -1.0, 0.1), (0.0, 2.0, 0.46), (-0.77, -2.0, 0.0),
+              (0.0, 0.95, 0.46)])
+    return h
+
+
+def hull_snail():
+    """A snail of a ship: a soft, low body under a big spiral shell, with eye stalks up front."""
+    h = empty("hull_snail")
+    prof = egg(4.0, 0.72, bluntness=0.6)
+    sq = (1.15, 0.6)
+
+    def lift(t):
+        return -0.15 + 0.12 * max(t - 0.8, 0)
+    mesh_obj("body_paint", lathe_bm(prof, squash=sq, lift=lift), h)
+    # The shell: a tube coiling inward, with a dark groove along each face so the whorls read.
+    coil = []
+    for i in range(46):
+        a = i * 0.3
+        rad = 0.95 * math.exp(-0.075 * a)
+        coil.append((0, -0.45 + rad * math.cos(a), 0.85 + rad * math.sin(a)))
+    thick = [0.55 * math.exp(-0.075 * i * 0.3) for i in range(46)]
+    mesh_obj("shell_trim", tube_bm(coil, thick, 18), h)
+    for side in (-1, 1):
+        groove = [(side * t * 0.97, y, z) for (_, y, z), t in zip(coil, thick)]
+        mesh_obj(f"whorl{'lr'[side > 0]}_dark", tube_bm(groove, [0.07] * len(groove), 6), h)
+    for side in (-1, 1):
+        stalk = [(side * (0.18 + 0.08 * i / 7), 1.4 + 0.06 * i, 0.2 + 0.11 * i) for i in range(8)]
+        mesh_obj(f"stalk{'lr'[side > 0]}_paint", tube_bm(stalk, [0.07] * 8, 8), h)
+        tip = sphere_bm(0.13, 12, 6)
+        mesh_obj(f"stalktip{'lr'[side > 0]}_glow", transform_bm(tip, lambda v, p=stalk[-1]: v + Vector(p)), h)
+    sockets(h, {
+        "engine": ((0, -1.95, -0.1), 0.9),
+        "fin_l": ((-0.8, -0.4, -0.25), 0.8),
+        "fin_r": ((0.8, -0.4, -0.25), 0.8),
+        "cockpit": ((0, 1.1, 0.25), 0.8),
+        "lights": ((0, 2.0, -0.05), 0.8),
+        "top": ((0, -0.45, 1.85), 0.6),
+    })
+    spots(h, [on_surface(prof, sq, lift, t, a) for t, a in
+              ((1.3, 30), (0.9, 150), (-1.4, 20), (-1.2, 160), (0.4, -40), (1.6, 90))])
+    return h
+
+
+def hull_ringdart():
+    """A needle racer flying inside its own hoop wing."""
+    h = empty("hull_ringdart")
+    prof = egg(4.8, 0.48, bluntness=0.4, nose_point=0.5)
+    mesh_obj("body_paint", lathe_bm(prof), h)
+    band("band_trim", prof, (1.0, 1.0), None, -0.5, -0.2, h)
+    hoop = [(math.cos(a) * 1.35, -0.9, math.sin(a) * 1.35) for a in (2 * math.pi * i / 40 for i in range(41))]
+    mesh_obj("hoop_trim", tube_bm(hoop, [0.11] * 41, 10, cap=False), h)
+    for i, a in enumerate((45, 135, 225, 315)):
+        r = math.radians(a)
+        strut = [(math.cos(r) * 0.4, -0.9, math.sin(r) * 0.4), (math.cos(r) * 1.3, -0.9, math.sin(r) * 1.3)]
+        mesh_obj(f"strut{i}_metal", tube_bm(strut, [0.05, 0.04], 8), h)
+    sockets(h, {
+        "engine": ((0, -2.25, 0.0), 0.8),
+        "fin_l": ((-1.35, -0.9, 0.0), 0.6),
+        "fin_r": ((1.35, -0.9, 0.0), 0.6),
+        "cockpit": ((0, 0.6, 0.38), 0.75),
+        "lights": ((0, 2.38, 0.0), 0.6),
+        "top": ((0, -0.9, 1.4), 0.6),
+    })
+    spots(h, [on_surface(prof, (1.0, 1.0), None, t, a) for t, a in
+              ((1.2, 30), (0.4, 150), (-1.4, 60), (-0.4, -30), (1.6, 120), (-1.8, 200))])
+    return h
+
+
 # ---------------------------------------------------------------- parts
 
 def part_engine_rattler():
@@ -301,10 +459,61 @@ def part_gadget_bubble():
     return p
 
 
-HULLS = (hull_moth, hull_kettle, hull_heron, hull_bucket)
+def part_engine_ring():
+    """Halo drive: a short can pushing through a ring of light."""
+    p = empty("part_engine_ring")
+    mesh_obj("can_metal", lathe_bm([(0.1, 0.3), (0.0, 0.38), (-0.5, 0.38), (-0.7, 0.3)]), p)
+    halo = [(math.cos(a) * 0.62, -0.95, math.sin(a) * 0.62) for a in (2 * math.pi * i / 32 for i in range(33))]
+    mesh_obj("halo_glow", tube_bm(halo, [0.07] * 33, 8, cap=False), p)
+    for i, a in enumerate((0, 120, 240)):
+        r = math.radians(a)
+        arm = [(math.cos(r) * 0.3, -0.6, math.sin(r) * 0.3), (math.cos(r) * 0.6, -0.95, math.sin(r) * 0.6)]
+        mesh_obj(f"arm{i}_trim", tube_bm(arm, [0.04, 0.04], 6), p)
+    mesh_obj("nozzle_glow", lathe_bm([(-0.68, 0.26), (-0.75, 0.18)]), p)
+    return p
+
+
+def part_fin_feather():
+    """Three broad feathered vanes fanned out like a bird's wing."""
+    p = empty("part_fin_feather")
+    for i, (sweep, length) in enumerate(((0.45, 1.2), (0.05, 1.45), (-0.35, 1.15))):
+        vane = slab_bm([(0, 0.22), (-length * 0.7, 0.28 + sweep), (-length, sweep + 0.05), (-length * 0.9, sweep - 0.18),
+                        (0, -0.18)], 0.07, 0.85)
+        mesh_obj(f"vane{i}_paint", transform_bm(vane, lambda v, i=i: v + Vector((0, -i * 0.16, 0.04 * (1 - i)))), p)
+        tip = slab_bm([(-length * 0.75, 0.24 + sweep), (-length, sweep + 0.05), (-length * 0.9, sweep - 0.18),
+                       (-length * 0.68, sweep - 0.08)], 0.08, 0.9)
+        mesh_obj(f"tip{i}_trim", transform_bm(tip, lambda v, i=i: v + Vector((0, -i * 0.16, 0.04 * (1 - i)))), p)
+    return p
+
+
+def part_cockpit_eye():
+    """A single great eyeball of a canopy that watches the road ahead."""
+    p = empty("part_cockpit_eye")
+    mesh_obj("eye_glass", sphere_bm(0.48, 24, 12, lambda v: Vector((v.x, v.y, v.z * 0.95 + 0.2))), p)
+    iris = sphere_bm(0.22, 16, 8, lambda v: Vector((v.x, v.y * 0.25, v.z)))
+    mesh_obj("iris_dark", transform_bm(iris, lambda v: v + Vector((0, 0.42, 0.28))), p)
+    lid = sphere_bm(0.53, 24, 12, lambda v: Vector((v.x, v.y, max(v.z, 0.18) + 0.2)))
+    mesh_obj("lid_paint", transform_bm(lid, lambda v: v + Vector((0, -0.06, 0.02))), p)
+    return p
+
+
+def part_lights_stalks():
+    """Two lamps on wobbly stalks, like a curious bug's feelers."""
+    p = empty("part_lights_stalks")
+    for side in (-1, 1):
+        stalk = [(side * (0.15 + 0.05 * i), 0.06 * i, 0.08 * i - 0.02 * i * i / 6) for i in range(7)]
+        mesh_obj(f"stalk{'lr'[side > 0]}_metal", tube_bm(stalk, [0.035] * 7, 6), p)
+        lamp = sphere_bm(0.12, 12, 6)
+        mesh_obj(f"lamp{'lr'[side > 0]}_glow", transform_bm(lamp, lambda v, q=stalk[-1]: v + Vector(q)), p)
+    return p
+
+
+HULLS = (hull_moth, hull_kettle, hull_heron, hull_bucket, hull_saucer, hull_manta, hull_barge, hull_snail,
+         hull_ringdart)
 PARTS = (part_engine_rattler, part_engine_hush, part_engine_sprint, part_fin_stub, part_fin_swept,
          part_fin_wing, part_cockpit_bubble, part_cockpit_visor, part_cockpit_bay, part_lights_round,
-         part_lights_bar, part_gadget_ribbon, part_gadget_bubble)
+         part_lights_bar, part_gadget_ribbon, part_gadget_bubble, part_engine_ring, part_fin_feather,
+         part_cockpit_eye, part_lights_stalks)
 
 
 def build_kit():
