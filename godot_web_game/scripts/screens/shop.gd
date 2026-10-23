@@ -18,6 +18,7 @@ func _ready() -> void:
 	_actions = UI.vbox([], 10)
 	var side := UI.panel(UI.vbox([UI.heading("What next?", 26), _hint, _actions], 12), UI.CREAM, 20)
 	UI.place(side, Control.PRESET_CENTER_RIGHT, Vector2(-420, -230), Vector2(380, 0))
+	UI.fit(side, 84)
 	ui.add_child(side)
 	_refresh()
 	_play_beats.call_deferred()
