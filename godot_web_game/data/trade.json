@@ -72,6 +72,11 @@
     "fossil_bolt": {
       "name": "Fossil bolt",
       "desc": "A bolt so old it's turned to stone. Still the right thread, somehow."
+    },
+    "beacon_glass": {
+      "name": "Shard of beacon glass",
+      "desc": "From the Lumen Reach light. It still holds a little gold, and hums when the whales are near.",
+      "gift_only": true
     }
   }
 }

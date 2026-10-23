@@ -590,9 +590,10 @@ func test_every_story_flag_can_be_set() -> void:
 		if world.events[id].has("unlock"):
 			can[world.events[id].unlock] = true
 		check(scenes.has(world.events[id].scene), "event %s has its scene" % id)
-	for e in reading.entries.values():
-		if e.has("unlock"):
-			can[e.unlock] = true
+	for id in reading.entries:
+		can["read_" + id] = true
+		if reading.entries[id].has("unlock"):
+			can[reading.entries[id].unlock] = true
 	for id in drawers:
 		can["drawer_" + id] = true
 		if drawers[id].gives.has("flag"):

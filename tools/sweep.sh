@@ -16,6 +16,7 @@ shots=(
 	"night:--fixture=evening --screen=night" "perk:--fixture=levelup --screen=night" "board:--fixture=board --screen=board"
 	"walkin:--fixture=walkin --screen=workbench --tab=Repair" "hawker:--fixture=hawker --screen=hawker --wait=3"
 	"yard:--fixture=yard --screen=yard" "drawers:--fixture=drawers --screen=drawers" "event:--fixture=close_pass --screen=event --wait=6"
+	"lighthouse:--fixture=lumen --screen=event --id=lumen_reach --lit --wait=2"
 	"race_club:--fixture=evening --screen=race --wait=4" "race_shadow:--fixture=evening --screen=race --race=shadow_run --at=600 --wait=4"
 	"race_gardens:--fixture=evening --screen=race --race=garden_dash --at=600 --wait=4" "race_pause:--fixture=evening --screen=race --paused --wait=2"
 )

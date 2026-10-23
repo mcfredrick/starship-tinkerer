@@ -226,3 +226,28 @@ brindle laughing: Hello, Quietwater! This is Brindle, your commentator! I am mea
 brindle happy: I do not race now. I tried, and it was good, but watching is better. I have checked many times.
 * Somewhere on the ring, Ilse can be heard laughing over her radio.
 end
+
+# ---------------------------------------------------------------- Lumen Reach
+
+== lumen_call
+* Your tablet chimes. It's Themba, the lighthouse keeper: "If you're coming, come tonight. The ice is clear and the whale's close."
+* Grommet is sitting in your ship's open hatch, looking at you as if you're the one who's late.
+end
+
+== lumen_arrive
+* At the edge of the rings, past where the maps get vague, a field of ice drifts in the starlight. In the middle of it stands a lighthouse, striped red and cream, its great lamp dark.
+* A small figure waves from the gallery rail. A cat beside them does not wave.
+* Themba leads you up the spiral stairs to the lamp room. The gears are humming a low, lost note.
+> Put a hand on the housing and listen. => listen
+-- listen
+* There. Under the hum, two notes that don't agree. Something's drifted out of true.
+* The calibration dials are old brass and stiff with cold. You'll have to bring the two notes back together.
+end
+
+== lumen_after
+* The gears catch, and settle, and hum one sure note. The great lens begins to turn.
+* The gold arm sweeps out across the ice, once, twice.
+* And out of the ice field rises a whale: long and pale and gentle, spots glowing along its sides, its eye as big as the lamp. It sings, long and low, and the glass of the lamp room sings back.
+* Themba is crying a little, and laughing. The cat sits down on the logbook.
+* Before you leave, Themba presses something into your hand: a shard of old beacon glass that still holds a little of the gold light.
+end

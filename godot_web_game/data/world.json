@@ -159,10 +159,13 @@
     {"scene": "close_pass_eve", "min_day": 10, "phase": "morning", "requires": "crake_2_done"},
     {"scene": "close_pass_call", "min_day": 11, "phase": "morning", "idle": true, "requires": "seen_close_pass_eve", "event": "close_pass"},
     {"scene": "ilse_after_dash", "min_day": 13, "phase": "morning", "requires": "seen_close_pass_call"},
-    {"scene": "brindle_commentator", "min_day": 14, "phase": "morning", "requires": "seen_ilse_after_dash"}
+    {"scene": "brindle_commentator", "min_day": 14, "phase": "morning", "requires": "seen_ilse_after_dash"},
+    {"scene": "lumen_call", "min_day": 15, "phase": "morning", "idle": true, "requires": "read_lumen_invite", "event": "lumen_reach"}
   ],
   "events": {
-    "close_pass": {"name": "The Close Pass", "scene": "close_pass", "unlock": "knows_comet", "guests": ["odessa", "ilse", "brindle", "crake"]}
+    "close_pass": {"name": "The Close Pass", "place": "comet", "scene": "close_pass", "unlock": "knows_comet", "unlock_note": "You can paint the Comet trail livery now.", "guests": ["odessa", "ilse", "brindle", "crake"]},
+    "lumen_reach": {"name": "The Lighthouse of Lumen Reach", "place": "lighthouse", "scene": "lumen_arrive", "minigame": "calibrate",
+      "after": "lumen_after", "gift": "beacon_glass", "guests": []}
   },
   "races": {
     "club": {"name": "Quietwater Club Race", "track": "quietwater", "laps": 2, "rivals": {"ilse": 0.55, "brindle": 0.8},

@@ -71,11 +71,11 @@ static func cart(run_seed: int, day: int, style: String, data: Dictionary, parts
 			"part":
 				offers.append({"kind": "part", "part": part, "price": roundi(list * rng.randf_range(0.7, 0.85))})
 			"trinket":
-				offers.append({"kind": "trinket", "trinket": _any(rng, data.trinkets.keys()), "price": rng.randi_range(25, 60)})
+				offers.append({"kind": "trinket", "trinket": _any(rng, common_trinkets(data)), "price": rng.randi_range(25, 60)})
 			"mystery":
 				var roll := rng.randf()
 				var tier := "trinket" if roll < 0.15 else ("good" if roll < 0.45 else "junk")
-				var contents: String = _any(rng, data.trinkets.keys()) if tier == "trinket" else part
+				var contents: String = _any(rng, common_trinkets(data)) if tier == "trinket" else part
 				offers.append({"kind": "mystery", "tier": tier, "contents": contents, "price": rng.randi_range(35, 75)})
 	var wanted := ""
 	if style == "fair" or rng.randf() < 0.5:
@@ -120,3 +120,8 @@ static func offer(rng: RandomNumberGenerator, build: Dictionary, buyer: Dictiona
 	var flies: bool = build.get("faults", []).all(func(f): return f.get("fixed", false))
 	var f := rng.randf_range(0.9, 1.1) * (1.0 if flies else UNFIXED_OFFER)
 	return roundi(ship_value(build, parts, buyer.taste) * f / 5.0) * 5
+
+
+## Trinkets that can turn up anywhere: everything but the ones only an event gives.
+static func common_trinkets(data: Dictionary) -> Array:
+	return data.trinkets.keys().filter(func(id): return not data.trinkets[id].get("gift_only", false))

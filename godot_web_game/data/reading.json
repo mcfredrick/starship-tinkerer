@@ -186,6 +186,36 @@
       "day": 13,
       "requires": "seen_close_pass_call",
       "body": "Dear {name},\n\nI have finished measuring joy.\n\nFindings:\n1. Corners: medium joy.\n2. Twists: high joy.\n3. Winning: high joy, but short.\n4. Watching friends go zoom: highest joy. Lasts a long time.\n5. Sitting still under a comet with everyone: off the scale. I had to invent a new scale. I have called it a {name}.\n\nConclusion: I will keep the Bucket, but I will mostly watch. The racing club has asked if I would like to talk over the speakers during races. I said yes before they finished asking.\n\nYour friend,\nBrindle"
+    },
+    "novel_4": {
+      "kind": "story",
+      "title": "The Lighthouse Keeper of Lumen Reach, Chapter 4",
+      "from": "Serial by T. Okonkwo-Hale",
+      "day": 8,
+      "body": "In the spring the beacon's gears began to slip.\n\nNot badly. A hitch in the sweep, a stutter in the gold arm as it crossed the ice, as if the light were catching its breath. Wren oiled the gears and tightened the bolts and read the old keeper's log for advice, but the log said only \"Calm\" and \"Calm again\" and, once, \"Ask the tinkerer from Quietwater. They hear things.\"\n\nThe whale still came every night. But it came later now, and lingered at the window, and Wren began to wonder whether the whale came for the light at all, or whether it came because the light was the only thing out there that sang.\n\nCorollary started sleeping in the lamp room. Corollary, it must be said, still did not believe in whales.\n\n(To be continued.)"
+    },
+    "novel_5": {
+      "kind": "story",
+      "title": "The Lighthouse Keeper of Lumen Reach, Chapter 5",
+      "from": "Serial by T. Okonkwo-Hale",
+      "day": 12,
+      "body": "On the longest night of the year, the beacon stopped.\n\nWren climbed the stairs two at a time and found the great lens still, the gold arm frozen halfway across the ice, and the gears humming a note Wren had never heard them hum before: low and lost, like a question.\n\nOutside, the whale came up out of the ice field. It drifted to the window and waited, its eye as big as the lamp, and Wren understood all at once that it was not looking at the light. It was listening for it.\n\nWren sat down on the cold floor of the lamp room, put an arm around Corollary, and said aloud, to nobody, \"I need someone who can hear what's wrong.\"\n\n(The final chapter will be published when the author finds out how it ends.)"
+    },
+    "lumen_invite": {
+      "kind": "letter",
+      "title": "A real lighthouse",
+      "from": "T. Okonkwo-Hale",
+      "day": 14,
+      "requires": "read_novel_5",
+      "body": "Dear {name},\n\nForgive a stranger writing. I'm the author of the Lumen Reach serial, and I have a confession: it isn't entirely fiction.\n\nThere is a lighthouse at Lumen Reach, at the very edge of the rings, and I am its keeper. My name is Themba. Wren is a little braver than me, and Corollary is exactly as rude as my real cat. And the beacon really has stopped. I wrote chapter five on the cold floor of the lamp room.\n\nThe old keeper's log really does say \"Ask the tinkerer from Quietwater. They hear things.\" That was Halloran, years ago. Halloran is gone past the comet line now, and the dock says you're the one who hears things these days.\n\nWould you come? I can pay in tea, and in an ending.\n\nWith hope,\nThemba Okonkwo-Hale\nKeeper, Lumen Reach Light"
+    },
+    "novel_6": {
+      "kind": "story",
+      "title": "The Lighthouse Keeper of Lumen Reach, Chapter 6",
+      "from": "Serial by T. Okonkwo-Hale",
+      "day": 15,
+      "requires": "event_lumen_reach",
+      "body": "The tinkerer came on the third night, in a small round ship that whistled when it braked.\n\nThey did not read the manual. They climbed to the lamp room, put a hand flat against the gear housing, and listened. Then they turned two dials a very small amount, and the gears hummed a different note, a sure one, and the gold arm swept out across the ice again as if it had never stopped.\n\nThe whale rose out of the ice field before the beam had crossed it twice. It sang, long and low, and the glass in the lamp room sang back.\n\nCorollary watched the whale through the window for a very long time. Then Corollary sat down on the logbook, which is how a cat says: all right. I believe you now.\n\nThe End.\n\n(Dedicated to the tinkerer of Quietwater, who hears things.)"
     }
   }
 }

@@ -445,7 +445,7 @@ func roll_find(ship_id: String) -> String:
 	var chance := 0.4 if ship.get("project", false) else (0.15 if not Content.world.ships.has(ship_id) else 0.0)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash([run_seed, ship_id, "find"])
-	var missing: Array = Content.trade.trinkets.keys().filter(func(t): return not finds.has(t))
+	var missing: Array = Trade.common_trinkets(Content.trade).filter(func(t): return not finds.has(t))
 	if missing.is_empty() or rng.randf() >= chance:
 		return ""
 	var found: String = missing[rng.randi_range(0, missing.size() - 1)]
