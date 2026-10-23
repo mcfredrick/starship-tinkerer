@@ -42,7 +42,7 @@
     }
   },
   "race": {
-    "club": {"name": "Quietwater Club Race", "laps": 3, "rivals": ["ilse", "brindle"],
+    "club": {"name": "Quietwater Club Race", "laps": 2, "rivals": {"ilse": 0.55, "brindle": 0.8},
       "prizes": [140, 80, 40]}
   },
   "start": {

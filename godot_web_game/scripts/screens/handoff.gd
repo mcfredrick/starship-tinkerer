@@ -1,0 +1,81 @@
+## The pilot collects their ship: a report card, their reaction, then payment and barter.
+extends Screen
+
+var _job_id: String
+var _job: Dictionary
+var _pilot: Dictionary
+var _grade: Dictionary
+var _card: VBoxContainer
+
+
+func _ready() -> void:
+	super()
+	_job_id = GameState.job.id
+	_job = Content.world.jobs[_job_id]
+	_pilot = Content.world.pilots[_job.pilot]
+	var build: Dictionary = GameState.ships[_job.ship]
+	var repairs := {}
+	for i in build.faults.size():
+		if build.faults[i].fixed:
+			repairs[i] = build.faults[i].score
+	_grade = Grading.grade(_job, _pilot, GameState.job.before, build, repairs, Content.parts)
+
+	add_stage()
+	stage.spin_speed = 0.35
+	stage.camera.target = Vector3(-2.4, 2.0, 0)
+	stage.camera.distance = 11.0
+	stage.camera.refresh()
+	show_ship(_job.ship)
+	ui.add_child(Hud.new())
+
+	_card = UI.vbox([], 8)
+	var panel := UI.panel(_card, Color(UI.CREAM, 0.97), 22)
+	UI.place(panel, Control.PRESET_TOP_LEFT, Vector2(16, 84), Vector2(420, 0))
+	ui.add_child(panel)
+	_report()
+	_play.call_deferred()
+
+
+func _report() -> void:
+	_card.add_child(UI.heading("%s's verdict" % _pilot.short, 28))
+	for w in _grade.wants:
+		_card.add_child(UI.label(("✓  " if w.met else "✗  ") + w.label, 20, UI.GOOD if w.met else UI.BAD))
+	_card.add_child(UI.label("Repair quality  %d%%" % roundi(_grade.quality * 100), 20))
+	var budget := "Parts used  %d of %d pebs" % [_grade.parts_cost, _job.budget]
+	_card.add_child(UI.label(budget, 20))
+	if _grade.gift > 0:
+		_card.add_child(UI.label("You covered %d pebs yourself. %s noticed." % [_grade.gift, _pilot.short], 18,
+			UI.TEAL, true))
+
+
+func _play() -> void:
+	await get_tree().create_timer(0.8).timeout
+	await Router.talk("%s_%s" % [_job.dialogue, _grade.tier])
+	_pay()
+
+
+func _pay() -> void:
+	GameState.add_pebs(_grade.pay, "%s paid %s" % [_pilot.short, UI.pebs(_grade.pay)])
+	var gifts: Array = []
+	for item in _job.barter:
+		GameState.give(GameState.items, item, _job.barter[item])
+		gifts.append("%d × %s" % [_job.barter[item], Content.item(item).name])
+	GameState.rapport[_job.pilot] = GameState.rapport.get(_job.pilot, 0) + _grade.rapport
+	GameState.flags[_job_id + "_done"] = true
+	for w in _job.wants:
+		if w.has("flag") and _grade.wants[_job.wants.find(w)].met:
+			GameState.flags[w.flag] = true
+	if _grade.fit >= 0.66:
+		GameState.add_xp("craft", 15)
+	GameState.job = {}
+	GameState.phase = "evening"
+	GameState.save()
+
+	_card.add_child(HSeparator.new())
+	_card.add_child(UI.heading("Paid %s" % UI.pebs(_grade.pay), 26, UI.AMBER_DARK))
+	if _grade.tip > 0:
+		_card.add_child(UI.label("Including a tip, for work that delighted.", 17, UI.MUTED))
+	if gifts:
+		_card.add_child(UI.label("And: " + ", ".join(gifts), 19, UI.INK, true))
+	_card.add_child(UI.label("%s rapport +%d" % [_pilot.short, _grade.rapport], 19, UI.TEAL))
+	_card.add_child(UI.button("Back to the shop", func(): Router.go("shop"), 22))

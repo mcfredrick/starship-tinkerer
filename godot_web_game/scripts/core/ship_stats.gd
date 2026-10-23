@@ -47,13 +47,15 @@ static func gadget(build: Dictionary, data: Dictionary) -> String:
 
 
 ## Racing physics derived from stats, in world units (meters, seconds, radians).
+## Above `grip_speed`, turning authority falls off, so the fastest a ship can hold a bend of
+## curvature k is sqrt(turn_rate * grip_speed / k): handling and grip set corner speed.
 static func handling_model(stats: Dictionary) -> Dictionary:
 	var mass_factor := 60.0 / maxf(stats.mass, 30.0)
 	return {
-		"top_speed": 22.0 + stats.top_speed * 0.32,
+		"top_speed": 26.0 + stats.top_speed * 0.22,
 		"accel": (6.0 + stats.thrust * 0.22) * mass_factor,
-		"turn_rate": 1.1 + stats.handling * 0.022,
-		"grip_speed": 18.0 + stats.grip * 0.42,
+		"turn_rate": 0.5 + stats.handling * 0.012,
+		"grip_speed": 10.0 + stats.grip * 0.3,
 		"boost_capacity": 1.5 + stats.boost * 0.05,
 		"boost_power": 1.35,
 	}
