@@ -444,8 +444,8 @@ really left.
    multi-step repairs, parts dropping onto sockets, paint sweeps and liveries, grime and the washer
    drone. Alongside it: the alien cast in comic ink, five more hulls, phone support, and the space
    course with pause and touch fixes for racing.
-5. **Evergreen foundation.** The run seed, generated walk-ins with paper-doll portraits, the
-   commission board, regulars, and the storylet engine with its first handful of storylets.
+5. **Evergreen foundation.** Done. The run seed, generated walk-ins with paper-doll portraits, the
+   job board, regulars, the storylet engine with its first four storylets, and Grommet the shop cat.
 6. **Trading.** The market board, hawkers, upcycling, junker ships to flip, market events, and the
    first easter eggs hidden in ships and the hangar.
 7. **Racing.** Physics tuning so stats drive handling, build gadgets, three tracks, class ratings,
