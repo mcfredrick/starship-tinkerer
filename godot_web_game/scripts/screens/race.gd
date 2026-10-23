@@ -5,6 +5,7 @@ extends Screen
 const TRACK_SHADER := preload("res://shaders/track.gdshader")
 const HOVER := 1.3
 const PLACES := ["1st", "2nd", "3rd", "4th"]
+const TRAIL_POINTS := 26
 
 var sim: RaceSim
 var race: Dictionary
@@ -14,6 +15,10 @@ var _flames := {}
 var _shields := {}
 var _camera: Camera3D
 var _ribbons: MeshInstance3D
+var _trails: MeshInstance3D
+var _streaks: CPUParticles3D
+## Recent tail positions per racer, newest first, for the engine trails.
+var _trail_points := {}
 var _lap: Label
 var _place: Label
 var _speed: Label
@@ -28,15 +33,18 @@ var _pads := {}
 var _fingers := {}
 var _paused := false
 var _start_paused := false
+var _start_at := 0.0
 var _pause_panel: PanelContainer
 var _done := false
 var _engine: AudioStreamPlayer
 var _count := 4
 
 
-## Screen params: `paused` opens the pause menu once the race is built (for screenshots).
+## Screen params (for screenshots): `paused` opens the pause menu once the race is built, and
+## `at=<meters>` moves the whole field that far around the course.
 func setup(params: Dictionary) -> void:
 	_start_paused = params.has("paused")
+	_start_at = float(params.get("at", "0"))
 
 
 func _ready() -> void:
@@ -50,6 +58,8 @@ func _ready() -> void:
 	var kettle: Dictionary = GameState.ships.kettle
 	player = sim.add_racer("player", ShipStats.compute(kettle, Content.parts), ShipStats.gadget(kettle, Content.parts),
 		false, 1.0, Perks.effects(GameState.perks, Content.perks))
+	for r in sim.racers:
+		r.s += _start_at
 	_build_world()
 	_build_hud()
 	if UI.touch:
@@ -66,23 +76,23 @@ func _build_world() -> void:
 	var world := Node3D.new()
 	add_child(world)
 	move_child(world, 0)
-	world.add_child(Stage.environment())
-	world.add_child(Stage.bramble(Vector3(150, -60, 900), 420.0))
+	var scenery := SpaceScenery.new()
+	world.add_child(scenery)
+	scenery.build(sim.track)
 	var sun := DirectionalLight3D.new()
 	sun.light_color = Color("ffe2b8")
 	sun.rotation_degrees = Vector3(-55, 30, 0)
 	world.add_child(sun)
 	var fill := DirectionalLight3D.new()
-	fill.light_color = Color("7fb6d8")
-	fill.light_energy = 0.35
+	fill.light_color = Color("c39bff")
+	fill.light_energy = 0.4
 	fill.rotation_degrees = Vector3(-20, -150, 0)
 	world.add_child(fill)
 
 	world.add_child(_track_mesh())
-	world.add_child(_gate(0.0, true))
-	for s in range(300, int(sim.track.length) - 100, 300):
-		world.add_child(_gate(float(s), false))
-	_drum_gardens(world)
+	world.add_child(_gate(0.0))
+	for s in range(150, int(sim.track.length) - 60, 150):
+		scenery.hoop(float(s))
 
 	for r in sim.racers:
 		var ship_id: String = "kettle" if r.id == "player" else Content.world.pilots[r.id].ship
@@ -100,10 +110,15 @@ func _build_world() -> void:
 	_ribbons = MeshInstance3D.new()
 	_ribbons.material_override = _ribbon_material()
 	world.add_child(_ribbons)
+	_trails = MeshInstance3D.new()
+	_trails.material_override = _ribbon_material()
+	world.add_child(_trails)
 	_camera = Camera3D.new()
 	_camera.fov = 70
-	_camera.far = 4000
+	_camera.far = 6000
 	world.add_child(_camera)
+	_streaks = _speed_streaks()
+	_camera.add_child(_streaks)
 	_update_visuals(1.0)
 
 
@@ -137,47 +152,25 @@ func _track_mesh() -> MeshInstance3D:
 	return mi
 
 
-func _gate(s: float, start: bool) -> Node3D:
+## The start and finish line: an arch with a glowing strip and a banner.
+func _gate(s: float) -> Node3D:
 	var t := sim.track
 	var g := Node3D.new()
 	var p := t.position(s, 0)
-	var fwd := t.heading(s)
+	var fwd := t.forward(s)
 	g.transform = Transform3D(Basis.looking_at(fwd), p)
 	var post_mat := Stage.toon(Color("5b5262"), 0.2, 0.05)
 	for side in [-1, 1]:
 		g.add_child(Stage.mesh(Stage._box(Vector3(0.8, 9, 0.8)), post_mat, Vector3(side * (t.half_width + 0.6), 4.5, 0)))
 	var beam := Stage.mesh(Stage._box(Vector3(t.half_width * 2 + 2, 1.2, 0.8)), post_mat, Vector3(0, 9, 0))
 	g.add_child(beam)
-	var strip := Stage.mesh(Stage._box(Vector3(t.half_width * 2, 0.4, 0.9)),
-		Stage.glow(Color("ffd27a") if not start else Color("9fffd0")), Vector3(0, 8.4, 0))
+	var strip := Stage.mesh(Stage._box(Vector3(t.half_width * 2, 0.4, 0.9)), Stage.glow(Color("9fffd0")),
+		Vector3(0, 8.4, 0))
 	g.add_child(strip)
-	if start:
-		var banner := Stage.mesh(Stage._box(Vector3(t.half_width * 2 - 2, 1.4, 0.3)), Stage.toon(UI.CREAM, 0, 0.03),
-			Vector3(0, 10.6, 0))
-		g.add_child(banner)
+	var banner := Stage.mesh(Stage._box(Vector3(t.half_width * 2 - 2, 1.4, 0.3)), Stage.toon(UI.CREAM, 0, 0.03),
+		Vector3(0, 10.6, 0))
+	g.add_child(banner)
 	return g
-
-
-func _drum_gardens(world: Node3D) -> void:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 7
-	var greens := [Color("8fae7e"), Color("6f9e6e"), Color("a8c686")]
-	for i in 26:
-		var s := rng.randf() * sim.track.length
-		var side := -1.0 if rng.randf() < 0.5 else 1.0
-		var p := sim.track.position(s, side * rng.randf_range(40, 140))
-		var drum := CylinderMesh.new()
-		var r := rng.randf_range(8, 20)
-		drum.top_radius = r
-		drum.bottom_radius = r
-		drum.height = rng.randf_range(12, 40)
-		var mi := Stage.mesh(drum, Stage.toon(Color("6c6470"), 0.1, 0.0), p + Vector3(0, -drum.height * 0.5 - rng.randf_range(4, 30), 0))
-		var top := CylinderMesh.new()
-		top.top_radius = r * 0.92
-		top.bottom_radius = r * 0.92
-		top.height = 0.6
-		mi.add_child(Stage.mesh(top, Stage.toon(greens[i % 3], 0, 0), Vector3(0, drum.height * 0.5 + 0.2, 0)))
-		world.add_child(mi)
 
 
 func _flame(model: Node3D) -> MeshInstance3D:
@@ -189,6 +182,32 @@ func _flame(model: Node3D) -> MeshInstance3D:
 	mi.rotation_degrees.x = 90
 	model.add_child(mi)
 	return mi
+
+
+## Light streaks rushing past the camera at speed.
+func _speed_streaks() -> CPUParticles3D:
+	var p := CPUParticles3D.new()
+	p.amount = 50
+	p.lifetime = 0.45
+	p.local_coords = true
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(14, 8, 2)
+	p.position = Vector3(0, 0, -40)
+	p.direction = Vector3.BACK
+	p.spread = 0.0
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = 90.0
+	p.initial_velocity_max = 120.0
+	var streak := BoxMesh.new()
+	streak.size = Vector3(0.05, 0.05, 4.0)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = Color(0.85, 0.95, 1.0, 0.55)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	streak.material = mat
+	p.mesh = streak
+	p.emitting = false
+	return p
 
 
 func _sphere(r: float) -> SphereMesh:
@@ -396,7 +415,7 @@ func _update_visuals(follow: float) -> void:
 	var t := sim.track
 	for r in sim.racers:
 		var model: Node3D = _ships[r.id]
-		var dir := t.heading(r.s).rotated(Vector3.UP, r.psi)
+		var dir := t.forward(r.s).rotated(Vector3.UP, r.psi)
 		var bob := sin(sim.time * 3.0 + r.s * 0.05) * 0.12
 		var roll := Basis(Vector3.FORWARD, -r.steer * 0.35 * clampf(r.v / 30.0, 0, 1))
 		model.transform = Transform3D(Basis.looking_at(dir) * roll * Basis.from_scale(Vector3.ONE * 0.9),
@@ -413,6 +432,34 @@ func _update_visuals(follow: float) -> void:
 	_camera.look_at(p.global_position + back * 6.0 + Vector3.UP * 1.0)
 	_camera.fov = lerpf(_camera.fov, 68.0 + player.v * 0.25, follow * 0.5)
 	_draw_ribbons()
+	_draw_trails()
+	_streaks.emitting = player.v > 33.0 or player.boosting or player.mini > 0
+
+
+## A fading ribbon of engine light behind every racer, in its ship's trim color.
+func _draw_trails() -> void:
+	var im := ImmediateMesh.new()
+	for r in sim.racers:
+		var model: Node3D = _ships[r.id]
+		var pts: Array = _trail_points.get_or_add(r.id, [])
+		pts.push_front(model.global_position + model.global_basis.z * 2.2)
+		if pts.size() > TRAIL_POINTS:
+			pts.pop_back()
+		if pts.size() < 2:
+			continue
+		var ship_id: String = "kettle" if r.id == "player" else Content.world.pilots[r.id].ship
+		var color := Content.color(GameState.ships[ship_id].trim).lightened(0.3)
+		var side := model.global_basis.x * 0.35
+		im.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)
+		for i in pts.size():
+			var fade := 1.0 - float(i) / pts.size()
+			var c := Color(color, fade * 0.6)
+			im.surface_set_color(c)
+			im.surface_add_vertex(pts[i] + side * fade)
+			im.surface_set_color(c)
+			im.surface_add_vertex(pts[i] - side * fade)
+		im.surface_end()
+	_trails.mesh = im
 
 
 func _draw_ribbons() -> void:
