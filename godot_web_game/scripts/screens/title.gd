@@ -10,6 +10,13 @@ var _custom_fields := {}
 var _plural: CheckBox
 var _menu: VBoxContainer
 var _setup: Control
+var _open_form := ""
+
+
+## `--form=` (any value) opens the new-game form straight away; `--form=custom` also picks custom
+## pronouns. Used for screenshot checks.
+func setup(params: Dictionary) -> void:
+	_open_form = params.get("form", "")
 
 
 func _ready() -> void:
@@ -37,6 +44,10 @@ func _ready() -> void:
 	ui.add_child(_menu)
 
 	_build_setup()
+	if _open_form != "":
+		_show_setup()
+		if _open_form == "custom":
+			_pick("custom")
 
 
 func _continue() -> void:
@@ -76,6 +87,8 @@ func _build_setup() -> void:
 		_custom.add_child(e)
 	_plural = CheckBox.new()
 	_plural.text = "Uses plural verbs (\"they are\")"
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		_plural.add_theme_stylebox_override(state, StyleBoxEmpty.new())
 	var custom_box := UI.vbox([UI.label("Fill in each form:", 18, UI.MUTED), _custom, _plural], 6)
 	custom_box.visible = false
 	_custom.set_meta("box", custom_box)
@@ -84,7 +97,9 @@ func _build_setup() -> void:
 	var form := UI.vbox([UI.heading("Who's taking over the shop?", 30), _name,
 		UI.label("Pronouns", 18, UI.MUTED), choices, custom_box, start], 12)
 	_setup = UI.panel(form, UI.CREAM, 24)
-	UI.place(_setup, Control.PRESET_BOTTOM_LEFT, Vector2(60, -420), Vector2(640, 0))
+	# Bottom-anchored and growing upward, so the custom pronoun fields never push it off screen.
+	UI.place(_setup, Control.PRESET_BOTTOM_LEFT, Vector2(60, -40), Vector2(640, 0))
+	_setup.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_setup.visible = false
 	ui.add_child(_setup)
 

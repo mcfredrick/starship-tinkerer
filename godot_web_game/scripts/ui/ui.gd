@@ -51,6 +51,7 @@ static func build_theme() -> Theme:
 	t.set_stylebox("normal", "LineEdit", box(Color.WHITE, 10, 10, false, PAPER.darkened(0.25)))
 	t.set_stylebox("focus", "LineEdit", box(Color.WHITE, 10, 10, false, TEAL))
 	t.set_font_size("font_size", "LineEdit", 24)
+	t.set_color("font_placeholder_color", "LineEdit", Color(UI.MUTED, 0.75))
 
 	t.set_stylebox("panel", "TooltipPanel", box(INK, 8, 8, false))
 	t.set_color("font_color", "TooltipLabel", CREAM)

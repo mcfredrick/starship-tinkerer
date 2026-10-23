@@ -51,8 +51,15 @@ func _ready() -> void:
 	_tabs = UI.hbox([], 6)
 	_content = UI.vbox([], 10)
 	var title := UI.heading(build.name, 28)
-	var left := UI.panel(UI.vbox([title, _tabs, _content], 12), Color(UI.CREAM, 0.96), 18)
-	UI.place(left, Control.PRESET_TOP_LEFT, Vector2(16, 84), Vector2(400, 0))
+	# Tab content scrolls inside a panel that stops above the bottom buttons, so expanding part
+	# lists can't run off screen.
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_content)
+	var left := UI.panel(UI.vbox([title, _tabs, scroll], 12), Color(UI.CREAM, 0.96), 18)
+	UI.place(left, Control.PRESET_LEFT_WIDE, Vector2(16, 84), Vector2(400, -170))
 	ui.add_child(left)
 
 	stats_panel = StatsPanel.new()
@@ -275,7 +282,9 @@ func _parts_tab() -> void:
 			options.add_child(b)
 			var delta := _delta_text(slot, id)
 			if delta:
-				options.add_child(UI.label("      " + delta, 14, UI.MUTED))
+				var line := UI.label(delta, 14, UI.MUTED, true)
+				line.custom_minimum_size.x = 300
+				options.add_child(line)
 		if slot == "top" and current:
 			options.add_child(UI.button("Take it off", _remove.bind(slot), 16))
 		options.visible = false
