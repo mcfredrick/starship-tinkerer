@@ -34,11 +34,16 @@ static func customer(rng: RandomNumberGenerator, id: String, w: Dictionary, pale
 	}
 
 
-## A job for `pilot`, on a new ship `ship_id`. `level` (0 and up) makes faults more numerous and
-## more serious as the shop grows. Returns {job, ship, dream}.
+## A job for `pilot` on ship `ship_id`: a new ship, or `existing` (a regular's) with fresh trouble.
+## `level` (0 and up) makes faults more numerous and more serious as the shop grows.
+## Returns {job, ship, dream}.
 static func job(rng: RandomNumberGenerator, pilot: Dictionary, ship_id: String, level: int, w: Dictionary,
-		data: Dictionary, market: Array) -> Dictionary:
+		data: Dictionary, market: Array, existing := {}) -> Dictionary:
 	var ship := _ship(rng, w, data)
+	if existing:
+		ship = existing.duplicate(true)
+		for key in ["faults", "grime", "clean", "mischief"]:
+			ship.erase(key)
 	var faults := _faults(rng, w, level)
 	var stock := ship.duplicate(true)
 	var stock_stats := ShipStats.compute(stock, data)

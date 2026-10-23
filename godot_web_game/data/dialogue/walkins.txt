@@ -139,3 +139,10 @@ end
 guest happy: Good work. Quiet work. I like that.
 guest thoughtful: If anyone comes asking about the {guest_ship}, you've never seen her.
 end
+
+== walkin_returns
+* The {guest_ship} noses into the bay like it knows the way.
+guest happy: {guest} again! I wouldn't take her anywhere else now.
+guest thoughtful: {request}
+guest happy: You know where I'll be.
+end

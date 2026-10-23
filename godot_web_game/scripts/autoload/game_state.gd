@@ -7,6 +7,7 @@ signal changed
 var save_path := "user://save.json"
 const MAX_SPARK := 4
 const BOARD_SIZE := 3
+const RETURN_CHANCE := 0.5
 
 var player := {"name": "Tinkerer", "pronouns": "they"}
 var day := 1
@@ -37,6 +38,8 @@ var jobs := {}
 var board: Array = []
 var board_day := 0
 var next_id := 1
+## Storylets running with generated customers, by pilot id (see Storylets).
+var stories := {}
 
 
 func new_game(name: String, pronouns: Variant) -> void:
@@ -64,6 +67,7 @@ func new_game(name: String, pronouns: Variant) -> void:
 	board = []
 	board_day = 0
 	next_id = 1
+	stories = {}
 	_reset_today()
 	save()
 
@@ -88,6 +92,7 @@ func to_dict() -> Dictionary:
 		"items": items, "ships": ships, "skills": skills, "rapport": rapport, "flags": flags, "buff": buff,
 		"job": job, "today": today, "perks": perks, "reputation": reputation, "seed": run_seed, "cast": cast,
 		"jobs": jobs, "board": board, "board_day": board_day, "next_id": next_id,
+		"stories": stories,
 	}
 
 
@@ -116,6 +121,7 @@ func from_dict(d: Dictionary) -> void:
 	board = d.get("board", [])
 	board_day = int(d.get("board_day", 0))
 	next_id = int(d.get("next_id", 1))
+	stories = d.get("stories", {})
 
 
 ## JSON numbers load as floats; counts should stay ints.
@@ -191,9 +197,17 @@ func job_board() -> Array:
 		board = []
 		board_day = day
 		var w: Dictionary = Content.walkins
+		var regulars: Array = cast.keys().filter(func(id): return cast[id].get("regular", false))
 		for k in BOARD_SIZE:
 			var rng := RandomNumberGenerator.new()
 			rng.seed = hash([run_seed, day, k])
+			# Some mornings, the first card is a regular coming back with the same ship.
+			if k == 0 and regulars and rng.randf() < RETURN_CHANCE:
+				var who: Dictionary = cast[regulars[rng.randi_range(0, regulars.size() - 1)]]
+				var made := Walkins.job(rng, who, who.ship, shop_level(), w, Content.parts, Content.world.market,
+					ships[who.ship])
+				board.append({"pilot": who.duplicate(true), "job": made.job, "ship": made.ship})
+				continue
 			var id := "g%d" % (next_id + k)
 			var who := Walkins.customer(rng, id, w, Content.parts.palette.keys())
 			var made := Walkins.job(rng, who, id + "_ship", shop_level(), w, Content.parts, Content.world.market)
@@ -208,16 +222,43 @@ func shop_level() -> int:
 	return maxi(day - 3, 0) / 2 + maxi(reputation, 0)
 
 
-## Takes board offer `index`: the customer joins the cast and their ship comes into the bay.
+## Takes board offer `index`: the customer joins the cast (or comes back, if a regular), their
+## ship comes into the bay, and a new customer may arrive with a storylet.
 func accept_offer(index: int) -> String:
 	var offer: Dictionary = board.pop_at(index)
 	var id: String = offer.pilot.id
+	var visits: int = cast.get(id, {}).get("visits", 0) + 1
 	cast[id] = offer.pilot
 	cast[id]["ship"] = offer.job.ship
+	cast[id]["visits"] = visits
 	ships[offer.job.ship] = offer.ship.duplicate(true)
-	jobs[id + "_job"] = offer.job
-	start_job(id + "_job")
+	var job_id := "%s_job%d" % [id, visits]
+	jobs[job_id] = offer.job
+	if visits == 1:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = hash([run_seed, id, "story"])
+		var running: Array = stories.values().filter(func(s): return not Storylets.finished(s, Content.storylets)).map(
+			func(s): return s.id)
+		var story := Storylets.pick(rng, cast[id], Content.storylets, running)
+		if story:
+			stories[id] = Storylets.start(story, day)
+	start_job(job_id)
 	return id
+
+
+## The storylet scene `pilot_id` plays at `hook` now, or "".
+func story_scene(pilot_id: String, hook: String) -> String:
+	return Storylets.scene_at(stories[pilot_id], hook, day, Content.storylets) if stories.has(pilot_id) else ""
+
+
+func advance_story(pilot_id: String) -> void:
+	Storylets.advance(stories[pilot_id], day)
+	save()
+
+
+func story_flag(pilot_id: String, flag: String) -> void:
+	if stories.has(pilot_id):
+		stories[pilot_id].flags[flag] = true
 
 
 ## The job spec with the agreed budget, which haggling in dialogue may have changed.

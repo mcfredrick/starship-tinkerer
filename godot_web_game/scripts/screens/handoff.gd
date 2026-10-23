@@ -59,6 +59,9 @@ func _play() -> void:
 	await Router.talk(_scene(_grade.tier), guest)
 	if _grade.mischief != "":
 		await Router.talk(_scene(_grade.mischief, "mischief_" + _grade.mischief), guest)
+	if guest:
+		GameState.story_flag(guest, "tier_" + _grade.tier)
+		await Router.story(guest, "handoff")
 	_pay()
 
 
@@ -92,6 +95,9 @@ func _pay() -> void:
 			GameState.flags[w.flag] = true
 	if _grade.fit >= 0.66:
 		GameState.add_xp("craft", 15)
+	# Walk-ins who leave happy (and unsabotaged) become regulars and come back with new jobs.
+	if _pilot.get("generated", false) and _grade.tier != "lukewarm" and _grade.mischief != "sabotage":
+		GameState.cast[_job.pilot]["regular"] = true
 	GameState.job = {}
 	GameState.phase = "evening"
 	GameState.save()

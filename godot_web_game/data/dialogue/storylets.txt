@@ -1,0 +1,178 @@
+# Storylets: short arcs that attach to a walk-in (see data/storylets.json). "guest" is them.
+# "! story flag" marks this story; "? flag => label" reads its flags and the game's. The handoff
+# sets tier_delighted, tier_pleased or tier_lukewarm before its beat plays.
+
+# ---------------------------------------------------------------- the heirloom
+
+== heirloom_found
+* As {guest} heads off, something rattles loose from a cabin vent: a small tin, dented and very old.
+* It's warm, as if someone held it a long time.
+> Keep it safe to give back. => safe
+> Peek inside. => peek
+-- peek
+* Inside: a tiny brass compass, a pressed flower, and a photo of someone laughing in a ship very like the {guest_ship}.
+! story peeked
+* You close the lid carefully.
+end
+-- safe
+* You set it on the shelf by the tea nook, where you won't forget it.
+end
+
+== heirloom_return
+you: Before you go. This fell out of a vent.
+guest surprised: Oh! Oh, I thought I'd lost it for good.
+? peeked => peeked
+guest happy: It was my grandmother's. She flew the {guest_ship} before me. Thank you for keeping it safe.
+! story kept_secret
+end
+-- peeked
+guest thoughtful: Did you look inside?
+> I did. I'm sorry. => honest
+> No. => lie
+-- honest
+guest happy: That's all right. It's nice that someone else has seen her laugh.
+! story honest
+end
+-- lie
+guest thoughtful: Hm. The flower's the wrong way up.
+guest: Never mind. Thank you for giving it back.
+end
+
+== heirloom_thanks
+* {guest} drops by, holding a paper bag that smells of toasted seeds.
+? honest => warm
+? kept_secret => warm
+guest: I wanted to say thank you properly. For the tin.
+* They leave the bag on the counter and go before you can say anything.
+! give cake_seed 1
+end
+-- warm
+guest happy: My grandmother's recipe. She'd have liked you.
+guest laughing: She'd have told you all about the time she flew the {guest_ship} through a comet tail. Twice.
+! give cake_seed 2
+end
+
+# ---------------------------------------------------------------- the rival shop
+
+== rival_quote
+guest thoughtful: I should mention. Gleam and Company across the ring quoted me half your price.
+guest: Promised her faster, too. Shinier. They have a lot of chrome over there.
+> Then why come here? => why
+> We'll see who's right. => see
+-- why
+guest grumpy: Because their chrome fell off my friend's ship in a light breeze.
+! story challenged
+end
+-- see
+guest laughing: We will. I'll be comparing.
+! story challenged
+end
+
+== rival_verdict
+? tier_delighted => won
+? tier_lukewarm => lost
+guest thoughtful: Not bad. Not Gleam, but not bad. I suppose Gleam isn't Gleam either.
+end
+-- won
+guest surprised: All right. I'll say it. Gleam couldn't have done this.
+guest happy: I'm telling everyone. Loudly. Near their shop.
+! story won
+end
+-- lost
+guest grumpy: I'll be honest, Gleam's looking better from here.
+! story lost
+end
+
+== rival_news
+? won => won
+* The dock bulletin has a new notice up: GLEAM & CO. NOW OFFERING DISCOUNTS. INQUIRE WITHIN. PLEASE.
+* Someone has drawn a little rocket ship beside it, heading for your shop.
+end
+-- won
+* {guest} stops by the bay door, grinning.
+guest laughing: Gleam's put a sign up. Discounts. Apparently business is slow.
+guest happy: I may have had something to do with that. You're welcome.
+end
+
+# ---------------------------------------------------------------- courting
+
+== courting_ask
+guest thoughtful: Can I tell you something? It's a bit silly.
+> Of course. => tell
+-- tell
+guest sad: There's someone at the drum gardens. They fly the prettiest little skiff. I want to ask them to the lantern night.
+guest thoughtful: And I thought, if the {guest_ship} looked her best, I might be brave enough.
+> She'll look wonderful. => kind
+> You'll be brave either way. => brave
+-- kind
+guest happy: Thank you. Really.
+end
+-- brave
+guest surprised: Oh. Do you think so?
+guest happy: I'll hold on to that.
+! story encouraged
+end
+
+== courting_luck
+? tier_lukewarm => nervous
+guest happy: She looks wonderful. I feel taller just standing next to her.
+guest laughing: Wish me luck!
+end
+-- nervous
+guest thoughtful: Well. It's still me asking, not the ship. Wish me luck anyway?
+end
+
+== courting_report
+* {guest} comes in at a run.
+? tier_lukewarm => mixed
+? encouraged => yes
+guest happy: They said yes! They said the {guest_ship} was charming. And then they said I was charming. In that order, but still.
+! give tea_drift_bloom 1
+end
+-- yes
+guest laughing: They said yes! And I asked before I even showed them the ship. I was brave, like you said.
+guest happy: Here. For the advice. Their favorite tea, now mine too.
+! give tea_drift_bloom 2
+end
+-- mixed
+guest thoughtful: They said "maybe". Maybe's not no.
+guest happy: We're getting tea next week. Maybe's a start.
+end
+
+# ---------------------------------------------------------------- the stowaway
+
+== stowaway_found
+* While you're giving the {guest_ship} a once-over, something flutters in the intake: a space-moth, silver and blinking, with three eggs tucked in the fluff.
+> Coax them out gently. => gentle
+> Leave them be for now. => leave
+-- gentle
+* It takes a saucer of warm tea and a lot of patience, but the moth and its eggs settle into a teacup on the shelf.
+! story rehomed
+end
+-- leave
+* You work around the nest. The moth watches you the whole time.
+! story nest_left
+end
+
+== stowaway_handoff
+? rehomed => rehomed
+guest surprised: Is that... is something humming in the intake?
+* The moth pokes its head out and blinks at {guest}.
+guest laughing: Well! I suppose I've got a co-pilot.
+end
+-- rehomed
+* As {guest} climbs in, the moth flutters off the shelf, circles the {guest_ship} once and comes back to its teacup.
+guest happy: Was that living in my ship? And you moved it somewhere safe? That's kind.
+end
+
+== stowaway_visit
+* There's a tapping at the window by the tea nook.
+? rehomed => hatched
+* It's the space-moth from the {guest_ship}, with {guest} waving behind it.
+guest happy: She wouldn't stop fluttering at your door. I think she wanted to say hello.
+end
+-- hatched
+* The teacup on the shelf is empty except for three tiny silver shells. Outside the window, four space-moths are circling.
+* One of them lands on the rim of the teacup and leaves something there: a single moon-plum, perfectly ripe.
+! give cake_moon_plum 1
+end

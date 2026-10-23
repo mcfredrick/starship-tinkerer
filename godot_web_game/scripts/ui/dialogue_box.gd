@@ -70,8 +70,7 @@ func _ready() -> void:
 func play(scene_id: String, guest := "") -> void:
 	assert(Content.dialogue.has(scene_id), "no dialogue scene " + scene_id)
 	_guest = guest
-	_runner = Dialogue.Runner.new(Content.dialogue[scene_id], GameState.run_command,
-		func(f): return GameState.flags.has(f))
+	_runner = Dialogue.Runner.new(Content.dialogue[scene_id], _command, _has_flag)
 	visible = true
 	_advance()
 	await finished
@@ -133,6 +132,20 @@ func _show_line(s: Dictionary) -> void:
 		_text.text = text
 	_hint.visible = true
 	_type_out()
+
+
+## "! story <flag>" marks the guest's storylet; everything else is the game's.
+func _command(cmd: String, args: Array) -> void:
+	if cmd == "story":
+		GameState.story_flag(_guest, args[0])
+		GameState.save()
+	else:
+		GameState.run_command(cmd, args)
+
+
+## A "?" check reads the guest's storylet flags as well as the game's.
+func _has_flag(flag: String) -> bool:
+	return GameState.flags.has(flag) or (GameState.stories.has(_guest) and GameState.stories[_guest].flags.has(flag))
 
 
 ## Fills the player's name and pronouns, and for a guest their name, ship and request.

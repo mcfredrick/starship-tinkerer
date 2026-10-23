@@ -277,6 +277,44 @@ func test_every_walkin_look_has_its_doll_layers() -> void:
 	check(missing.is_empty(), "doll layers exist for every look: missing %s" % [missing.keys()])
 
 
+func test_storylets_point_at_real_scenes_and_items() -> void:
+	var stories: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/storylets.json"))
+	var comforts: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/comforts.json"))
+	var scenes := {}
+	for f in DirAccess.get_files_at("res://data/dialogue"):
+		scenes.merge(Dialogue.parse(FileAccess.get_file_as_string("res://data/dialogue/" + f)))
+	for id in stories:
+		for beat in stories[id].beats:
+			check(scenes.has(beat.scene), "storylet %s plays a real scene: %s" % [id, beat.scene])
+	for scene in scenes:
+		for st in scenes[scene]:
+			if st.t == "cmd" and st.cmd == "give":
+				var item: String = st.args[0]
+				check(comforts.teas.has(item) or comforts.cakes.has(item) or parts_data.parts.has(item),
+					"%s gives a real item: %s" % [scene, item])
+
+
+func test_storylets_unfold_by_hook_and_day() -> void:
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/storylets.json"))
+	var story := Storylets.start("heirloom", 4)
+	check(Storylets.scene_at(story, "handoff", 4, data) == "", "a story waits for its hook")
+	check(Storylets.scene_at(story, "arrive", 4, data) == "heirloom_found", "the first beat plays on arrival")
+	Storylets.advance(story, 4)
+	Storylets.advance(story, 4)
+	check(Storylets.scene_at(story, "morning", 4, data) == "", "the morning beat waits for a new day")
+	check(Storylets.scene_at(story, "morning", 5, data) == "heirloom_thanks", "and plays the next morning")
+	Storylets.advance(story, 5)
+	check(Storylets.finished(story, data), "then the story is done")
+	var rng := RandomNumberGenerator.new()
+	var picked := {}
+	for i in 200:
+		rng.seed = i
+		var id := Storylets.pick(rng, {"traits": ["haggler", "fussy"]}, data, [])
+		if id:
+			picked[id] = true
+	check(picked.keys() == ["rival_shop"], "a haggler gets the story written for hagglers: %s" % [picked.keys()])
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1

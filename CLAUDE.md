@@ -55,6 +55,9 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
   `data/walkins.json` through `Walkins`). Always look them up with `GameState.pilot(id)` and
   `GameState.job_spec(id)`. Generated customers speak as `guest` in dialogue, with `{guest}`,
   `{guest_ship}` and `{request}` tokens; `Router.talk(scene, guest_id)` says who that is.
+- Storylets (`data/storylets.json`, scenes in `data/dialogue/storylets.txt`) attach to new walk-ins
+  and play a scene per hook (`arrive`, `handoff`, next `morning`) through `Router.story(guest, hook)`.
+  Their scenes set story-local flags with `! story <flag>`; the handoff sets `tier_<tier>`.
 - Portraits and doll layers import as lossy WebP (`compress/mode=1`, quality 0.85 in their `.import`
   files), which halves the download. New PNGs there need the same setting.
 - Hulls need all six sockets and spots 1 to 6 (spots are numbered from 1); the kit test checks this.

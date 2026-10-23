@@ -78,6 +78,14 @@ func talk(scene_id: String, guest := "") -> void:
 	await dialogue.play(scene_id, guest)
 
 
+## Plays the next beat of `guest`'s storylet if it waits on `hook`.
+func story(guest: String, hook: String) -> void:
+	var scene := GameState.story_scene(guest, hook)
+	if scene:
+		await talk(scene, guest)
+		GameState.advance_story(guest)
+
+
 func toast(text: String, color := UI.TEAL) -> void:
 	if color == UI.BAD:
 		Sfx.play("bonk")

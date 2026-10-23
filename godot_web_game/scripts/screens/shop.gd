@@ -41,6 +41,9 @@ func _play_beats() -> void:
 			GameState.flags[seen] = true
 			GameState.save()
 			_refresh()
+	if GameState.phase == "morning":
+		for id in GameState.stories.keys():
+			await Router.story(id, "morning")
 
 
 func _beat_ready(b: Dictionary) -> bool:

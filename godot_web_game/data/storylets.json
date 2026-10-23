@@ -1,0 +1,14 @@
+{
+  "heirloom": {"traits": ["sentimental", "secretive", "chatty", "generous"],
+    "beats": [{"hook": "arrive", "scene": "heirloom_found"}, {"hook": "handoff", "scene": "heirloom_return"},
+      {"hook": "morning", "scene": "heirloom_thanks"}]},
+  "rival_shop": {"traits": ["haggler", "show_off", "fussy"],
+    "beats": [{"hook": "arrive", "scene": "rival_quote"}, {"hook": "handoff", "scene": "rival_verdict"},
+      {"hook": "morning", "scene": "rival_news"}]},
+  "courting": {"traits": ["nervous", "sentimental", "chatty", "generous"],
+    "beats": [{"hook": "arrive", "scene": "courting_ask"}, {"hook": "handoff", "scene": "courting_luck"},
+      {"hook": "morning", "scene": "courting_report"}]},
+  "stowaway": {"traits": [],
+    "beats": [{"hook": "arrive", "scene": "stowaway_found"}, {"hook": "handoff", "scene": "stowaway_handoff"},
+      {"hook": "morning", "scene": "stowaway_visit"}]}
+}

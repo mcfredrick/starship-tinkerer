@@ -40,6 +40,7 @@ func _card(offer: Dictionary, index: int) -> PanelContainer:
 	var hull: String = Content.parts.hulls[offer.ship.hull].name
 	var info := UI.vbox([
 		UI.heading(who.name, 22),
+		UI.label("A regular" if who.get("regular", false) else "New face", 14, UI.ROSE if who.get("regular", false) else UI.MUTED),
 		UI.label(who.blurb, 15, UI.MUTED, true),
 		UI.label("The %s, a %s" % [offer.ship.name, hull.to_lower()], 16, UI.TEAL, true),
 	], 4)
@@ -58,5 +59,8 @@ func _take(index: int) -> void:
 	var manner: String = GameState.board[index].pilot.traits[0]
 	var id := GameState.accept_offer(index)
 	var scene := "walkin_arrives_" + manner
+	if GameState.cast[id].visits > 1:
+		scene = "walkin_returns"
 	await Router.talk(scene if Content.dialogue.has(scene) else "walkin_arrives", id)
+	await Router.story(id, "arrive")
 	Router.go("shop")
