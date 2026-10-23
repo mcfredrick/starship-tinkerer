@@ -209,7 +209,7 @@ func _build_hud() -> void:
 	_lap = UI.heading("", 30, UI.CREAM)
 	_place = UI.heading("", 44, Color("ffd27a"))
 	var top := UI.vbox([_place, _lap], 0)
-	UI.place(top, Control.PRESET_TOP_LEFT, Vector2(30, 20), Vector2(300, 0))
+	UI.place(top, Control.PRESET_TOP_LEFT, Vector2(90, 20), Vector2(300, 0))
 	ui.add_child(top)
 
 	_speed = UI.heading("", 30, UI.CREAM)

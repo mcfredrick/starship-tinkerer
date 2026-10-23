@@ -41,9 +41,10 @@ func _play_beats() -> void:
 	for beat in beats:
 		var seen: String = "seen_" + beat[0]
 		if not GameState.flags.has(seen) and beat[1].call():
+			await Router.talk(beat[0])
+			# Marked after the scene so closing the game mid-conversation replays it.
 			GameState.flags[seen] = true
 			GameState.save()
-			await Router.talk(beat[0])
 			_refresh()
 
 

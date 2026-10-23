@@ -38,6 +38,8 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Portraits | `$B -b --python blender/portraits.py -- [character ...]` |
 | Prop icons | `$B -b --python blender/props.py` |
 | Web build | `./export_web.sh` (repo root; output in `godot_web_game/build/web/`) |
+| Sound effects | `uv run --with numpy python -I tools/sfx.py` (repo root) |
+| Check the live web build | `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --use-angle=swiftshader --enable-unsafe-swiftshader --window-size=1280,720 --timeout=40000 --user-data-dir=<tmp> --screenshot=out.png <url>` (add `--enable-logging=stderr --v=0` and grep `CONSOLE` for errors) |
 
 Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `evening`, `day2`.
 
