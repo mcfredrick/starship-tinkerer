@@ -78,30 +78,7 @@ func _scene(outcome: String, fallback := "") -> String:
 
 func _pay() -> void:
 	Sfx.play("coins")
-	GameState.add_pebs(_grade.pay, "%s paid %s" % [_pilot.short, UI.pebs(_grade.pay)])
-	var gifts: Array = []
-	for item in _job.barter:
-		GameState.give(GameState.items, item, _job.barter[item])
-		gifts.append("%d × %s" % [_job.barter[item], Content.item(item).name])
-	GameState.rapport[_job.pilot] = GameState.rapport.get(_job.pilot, 0) + _grade.rapport
-	GameState.flags[_job_id + "_done"] = true
-	GameState.flags[_job_id + "_" + _grade.tier] = true
-	if _grade.mischief != "":
-		GameState.flags[_job_id + "_" + _grade.mischief] = true
-		GameState.flags.any_mischief = true
-		GameState.flags["any_mischief_" + _job.pilot] = true
-		GameState.reputation += _grade.reputation
-	for w in _job.wants:
-		if w.has("flag") and _grade.wants[_job.wants.find(w)].met:
-			GameState.flags[w.flag] = true
-	if _grade.fit >= 0.66:
-		GameState.add_xp("craft", 15)
-	# Walk-ins who leave happy (and unsabotaged) become regulars and come back with new jobs.
-	if _pilot.get("generated", false) and _grade.tier != "lukewarm" and _grade.mischief != "sabotage":
-		GameState.cast[_job.pilot]["regular"] = true
-	GameState.job = {}
-	GameState.phase = "evening"
-	GameState.save()
+	var gifts := GameState.settle_job(_job_id, _grade)
 
 	_card.add_child(HSeparator.new())
 	_card.add_child(UI.heading("Paid %s" % UI.pebs(_grade.pay), 26, UI.AMBER_DARK))

@@ -536,6 +536,38 @@ func story_flag(pilot_id: String, flag: String) -> void:
 		stories[pilot_id].flags[flag] = true
 
 
+## Pays out the job on the bench with its `grade` (see Grading) and clears the bench: pebs and
+## barter, rapport, story flags, mischief's consequences, and regular status for a happy walk-in.
+## Returns the barter as display lines.
+func settle_job(job_id: String, grade: Dictionary) -> Array:
+	var spec := job_terms()
+	var who := pilot(spec.pilot)
+	add_pebs(grade.pay, "%s paid %s" % [who.short, UI.pebs(grade.pay)])
+	var gifts: Array = []
+	for item in spec.barter:
+		give(items, item, spec.barter[item])
+		gifts.append("%d × %s" % [spec.barter[item], Content.item(item).name])
+	rapport[spec.pilot] = rapport.get(spec.pilot, 0) + grade.rapport
+	flags[job_id + "_done"] = true
+	flags[job_id + "_" + grade.tier] = true
+	if grade.mischief != "":
+		flags[job_id + "_" + grade.mischief] = true
+		flags.any_mischief = true
+		flags["any_mischief_" + spec.pilot] = true
+		reputation += grade.reputation
+	for i in spec.wants.size():
+		if spec.wants[i].has("flag") and grade.wants[i].met:
+			flags[spec.wants[i].flag] = true
+	if grade.fit >= 0.66:
+		add_xp("craft", 15)
+	if who.get("generated", false) and grade.tier != "lukewarm" and grade.mischief != "sabotage":
+		cast[spec.pilot]["regular"] = true
+	job = {}
+	phase = "evening"
+	save()
+	return gifts
+
+
 ## The job spec with the agreed budget, which haggling in dialogue may have changed.
 func job_terms() -> Dictionary:
 	var spec: Dictionary = job_spec(job.id).duplicate()
