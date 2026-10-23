@@ -282,6 +282,45 @@
       "requires": "read_lumen_invite",
       "image": "guide_lumen",
       "body": "Lumen Reach is a field of drifting ice at the very edge of Bramble's rings, and in the middle of it stands the oldest lighthouse in the system, striped red and cream, its great lens turning out of habit more than need.\n\nNobody has needed it to find their way in ninety years. Its keeper says that isn't what it's for."
+    },
+    "past_freighter": {
+      "kind": "letter",
+      "title": "From the Unquiet Margin",
+      "from": "Captain Mabe Rook",
+      "day": 2,
+      "requires": "backstory_freighter",
+      "body": "{name},\n\nThe night shift isn't the same without you humming at the coolant pumps. The new engineer is fine. Fine is the worst thing I can say about anybody.\n\nHalloran told me where you've gone. Their own shop, on a dock with three gardens and a cat. You always did want to stay somewhere long enough to see a thing grow.\n\nKeep your spanner. Don't you dare send it back.\n\nCaptain Rook"
+    },
+    "past_academy": {
+      "kind": "letter",
+      "title": "A note from Ringward",
+      "from": "Professor Ondine Ashgrove",
+      "day": 2,
+      "requires": "backstory_academy",
+      "body": "{name},\n\nYour thesis draft is still on my desk. I have not thrown it away. I've read the chapter on drive harmonics four times, which is three more than I read most theses.\n\nI still think you should have finished. I am beginning to suspect you were finishing something else.\n\nWrite to me when you've fixed something that surprised you.\n\nO. Ashgrove"
+    },
+    "past_salvage": {
+      "kind": "letter",
+      "title": "From the yard",
+      "from": "Nan Tallow",
+      "day": 2,
+      "requires": "backstory_salvage",
+      "body": "Scrap-rat!\n\nThe yard's too quiet without you clanging about at all hours. The dog's sulking. So am I, a bit.\n\nHalloran says you've a whole hangar now and a proper cat and a tea nook. A TEA NOOK. Fancy.\n\nYou keep that bolt in your pocket. A tinkerer should always carry the first thing they saved.\n\nLove and moon-dust,\nNan"
+    },
+    "halloran_why": {
+      "kind": "letter",
+      "title": "Why you",
+      "from": "Halloran",
+      "day": 6,
+      "body": "Dear {name},\n\nYou'll have wondered why I left the shop to you, a stranger, instead of selling it or giving it to someone on the dock.\n\nIt's because you hear things. Not everyone does. Most people fix a ship by reading what's wrong with it. A few fix it by listening to what it wants. I've only met a handful in my whole life, and I've stopped being one of them, for now.\n\nI'll tell you properly one day, when I'm back. And I will be back, though I don't know when.\n\nWith grease under every fingernail,\nHalloran"
+    },
+    "halloran_sign": {
+      "kind": "letter",
+      "title": "The new sign",
+      "from": "Halloran",
+      "day": 21,
+      "requires": "seen_halloran_home",
+      "body": "Dear {name},\n\nWhatever's painted over the door now, it's the right sign. I stood under it this morning with a cup of terrible tea and I thought: this is what a shop is for. Not the tools. The people who come through the door, and the person who listens to their ships.\n\nThank you for keeping the lights on.\n\nWith grease under every fingernail, and very glad to be home,\nHalloran"
     }
   }
 }

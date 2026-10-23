@@ -60,6 +60,8 @@ Play on desktop first, then a phone. For each item note: works / confusing / not
 - [ ] Tow magnet and foghorn in a race
 - [ ] The Close Pass on day 11: does it land emotionally? Do your earlier choices show?
 - [ ] The novel chapters, Themba's letter, and the Lumen Reach lighthouse on day 15
+- [ ] Your past: the bag choice in the intro, a letter on day 2, Halloran's "Why you" on day 6, a visitor from your past on day 9, and Halloran coming home on day 21 (try each of the three bags)
+- [ ] Dock gossip and the Who's who page; the pets in their owners' scenes
 - [ ] From day 12: Pip (two jobs, then the Night Run), the Okafors (restaurant or cart), Dr. Yaneva (the ember fern)
 
 **The evergreen game**
@@ -83,7 +85,25 @@ Play on desktop first, then a phone. For each item note: works / confusing / not
 Send findings as a list. Each becomes a fix and, wherever a machine could have caught it, a new
 automated check.
 
-## 4. Launch (after the play-test)
+## 4. Pre-release content review
+
+Before launch, review every piece of content once, with the screen sweep's contact sheets and the
+tablet open. For each, check it reads well, looks right, and isn't too close to anything else.
+
+- **Characters and pets**: Odessa, Ilse, Brindle, Crake, Pip, Tam, Juniper, Dr. Yaneva, Halloran,
+  Captain Rook, Professor Ashgrove, Nan Tallow, Sprocket, the three hawkers; Biscuit, Hob, Lord
+  Pemberton, Flutter, Chili, Gerald. Every portrait expression, every voice consistent.
+- **Places and scenes**: the hangar, tea nook, market, yard, drawers, job board, three race tracks,
+  the Moon-plum Harvest, the Close Pass, Lumen Reach, and the four field-guide plates.
+- **Ships**: all nine hulls and every named ship, at each livery.
+- **Writing**: every dialogue file, letter, storylet and gossip line, read through once for tone,
+  typos, pronoun tokens and the house style.
+- **Originality**: names and premises searched against existing works. Known and handled: the cat
+  is Sprocket (shares a name with Fraggle Rock's dog; accepted), Brindle's motif reworked away from
+  Monk and Robot's Mosscap, and the peb credited to Monk and Robot on the Credits page. Still to note:
+  Crake (also a character in *Oryx and Crake*) and Halloran (*The Shining*) are common names, kept.
+
+## 5. Launch (after the play-test)
 
 Point `starship-tinkerer.crap.games` at the game (CNAME and DNS), set the `REGISTRY_UPDATE_TOKEN`
 secret, then run the register workflow.

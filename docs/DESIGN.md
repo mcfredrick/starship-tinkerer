@@ -252,6 +252,17 @@ Events are data like everything else: a date (or condition), a scene to load, wh
 dialogue that plays. Playthroughs vary which minor events happen in which season, while the story
 events stay fixed.
 
+## Your story
+
+You're never shown, but you have a past, set without a menu: in the intro you set your bag down,
+and what's on top (a freighter coolant spanner, an annotated engineering textbook, or a lucky bolt)
+decides it. You grew up on the long-haul freighter *Unquiet Margin* under Captain Mabe Rook, left
+Ringward Engineering Academy one term short under Professor Ondine Ashgrove, or were raised in Nan
+Tallow's salvage yard on a little moon. Each past sends a letter on day 2 and a visitor with a job on
+day 9. Halloran writes on day 6 about why they chose you ("you hear things"), and on day 21 comes home,
+having learned to hear the ships again. You decide what the shop becomes: still Halloran's, a
+partnership, or yours under a new sign.
+
 ## How everyone gets on
 
 The cast have relationships with each other, not only with you. Pairs like Odessa and Crake

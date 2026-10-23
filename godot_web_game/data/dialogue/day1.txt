@@ -4,6 +4,22 @@
 * The hangar doors grind open on Quietwater Dock. Dust motes drift through a slab of Bramble-light.
 * Workbenches. A tea nook with a dented kettle. Drawers labeled things like "BOLTS (MOSTLY)" and "DO NOT."
 * And in the back bay, under a tarp, something round and stubborn-looking.
+* You set your bag down on the nearest workbench. Everything you own fits in it. On top is...
+> A coolant spanner, worn smooth from a thousand night shifts. => freighter
+> A dog-eared engineering textbook, full of your own notes. => academy
+> A lucky bolt you pulled from your very first scrapped engine. => salvage
+-- freighter
+* You turn the spanner over. The Unquiet Margin's crest is still stamped on the handle. You never did give it back.
+! set backstory_freighter
+=> tablet
+-- academy
+* The textbook falls open where it always does: a page on drive harmonics, with "but WHY does it hum?" scrawled in the margin in your hand.
+! set backstory_academy
+=> tablet
+-- salvage
+* You put the bolt in your pocket, where it belongs. Nan Tallow said a tinkerer should always carry the first thing they ever saved.
+! set backstory_salvage
+-- tablet
 * Your tablet chimes. There's a letter from Halloran, and the dock bulletin.
 end
 
@@ -95,4 +111,136 @@ end
 ilse thoughtful: Well, you finished. Most first-timers spin out on the sun-hairpin and cry.
 brindle happy: Your Kettle has a very nice whistle when it is being passed.
 ilse: Tune her up. Come back next week.
+end
+
+
+# ---------------------------------------------------------------- your past
+
+== rook_visit
+* A long, battered freighter eases past the bay doors, too big to come inside. A familiar voice crackles over the dock radio.
+rook happy: There's my night-shift engineer! Come out here, {name}, I'm not squeezing the Margin through that door.
+* Captain Mabe Rook stands on the gantry, cap pushed back, exactly as you left her.
+rook thoughtful: They're scrapping the Margin at the end of the season. Thirty years she's carried me. I wanted her running sweet one last time, and there's only one engineer I trust with her coolant.
+rook: And I wanted to see what you'd made of yourself. Halloran wrote to me, you know. Said you'd do.
+> I left without saying goodbye properly. I'm sorry. => sorry
+> It's good to see you, Captain. => good
+-- sorry
+rook happy: You left to do this. That's the best goodbye there is.
+=> job
+-- good
+rook laughing: Captain! Still! Ha. You always did call me Captain when you'd broken something.
+-- job
+rook: Four hundred pebs, and she wants to be quiet and smooth for her last runs. Like you used to keep her.
+! set past_visit
+! job rook_1
+end
+
+== rook_1_delighted
+rook surprised: Listen to her. She hasn't sounded like that since you were aboard.
+rook happy: She'll finish her life singing. Thank you, {name}. Here, and the crest plate off the bridge door. She'd want you to have it.
+end
+
+== rook_1_pleased
+rook happy: She's running sweeter. That'll do her proud. Thank you.
+end
+
+== rook_1_lukewarm
+rook thoughtful: Still rattles a bit. Well, so do I. Here, and thank you for trying.
+end
+
+== ashgrove_visit
+* A neat little saucer lands precisely in the center of the bay. A familiar figure steps out, smoothing their robe.
+ashgrove thoughtful: {name}. I've come to see whether you were right.
+ashgrove: You left Ringward one term short of your degree. You told me you'd rather fix old ships than design new ones. I told you you were wasting yourself.
+ashgrove happy: Halloran wrote to me, after. Sent me a sketch of the Kettle's drive you'd rebuilt. I've been thinking about it for weeks.
+> I wasn't wasting myself. I was learning by ear. => ear
+> I'm sorry I disappointed you. => sorry
+-- ear
+ashgrove surprised: By ear. Yes. That's what Halloran said too.
+=> job
+-- sorry
+ashgrove sad: You didn't. I was afraid you'd prove me wrong, and you have, and I find I'm glad of it.
+-- job
+ashgrove: The Theorem is my own ship. She's perfect on paper and miserable to fly. Show me what you'd do with her.
+! set past_visit
+! job ashgrove_1
+end
+
+== ashgrove_1_delighted
+ashgrove surprised: That's not in any textbook. I'd like you to come and lecture on it. Once. Wearing whatever you like.
+ashgrove happy: Here. And your degree, if you want it. The board agreed a practical can count. I insisted.
+end
+
+== ashgrove_1_pleased
+ashgrove happy: Better. Unorthodox, but better. I'll be writing this up.
+end
+
+== ashgrove_1_lukewarm
+ashgrove thoughtful: Interesting. Not what I'd have done. Not entirely wrong. Here.
+end
+
+== tallow_visit
+* A patched-up salvage tug clatters into the bay, trailing a smell of oil and moon-dust. Out climbs a small green figure in a red headscarf, beaming.
+tallow laughing: There's my little scrap-rat! Look at you, with your own bay! Halloran said you'd grown, but look at you!
+tallow happy: Got my fare saved up and the old Magpie running, just about, and I thought, I'll go and see where that bolt of mine ended up.
+> I've still got the bolt, Nan. => bolt
+> I've missed you. => missed
+-- bolt
+tallow surprised: You never! Show me. Oh. Oh, you have.
+=> job
+-- missed
+tallow happy: Course you have. Everybody misses me. I'm very missable.
+-- job
+tallow thoughtful: Now. The Magpie's running, but only just, and I'd like to get home again in her. Mates' rates? Three hundred pebs and a jar of moon-dust jam.
+! set past_visit
+! job tallow_1
+end
+
+== tallow_1_delighted
+tallow laughing: She purrs! The Magpie's never purred in her life! I raised you right, I did.
+tallow happy: Here. And the yard's old sign, the one you painted when you were seven. It's got your handprints on it.
+end
+
+== tallow_1_pleased
+tallow happy: She'll get me home and then some. Good work, scrap-rat.
+end
+
+== tallow_1_lukewarm
+tallow thoughtful: She'll get me home. Probably. I'll take the long way, near the yards.
+end
+
+# ---------------------------------------------------------------- Halloran comes home
+
+== halloran_home
+* The shop bell jangles. Sprocket, asleep on the counter, opens one eye, then both, then is off the counter and across the bay in a streak of black and white.
+* A weathered figure in a long coat is kneeling by the door, and Sprocket is headbutting their hand as if to knock it off.
+halloran laughing: Hello, you old menace. Yes. Yes, I know. I'm sorry. I'm here.
+halloran happy: And you must be {name}. Look at this place. You've kept it. You've done more than keep it.
+? backstory_freighter => freighter
+? backstory_academy => academy
+halloran thoughtful: I watched you rebuild a dead drive in Nan Tallow's yard once, with nothing but a lucky bolt and spite. I knew then. I'm glad I was right.
+=> choice
+-- freighter
+halloran thoughtful: I fixed the Margin's coolant loop once, years ago, and found a night-shift engineer had already fixed it better, in the dark, by ear. I knew then. I'm glad I was right.
+=> choice
+-- academy
+halloran thoughtful: Ondine Ashgrove sent me your notes. Page after page of "but why does it hum?" Nobody asks that any more. I knew then. I'm glad I was right.
+-- choice
+halloran: I've heard the ships again, out past the comet line. I'm not here to take the shop back. It's yours, if you'll have it. But I'd like to know what you want it to be.
+> It's still Halloran's. I'll keep it for you. => keep
+> Stay. We'll run it together. => partners
+> Paint a new sign. It's mine now, and you're always welcome. => mine
+-- keep
+halloran happy: That's kind. Then I'll come back every spring and make a nuisance of myself, and the sign stays crooked.
+! set shop_keep
+=> end_scene
+-- partners
+halloran laughing: Partners! Two tinkerers and a cat. The dock won't know what's hit it.
+! set shop_partners
+=> end_scene
+-- mine
+halloran happy: Good. That's exactly right. I'll hold the ladder while you paint.
+! set shop_mine
+-- end_scene
+* Sprocket climbs into Halloran's lap and goes to sleep, and for a while neither of you says anything at all.
 end

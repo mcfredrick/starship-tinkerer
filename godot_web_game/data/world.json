@@ -15,6 +15,15 @@
     "magnificence": {"name": "The Magnificence", "owner": "crake", "hull": "manta",
       "parts": {"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_bay", "lights": "lights_bar"},
       "paint": "plum", "trim": "brass", "livery": "two_tone", "grime": 0.3},
+    "unquiet_margin": {"name": "Unquiet Margin", "owner": "rook", "hull": "barge",
+      "parts": {"engine": "engine_rattler", "fins": "fin_stub", "cockpit": "cockpit_bubble", "lights": "lights_bar"},
+      "paint": "slate", "trim": "brass", "livery": "bands", "grime": 0.8},
+    "theorem": {"name": "The Theorem", "owner": "ashgrove", "hull": "saucer",
+      "parts": {"engine": "engine_sprint", "fins": "fin_wing", "cockpit": "cockpit_visor", "lights": "lights_bar"},
+      "paint": "dusk", "trim": "brass", "livery": "solid", "grime": 0.2},
+    "magpie": {"name": "The Magpie", "owner": "tallow", "hull": "bucket",
+      "parts": {"engine": "engine_rattler", "fins": "fin_stub", "cockpit": "cockpit_bubble", "lights": "lights_round"},
+      "paint": "terracotta", "trim": "mint", "livery": "two_tone", "grime": 0.9},
     "dandelion": {"name": "Dandelion", "owner": "pip", "hull": "ringdart",
       "parts": {"engine": "engine_rattler", "fins": "fin_stub", "cockpit": "cockpit_bubble", "lights": "lights_round"},
       "paint": "cream", "trim": "marigold", "livery": "dots", "grime": 0.5},
@@ -58,6 +67,17 @@
       "taste": ["sage", "mint", "rose"],
       "blurb": "A traveling botanist, part plant himself, whose ship is half greenhouse.",
       "taste_hint": "Dr. Yaneva describes colors as plants: sage, mint, and the pink of a rose in rain."},
+    "halloran": {"name": "Halloran", "short": "Halloran", "pronouns": "they", "taste": [],
+      "blurb": "Ran the shop before you. Gone past the comet line to learn to listen again.", "taste_hint": ""},
+    "rook": {"name": "Captain Mabe Rook", "short": "Captain Rook", "pronouns": "she", "ship": "unquiet_margin",
+      "taste": ["slate", "brass", "cream"], "blurb": "Captain of the freighter you grew up on.",
+      "taste_hint": "Captain Rook's coat is slate with brass buttons, same as it ever was."},
+    "ashgrove": {"name": "Professor Ondine Ashgrove", "short": "Professor Ashgrove", "pronouns": "they", "ship": "theorem",
+      "taste": ["dusk", "brass", "slate"], "blurb": "Your old engineering professor at Ringward.",
+      "taste_hint": "Professor Ashgrove has worn the same dusk-violet academic robe for twenty years."},
+    "tallow": {"name": "Nan Tallow", "short": "Nan Tallow", "pronouns": "she", "ship": "magpie",
+      "taste": ["terracotta", "mint", "marigold"], "blurb": "Runs the salvage yard on a little moon. Raised you in it.",
+      "taste_hint": "Nan Tallow's yard was always terracotta rust and mint-green tarps."},
     "mags": {"name": "Mags Rattlecart", "short": "Mags", "pronouns": "she", "taste": [], "hawker": "worn",
       "blurb": "A Moothe hawker. Everything she sells is barely used.", "taste_hint": "",
       "look": {"head": "bean", "eyes": 2, "extras": ["horns", "ears"], "outfit": "overalls", "skin": "c9a27e",
@@ -165,6 +185,36 @@
       ],
       "barter": {},
       "dialogue": "crake_2"
+    },
+    "rook_1": {
+      "pilot": "rook", "ship": "unquiet_margin", "budget": 400,
+      "request": "She's being scrapped at the end of the season. I want her quiet and smooth for her last runs, like you used to keep her.",
+      "faults": [{"type": "coupling", "spot": 1}, {"type": "weld", "spot": 4}],
+      "wants": [
+        {"stat": "noise", "max": 45, "label": "Quiet for her last runs", "weight": 2},
+        {"stat": "comfort", "min": 60, "label": "Smooth like you kept her", "weight": 1}
+      ],
+      "barter": {}, "dialogue": "rook_1"
+    },
+    "ashgrove_1": {
+      "pilot": "ashgrove", "ship": "theorem", "budget": 360,
+      "request": "The Theorem is perfect on paper and miserable to fly. Show me what you'd do with her.",
+      "faults": [{"type": "calibrate", "spot": 2}, {"type": "rewire", "spot": 5}],
+      "wants": [
+        {"stat": "comfort", "min": 46, "label": "Not miserable to fly", "weight": 2},
+        {"stat": "handling", "min": 62, "label": "Still precise", "weight": 1}
+      ],
+      "barter": {}, "dialogue": "ashgrove_1"
+    },
+    "tallow_1": {
+      "pilot": "tallow", "ship": "magpie", "budget": 300,
+      "request": "The Magpie's running, but only just. I'd like to get home again in her.",
+      "faults": [{"type": "breach", "spot": 2}, {"type": "rewire", "spot": 3}],
+      "wants": [
+        {"stat": "thrust", "min": 50, "label": "Gets me home", "weight": 2},
+        {"stat": "comfort", "min": 34, "label": "Easier on my old bones", "weight": 1}
+      ],
+      "barter": {"cake_moon_plum": 1}, "dialogue": "tallow_1"
     },
     "pip_1": {
       "pilot": "pip",
@@ -276,6 +326,10 @@
     {"scene": "okafor_returns", "min_day": 17, "phase": "morning", "idle": true, "requires": "pip_2_done"},
     {"scene": "yaneva_returns", "min_day": 18, "phase": "morning", "idle": true, "requires": "okafor_2_done"},
     {"scene": "pip_cup", "min_day": 25, "phase": "morning", "requires": "pip_2_done"},
+    {"scene": "rook_visit", "min_day": 9, "phase": "morning", "idle": true, "requires": "backstory_freighter"},
+    {"scene": "ashgrove_visit", "min_day": 9, "phase": "morning", "idle": true, "requires": "backstory_academy"},
+    {"scene": "tallow_visit", "min_day": 9, "phase": "morning", "idle": true, "requires": "backstory_salvage"},
+    {"scene": "halloran_home", "min_day": 21, "phase": "morning", "idle": true, "requires": "past_visit"},
     {"scene": "lumen_call", "min_day": 15, "phase": "morning", "idle": true, "requires": "read_lumen_invite", "event": "lumen_reach"}
   ],
   "events": {

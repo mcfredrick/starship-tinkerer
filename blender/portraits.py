@@ -78,6 +78,26 @@ CHARACTERS = {
                "trim": hexc("e48aa0"), "iris": hexc("3a2410"), "head": (0.78, 0.8, 1.2), "taper": 0.12,
                "eyes": {"count": 2, "r": 0.12, "spacing": 0.28, "z": 0.2}, "mouth_z": -0.45,
                "extras": ["leaves", "spectacles"]},
+    # Halloran, who ran the shop before you: a weathered tinkerer with goggles pushed up and a white beard.
+    "halloran": {"build": "alien", "skin": hexc("8fa3b8"), "jacket": hexc("6b4226"), "accent": hexc("e8a33d"),
+                 "trim": hexc("f4f1ea"), "iris": hexc("2b1d14"), "head": (1.0, 0.86, 0.96), "jowl": 0.15,
+                 "eyes": {"count": 2, "r": 0.12, "spacing": 0.33, "z": 0.1}, "mouth_z": -0.32,
+                 "extras": ["goggles", "beard"]},
+    # Captain Mabe Rook, of the long-haul freighter Unquiet Margin.
+    "rook": {"build": "alien", "skin": hexc("3f8f8f"), "jacket": hexc("1d3557"), "accent": hexc("e8b931"),
+             "trim": hexc("c8433f"), "iris": hexc("f2c14e"), "head": (0.8, 0.82, 1.15), "taper": 0.15,
+             "eyes": {"count": 2, "r": 0.13, "spacing": 0.28, "z": 0.18}, "mouth_z": -0.45,
+             "extras": ["captain_cap"]},
+    # Professor Ondine Ashgrove, of the Ringward Engineering Academy.
+    "ashgrove": {"build": "alien", "skin": hexc("e48aa0"), "jacket": hexc("264653"), "accent": hexc("c9a24b"),
+                 "trim": hexc("4a3428"), "iris": hexc("14213d"), "head": (1.04, 0.86, 0.9), "jowl": 0.05,
+                 "eyes": {"count": 2, "r": 0.12, "spacing": 0.32, "z": 0.1}, "mouth_z": -0.38,
+                 "extras": ["spectacles", "bun"]},
+    # Nan Tallow, who runs a salvage yard on a little moon and raised you in it.
+    "tallow": {"build": "alien", "skin": hexc("9be22d"), "jacket": hexc("8a5a3c"), "accent": hexc("e63946"),
+               "trim": hexc("f4a261"), "iris": hexc("2b1d14"), "head": (1.1, 0.88, 0.86), "jowl": 0.22,
+               "eyes": {"count": 2, "r": 0.15, "spacing": 0.36, "z": 0.08}, "mouth_z": -0.36,
+               "extras": ["antennae", "freckles", "headscarf"]},
     # Sprocket, the shop cat Halloran left behind: a moody tuxedo with a green collar and a gold tag.
     "sprocket": {"build": "cat", "skin": hexc("3b3742"), "jacket": hexc("2f9e5b"), "stache": hexc("e8b931"),
                 "accent": hexc("f4f1ea"), "trim": hexc("f4a6b8"), "iris": hexc("b7e24a"), "head": (1.08, 0.86, 0.84)},
@@ -542,6 +562,39 @@ def alien(c, e):
                 dot = sphere_bm(0.022, 8, 4, lambda v: Vector((v.x, v.y * 0.3, v.z)))
                 at = face_point(head, side * (0.32 + dx), -0.2 + dz, out=0.0)
                 dress(mesh_obj(f"freckle{side}{k}", transform_bm(dot, lambda v, a=at: v + a), root), mats["trim"])
+    if "goggles" in ex:
+        strap = [Vector((math.cos(a) * head[0] * 1.06, math.sin(a) * head[1] * 1.06, top * 0.62))
+                 for a in (math.pi * i / 16 for i in range(17))]
+        dress(mesh_obj("strap", tube_bm(strap, [0.06] * 17, 8), root), mats["jacket"])
+        for side in (-1, 1):
+            lens = lathe_bm([(0.12, 0.0), (0.12, 0.17), (-0.04, 0.19)], axis="y")
+            at = face_point(head, side * 0.3, top * 0.62, out=0.06)
+            dress(mesh_obj(f"goggle{side}", transform_bm(lens, lambda v, a=at: Vector((v.x, -v.y, v.z)) + a), root),
+                  mats["accent"])
+    if "beard" in ex:
+        def beard(v):
+            cover = smooth(-0.55 - v.z, 0.12) * smooth(-v.y - 0.1, 0.15)
+            return Vector((v.x * head[0], v.y * head[1], v.z * top * (1.0 + 0.25 * cover))) * (1.0 + 0.1 * cover)
+        shell = sphere_bm(1.0, 48, 24, lambda v: beard(v) if v.z < -0.5 and v.y < 0.2 else beard(Vector((v.x, v.y, -0.5))) * 0.97)
+        dress(mesh_obj("beard", shell, root), mats["trim"])
+    if "captain_cap" in ex:
+        crown = lathe_bm([(top * 0.85, head[0] * 0.75), (top * 1.15, head[0] * 0.85), (top * 1.25, head[0] * 0.8)], axis="z")
+        dress(mesh_obj("cap", crown, root), mats["jacket"])
+        peak = sphere_bm(0.4, 16, 8, lambda v: Vector((v.x * 1.1, v.y * 0.9 - 0.35, v.z * 0.12)))
+        dress(mesh_obj("peak", transform_bm(peak, lambda v: v + Vector((0, -0.25, top * 0.9))), root), mats["line"])
+        badge = sphere_bm(0.08, 10, 5, lambda v: Vector((v.x, v.y * 0.3, v.z)))
+        dress(mesh_obj("badge", transform_bm(badge, lambda v: v + face_point(head, 0, top * 0.9, out=0.2)), root), mats["accent"])
+    if "bun" in ex:
+        bun = sphere_bm(0.32, 16, 8)
+        dress(mesh_obj("bun", transform_bm(bun, lambda v: v + Vector((0, 0.35, top * 0.95))), root), mats["trim"])
+        cap = sphere_bm(1.0, 48, 24, lambda v: Vector((v.x * head[0], v.y * head[1], v.z * top)) * (1.06 if v.z > 0.45 else 0.98))
+        dress(mesh_obj("hair", cap, root), mats["trim"])
+    if "antennae" in ex:
+        for side in (-1, 1):
+            pts = [Vector((side * (0.25 + 0.3 * u), 0.1, top * 0.85 + 0.6 * u - 0.15 * u * u)) for u in (i / 9 for i in range(10))]
+            dress(mesh_obj(f"antenna{side}", tube_bm(pts, [0.06] * 10, 8), root), mats["skin"])
+            dress(mesh_obj(f"antennatip{side}", transform_bm(sphere_bm(0.11, 12, 6), lambda v, p=pts[-1]: v + p), root),
+                  mats["accent"])
     bust(mats, root)
     if "scarf" in ex:
         loop = [Vector((math.cos(a) * 0.62, math.sin(a) * 0.5, -0.8 + 0.05 * math.sin(a))) for a in (2 * math.pi * i / 32 for i in range(33))]
