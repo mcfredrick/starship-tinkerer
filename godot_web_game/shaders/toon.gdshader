@@ -8,9 +8,22 @@ uniform float shadow = 0.62;
 uniform float highlight = 0.0;
 // Pearl finish: an iridescent sheen that shifts hue with the viewing angle.
 uniform float pearl = 0.0;
+// Paint sweep: the old color stays ahead of a front moving along `sweep_axis` from `sweep_origin`.
+uniform vec3 old_color : source_color = vec3(1.0);
+uniform vec3 sweep_origin = vec3(0.0);
+uniform vec3 sweep_axis = vec3(0.0, 0.0, 1.0);
+uniform float sweep = 1000.0;
+
+varying float along;
+
+void vertex() {
+	along = dot((MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz - sweep_origin, sweep_axis);
+}
 
 void fragment() {
-	ALBEDO = color * (1.0 + highlight * 0.5);
+	vec3 base = along < sweep ? color : old_color;
+	float wet = 1.0 - smoothstep(0.0, 0.25, abs(along - sweep));
+	ALBEDO = mix(base, vec3(1.0), wet * 0.5) * (1.0 + highlight * 0.5);
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.0;
 	float rim = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 4.0);

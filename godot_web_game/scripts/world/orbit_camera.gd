@@ -37,6 +37,24 @@ func _unhandled_input(event: InputEvent) -> void:
 		refresh()
 
 
+## Glides to look at `point` from along `out`, `reach` away. Resolves when it arrives.
+func fly_to(point: Vector3, out: Vector3, reach: float, time := 0.6) -> void:
+	var to_yaw := atan2(out.x, out.z)
+	to_yaw = yaw + wrapf(to_yaw - yaw, -PI, PI)
+	var to_pitch := clampf(-asin(clampf(out.y, -1.0, 1.0)), -1.2, 0.35)
+	await glide(point, to_yaw, to_pitch, reach, time)
+
+
+func glide(to_target: Vector3, to_yaw: float, to_pitch: float, to_distance: float, time := 0.6) -> void:
+	var t := create_tween().set_parallel().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	t.tween_property(self, "target", to_target, time)
+	t.tween_property(self, "yaw", to_yaw, time)
+	t.tween_property(self, "pitch", to_pitch, time)
+	t.tween_property(self, "distance", to_distance, time)
+	t.tween_method(func(_v): refresh(), 0.0, 1.0, time)
+	await t.finished
+
+
 func refresh() -> void:
 	var offset := Vector3(sin(yaw) * cos(pitch), -sin(pitch), cos(yaw) * cos(pitch)) * distance
 	position = target + offset

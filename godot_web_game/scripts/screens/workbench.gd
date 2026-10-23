@@ -5,6 +5,7 @@ extends Screen
 const SCAN_RADIUS := 90.0
 const WARM_RADIUS := 220.0
 const SCAN_TIME := 1.4
+const MARKER_LIFT := 56.0
 
 var ship_id: String
 var commission := false
@@ -21,6 +22,10 @@ var _painted := false
 var _confirm_finish := false
 var _open_repair := -1
 var _open_tab := ""
+var _focus := -1
+var _fix_demo := -1
+var _demo := ""
+var _view: Array = []
 
 
 func setup(params: Dictionary) -> void:
@@ -28,6 +33,9 @@ func setup(params: Dictionary) -> void:
 	ship_id = params.get("ship", job_ship)
 	_open_repair = int(params.get("repair", "-1"))
 	_open_tab = params.get("tab", "")
+	_focus = int(params.get("focus", "-1"))
+	_fix_demo = int(params.get("fixfx", "-1"))
+	_demo = params.get("demo", "")
 
 
 func _ready() -> void:
@@ -95,6 +103,16 @@ func _ready() -> void:
 	_select(_open_tab if _open_tab in names else names[0])
 	if _open_repair >= 0:
 		_repair.call_deferred(_open_repair)
+	if _focus >= 0:
+		_lean_in.call_deferred(_focus)
+	if _fix_demo >= 0:
+		_demo_fix.call_deferred(_fix_demo)
+	# Screenshot aids for the animated actions: `paint` repaints, `part` swaps the engine.
+	match _demo:
+		"paint":
+			_paint.call_deferred("paint", "plum" if build.paint != "plum" else "teal")
+		"part":
+			_install.call_deferred("engine", _candidates("engine", build.parts.engine)[0])
 
 
 func _faults() -> Array:
@@ -178,6 +196,12 @@ func _update_scan(delta: float) -> void:
 
 
 func _draw_overlay() -> void:
+	for i in _markers:
+		var m: Button = _markers[i]
+		if m.visible:
+			var spot := m.position + Vector2(20, 20 + MARKER_LIFT)
+			_overlay.draw_line(spot, m.position + Vector2(20, 40), Color(UI.CREAM, 0.8), 2.0, true)
+			_overlay.draw_circle(spot, 3.5, Color(UI.CREAM, 0.9))
 	if _tab != "Scan":
 		return
 	var mouse := ui.get_local_mouse_position()
@@ -217,7 +241,8 @@ func _position_markers() -> void:
 		var m: Button = _markers[i]
 		var s := _screen_spot(f)
 		m.visible = s[1]
-		m.position = s[0] - Vector2(20, 20)
+		# Markers float above their fault so the damage itself stays in view.
+		m.position = s[0] - Vector2(20, 20 + MARKER_LIFT)
 		m.text = "✓" if f.fixed else "!"
 		m.disabled = f.fixed
 
@@ -249,14 +274,36 @@ func _repair(i: int) -> void:
 		Router.toast("You're out of spark. Time for tea and cake.", UI.BAD)
 		return
 	var spec: Dictionary = Content.parts.faults[f.type]
+	GameState.spark -= 1
+	GameState.save()
+	await _lean_in(i)
 	var game: Minigame = load("res://scripts/minigames/%s.gd" % spec.minigame).new()
 	game.setup(f.spot)
 	game.leniency = GameState.leniency(spec.skill, spec.minigame)
 	game.theme = Router.theme
 	game.finished.connect(_on_repaired.bind(i))
 	ui.add_child(game)
-	GameState.spark -= 1
-	GameState.save()
+
+
+## Swings the camera in to face a repair spot, remembering where it was.
+func _lean_in(i: int) -> void:
+	var cam := stage.camera
+	_view = [cam.target, cam.yaw, cam.pitch, cam.distance]
+	cam.interactive = false
+	var spot: int = _faults()[i].spot
+	var at := model.global_transform * model.spot_position(spot)
+	await cam.fly_to(at, model.global_basis * model.spot_normal(spot), 4.2)
+
+
+## Screenshot aid: leans in and plays a fault's fix effect without the minigame.
+func _demo_fix(i: int) -> void:
+	await _lean_in(i)
+	model.fault_fx(i).play_fix()
+
+
+func _lean_out() -> void:
+	await stage.camera.glide(_view[0], _view[1], _view[2], _view[3], 0.7)
+	stage.camera.interactive = true
 
 
 func _on_repaired(score: float, i: int) -> void:
@@ -264,11 +311,13 @@ func _on_repaired(score: float, i: int) -> void:
 	var spec: Dictionary = Content.parts.faults[f.type]
 	f.fixed = true
 	f.score = score
+	await model.fault_fx(i).play_fix()
 	Sfx.play("success")
 	var xp := 10 + roundi(20 * score)
 	GameState.add_xp(spec.skill, xp)
 	GameState.save()
 	Router.toast("%s fixed.  %s +%d" % [spec.name, Skills.LABELS[spec.skill], xp])
+	await _lean_out()
 	_rebuild()
 
 
@@ -340,13 +389,17 @@ func _install(slot: String, id: String) -> void:
 	build.parts[slot] = id
 	GameState.add_xp("mechanics", 3)
 	GameState.save()
+	model.lift_off(slot)
 	_rebuild()
+	model.drop_in(slot)
+	Sfx.play("tick", 0.5)
 
 
 func _remove(slot: String) -> void:
 	GameState.give(GameState.parts, build.parts[slot])
 	build.parts.erase(slot)
 	GameState.save()
+	model.lift_off(slot)
 	_rebuild()
 
 
@@ -403,12 +456,15 @@ func _finish_paint(id: String) -> void:
 
 
 func _paint(zone: String, color: String) -> void:
+	var old := Content.color(build[zone])
 	build[zone] = color
 	if not _painted:
 		_painted = true
 		GameState.add_xp("craft", 6)
 	GameState.save()
 	_rebuild()
+	model.sweep_paint(zone, old)
+	Sfx.play("weld", 1.6)
 
 
 # ---------------------------------------------------------------- tune
