@@ -1,31 +1,47 @@
 # Testing plan
 
-Work in two passes: automation first, so machine-checkable things never reach a play-test, then a
+Work in two passes: automation first, so machine-checkable problems never reach a play-test, then a
 structured play-test of what only a person can judge (feel, fun, pacing, clarity).
 
-## 1. Automated checks (run before every play-test and every commit)
+## 1. Automated checks
 
-| Check | Command | Catches |
+| Check | How | When |
 | --- | --- | --- |
-| Compile + logic tests | `./test.sh` (repo root) | Script errors, broken rules: grading, economy, walk-in generation, storylets, cat moods, race physics, glyph coverage, data references |
-| Race balance | `godot --headless --script res://tools/race_report.gd` | Rivals too fast or slow, AI hitting walls |
-| Screen sweep | Screenshot commands in `CLAUDE.md` with each fixture, at `1280x720` and phone `1170x540 --phone` | Layout overflow, missing art, text off screen |
-| Web boot | Headless Chrome command in `CLAUDE.md` against the live URL | Export problems, console errors |
+| Everything below except the sweep | `./test.sh` (repo root) | Before every commit; CI runs it before every deploy and a failure blocks the deploy |
+| Compile every script | part of `test.sh` | |
+| Logic tests (`tests/run_tests.gd`, every `test_` method) | part of `test.sh` | |
+| Autoplay soak (`tools/soak.tscn`): three seeded 40-day runs | part of `test.sh` | |
+| Race balance (`tools/race_report.gd`): every race, three Kettle builds | run by hand after touching race stats or tracks | |
+| Screen sweep (`tools/sweep.sh`): every screen, desktop and phone, contact sheets | run by hand before a play-test or after UI changes (needs a display) | |
+| Live web boot | headless Chrome command in `CLAUDE.md` | after a deploy |
 
-What the tests already guarantee: every shown character has a glyph on the web; every generated job
-is winnable; flipping a junker only pays if you fix it; storylet, drawer and dialogue references
-point at real scenes, items and parts; empty boost can't be held on; doll layers exist for every look.
+### What the automation guarantees
 
-### Still to automate (next steps)
+- **Content can't strand the story.** Every beat, letter and dialogue branch waits on a flag the game
+  can actually set; every beat, job, storylet, event, race, drawer and gift points at real scenes,
+  tracks, parts and items.
+- **The web build can draw every character** shown anywhere (data, dialogue, script strings).
+- **Generated work is fair.** Every walk-in job is winnable with market parts and tuning; flipping a
+  junker only pays if you fix it; the yard's stock and carts are stable for their day.
+- **Racing rules hold.** Empty boost can't be held on; the tow magnet pulls, the foghorn startles
+  and bubbles block it; AI racers lap every track without touching a wall.
+- **Long play is stable.** Over 40 days and three seeds: pebs never go negative, stacks never go
+  empty or negative, spark and Grommet's affection stay in range, every save loads back unchanged,
+  and bought cart offers stay sold after a reload (a real bug the soak test found).
 
-1. **Autoplay soak test.** A headless script that plays 30 seeded days through `GameState`
-   (take a board job, mark repairs done with random scores, grade, pay, sleep, buy and sell at the
-   market, flip a junker) and asserts no errors, pebs stay sane, and every screen script loads.
-2. **Screen sweep script.** One command that renders every screen and fixture at both sizes into a
-   folder for a quick visual scan.
-3. **CI.** Run `./test.sh` in the deploy workflow so a failing test blocks a deploy.
+### What it can't judge (that's the play-test)
 
-## 2. Play-test checklist (you)
+Feel of minigames and racing, whether text is clear, pacing, difficulty, fun, and how things look in
+motion. The bot also skips minigames, so it never earns skill XP the way you will.
+
+## 2. Things to look at first
+
+The soak test's economy summary says walk-in jobs pay about 460 to 500 pebs each, and a bot that never
+buys parts ends day 40 with over 20,000 pebs. A real player spends some of that on parts, but money
+likely stops mattering by midgame. Please note how it feels by day 7 and day 14; budgets are one line
+in `scripts/core/walkins.gd` to tune.
+
+## 3. Play-test checklist
 
 Play on desktop first, then a phone. For each item note: works / confusing / not fun / bug.
 
@@ -36,30 +52,35 @@ Play on desktop first, then a phone. For each item note: works / confusing / not
 - [ ] Crake's job: haggling, the three-step coupling, the breach, pearl finish, mischief
 - [ ] Club race: steering, drift, boost (and that it stops when empty), pause, quit
 
-**Day 4 onward (the evergreen game)**
-- [ ] Job board: are walk-ins varied, readable, fairly priced?
-- [ ] A walk-in job end to end, including a storylet's three beats over two days
-- [ ] A regular returning
-- [ ] Grommet: a helpful day, a mischief day, petting, sharing cake
-- [ ] Market news and drifting prices; restoring a worn part
-- [ ] A hawker's cart; a mystery crate (with and without Diagnostics 2)
+**Days 4 to 15 (arcs and events)**
+- [ ] Ilse's tenth of a second; Odessa's roots-or-roam choice; Brindle's Garden Dash prep; Crake's mother
+- [ ] The cups on their days (3 Night Run, 5 Garden Dash, 7 Slow Sunday) and the rating caps
+- [ ] Tow magnet and foghorn in a race
+- [ ] The Close Pass on day 11: does it land emotionally? Do your earlier choices show?
+- [ ] The novel chapters, Themba's letter, and the Lumen Reach lighthouse on day 15
+
+**The evergreen game**
+- [ ] Job board: varied, readable, fairly priced walk-ins? A storylet's three beats over two days?
+- [ ] A regular returning; Grommet's helpful and mischief days, petting, sharing cake
+- [ ] Market news and drifting prices; restoring a worn part; a hawker's cart and a mystery crate
 - [ ] Salvage yard: buy a junker, fix it, sell it; race a fixed project
-- [ ] Halloran's drawers as skills grow; the "For later" letter on day 7
+- [ ] Halloran's drawers as skills grow; the "For later" letter on day 7; your finds on the tablet
 
 **Phone-specific**
 - [ ] Button pill tucks away and comes back; full screen (Android) or home-screen tip (iPhone)
-- [ ] Text size, minigames by finger, race touch pads with two fingers
+- [ ] Text size, minigames by finger, race touch pads with two fingers, frame rate on the space tracks
 - [ ] Keyboard on the name form leaves no offset
 
 **Feel and pacing (the important part)**
 - [ ] Is each day the right length? Does spark run out too soon or never?
-- [ ] Is money too tight or too loose by day 7? Are walk-in budgets sensible?
+- [ ] Money by day 7 and 14 (see section 2)
 - [ ] Which minigames are fun, which are chores?
 - [ ] Any moment you didn't know what to do next?
 
-File findings as a list; I'll turn them into fixes and new automated checks where possible.
+Send findings as a list. Each becomes a fix and, wherever a machine could have caught it, a new
+automated check.
 
-## 3. Launch prep (not done yet; you asked to stop short)
+## 4. Launch (after the play-test)
 
-Custom domain (`CNAME`, DNS at the registrar), the `REGISTRY_UPDATE_TOKEN` secret, then the
-register workflow. Do these after the play-test pass.
+Point `starship-tinkerer.crap.games` at the game (CNAME and DNS), set the `REGISTRY_UPDATE_TOKEN`
+secret, then run the register workflow.

@@ -30,7 +30,9 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | --- | --- |
 | Run the game | `godot --path .` |
 | Reimport (after assets or new `class_name`s) | `godot --headless --import` |
-| All automated checks (use this) | `./test.sh` (repo root): compiles every script, runs the logic tests, fails on any script error |
+| All automated checks (use this) | `./test.sh` (repo root): compiles every script, runs the logic tests and the autoplay soak test, fails on any script error. CI runs it before every deploy |
+| Autoplay soak test alone | `godot --headless res://tools/soak.tscn` (three seeded 40-day runs; prints each run's economy) |
+| Screen sweep | `tools/sweep.sh [out_dir]` (repo root): every screen at desktop and phone size, contact sheets, script errors |
 | Logic tests | `godot --headless --script res://tests/run_tests.gd` (every `test_` method runs) |
 | Compile every script | `godot --headless res://tools/check_scripts.tscn` |
 | Race balance report | `godot --headless --script res://tools/race_report.gd` |
@@ -49,7 +51,8 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `evening`, `day2`, `brindle`,
 `crake`, `midway` (Crake's job with every fault one step in), `board` (day 4, walk-ins on the board),
 `walkin` (a walk-in's job on the bench), `hawker` (Fennimore's cart, a worn part on the shelf), `yard`
-(day 5 with a junker bought), `levelup`. The shop also takes `--cat=sweet|grumpy|sleepy`.
+(day 5 with a junker bought), `drawers` (day 8, skilled), `close_pass` (day 11, arcs done),
+`lumen` (day 15, Themba's letter read), `levelup`. The shop also takes `--cat=sweet|grumpy|sleepy`.
 
 ## Conventions
 
@@ -58,6 +61,9 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
   `data/walkins.json` through `Walkins`). Always look them up with `GameState.pilot(id)` and
   `GameState.job_spec(id)`. Generated customers speak as `guest` in dialogue, with `{guest}`,
   `{guest_ship}` and `{request}` tokens; `Router.talk(scene, guest_id)` says who that is.
+- Special events (`world.json` `events`) are launched by a beat with `"event": id` and play on the
+  event screen: a `place` (`comet`, `lighthouse`), a `scene`, optional `minigame`, `after` scene,
+  `gift` trinket and `unlock` flag. Handoffs set `<job>_<tier>` flags for later branches.
 - Storylets (`data/storylets.json`, scenes in `data/dialogue/storylets.txt`) attach to new walk-ins
   and play a scene per hook (`arrive`, `handoff`, next `morning`) through `Router.story(guest, hook)`.
   Their scenes set story-local flags with `! story <flag>`; the handoff sets `tier_<tier>`.
