@@ -285,44 +285,50 @@ func _jelly_school() -> void:
 func _whale_pod() -> void:
 	var center := Vector3(120, 0, 230)
 	for i in int(_t("whales", 3)):
-		var whale := Node3D.new()
+		var whale := whale(_rng.randf_range(7.0, 11.0), Color("4f6fb5").lerp(Color("6b5a9e"), i * 0.4))
 		add_child(whale)
-		var scale := _rng.randf_range(7.0, 11.0)
-		var skin := Stage.toon(Color("4f6fb5").lerp(Color("6b5a9e"), i * 0.4), 0.3, 0.0)
-		var belly := Stage.toon(Color("d8e4f0"), 0.2, 0.0)
-		var body := SphereMesh.new()
-		body.radius = scale
-		body.height = scale * 1.5
-		var b := Stage.mesh(body, skin)
-		b.scale = Vector3(1.0, 1.0, 2.6)
-		whale.add_child(b)
-		var under := Stage.mesh(body, belly, Vector3(0, -scale * 0.25, -scale * 0.3))
-		under.scale = Vector3(0.8, 0.55, 2.1)
-		whale.add_child(under)
-		var tail := Node3D.new()
-		tail.position = Vector3(0, 0, scale * 2.4)
-		whale.add_child(tail)
-		var fluke := SphereMesh.new()
-		fluke.radius = scale * 0.6
-		fluke.height = scale * 0.25
-		for side in [-1, 1]:
-			var f := Stage.mesh(fluke, skin, Vector3(side * scale * 0.55, 0, scale * 0.5))
-			f.rotation.y = side * 0.5
-			f.scale = Vector3(1.4, 1.0, 0.7)
-			tail.add_child(f)
-		for side in [-1, 1]:
-			var fin := Stage.mesh(fluke, skin, Vector3(side * scale * 1.0, -scale * 0.35, -scale * 0.6))
-			fin.rotation.z = side * 0.5
-			whale.add_child(fin)
-		var spot := SphereMesh.new()
-		spot.radius = scale * 0.09
-		spot.height = scale * 0.18
-		for k in 7:
-			for side in [-1, 1]:
-				whale.add_child(Stage.mesh(spot, Stage.glow(Color("9fffe0")),
-					Vector3(side * scale * 0.82, scale * 0.25, -scale * 1.6 + k * scale * 0.5)))
-		_whales.append({"node": whale, "tail": tail, "center": center + Vector3(0, _rng.randf_range(60, 140), 0),
+		_whales.append({"node": whale, "tail": whale.get_node("tail"), "center": center + Vector3(0, _rng.randf_range(60, 140), 0),
 			"radius": _rng.randf_range(520, 760), "angle": TAU * i / 3, "speed": _rng.randf_range(0.012, 0.02)})
+
+
+## A star whale `size` meters around, nose toward -Z, with a "tail" child to swish.
+static func whale(size: float, color: Color) -> Node3D:
+	var whale := Node3D.new()
+	var skin := Stage.toon(color, 0.3, 0.0)
+	var belly := Stage.toon(Color("d8e4f0"), 0.2, 0.0)
+	var body := SphereMesh.new()
+	body.radius = size
+	body.height = size * 1.5
+	var b := Stage.mesh(body, skin)
+	b.scale = Vector3(1.0, 1.0, 2.6)
+	whale.add_child(b)
+	var under := Stage.mesh(body, belly, Vector3(0, -size * 0.25, -size * 0.3))
+	under.scale = Vector3(0.8, 0.55, 2.1)
+	whale.add_child(under)
+	var tail := Node3D.new()
+	tail.name = "tail"
+	tail.position = Vector3(0, 0, size * 2.4)
+	whale.add_child(tail)
+	var fluke := SphereMesh.new()
+	fluke.radius = size * 0.6
+	fluke.height = size * 0.25
+	for side in [-1, 1]:
+		var f := Stage.mesh(fluke, skin, Vector3(side * size * 0.55, 0, size * 0.5))
+		f.rotation.y = side * 0.5
+		f.scale = Vector3(1.4, 1.0, 0.7)
+		tail.add_child(f)
+	for side in [-1, 1]:
+		var fin := Stage.mesh(fluke, skin, Vector3(side * size * 1.0, -size * 0.35, -size * 0.6))
+		fin.rotation.z = side * 0.5
+		whale.add_child(fin)
+	var spot := SphereMesh.new()
+	spot.radius = size * 0.09
+	spot.height = size * 0.18
+	for k in 7:
+		for side in [-1, 1]:
+			whale.add_child(Stage.mesh(spot, Stage.glow(Color("9fffe0")),
+				Vector3(side * size * 0.82, size * 0.25, -size * 1.6 + k * size * 0.5)))
+	return whale
 
 
 func _comet() -> void:
