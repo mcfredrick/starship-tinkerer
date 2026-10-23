@@ -44,7 +44,7 @@ func _fill() -> void:
 	if not any_cake:
 		_cakes.add_child(UI.label("The cake tin is empty. The market sells a few.", 18, UI.MUTED))
 	if _note.text == "":
-		_note.text = "Spark %d of %d. A tea lasts until you sleep." % [GameState.spark, GameState.MAX_SPARK]
+		_note.text = "Spark %d of %d. A tea lasts until you sleep." % [GameState.spark, GameState.max_spark()]
 
 
 func _card(id: String, count: int, action: Callable) -> Control:
@@ -85,7 +85,7 @@ func _brew(id: String) -> void:
 func _eat(id: String) -> void:
 	GameState.take(GameState.items, id)
 	var cake: Dictionary = Content.comforts.cakes[id]
-	GameState.spark = mini(GameState.spark + int(cake.spark), GameState.MAX_SPARK)
+	GameState.spark = mini(GameState.spark + int(cake.spark), GameState.max_spark())
 	GameState.save()
-	_note.text = "%s. %s Spark %d of %d." % [cake.name, cake.desc, GameState.spark, GameState.MAX_SPARK]
+	_note.text = "%s. %s Spark %d of %d." % [cake.name, cake.desc, GameState.spark, GameState.max_spark()]
 	_fill()

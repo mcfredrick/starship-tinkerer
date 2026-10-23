@@ -50,7 +50,36 @@
     "weld": {"name": "Cracked seam", "minigame": "weld", "skill": "mechanics",
       "stats": {"noise": 14, "comfort": -10}},
     "calibrate": {"name": "Drifting drive timing", "minigame": "calibrate", "skill": "electronics",
-      "stats": {"thrust": -8, "noise": 8}}
+      "stats": {"thrust": -8, "noise": 8}},
+    "rewire": {"name": "Frayed wiring", "minigame": "rewire", "skill": "electronics",
+      "stats": {"handling": -8, "boost": -6}},
+    "dent": {"name": "Dented panel", "minigame": "dent", "skill": "mechanics",
+      "stats": {"grip": -8, "top_speed": -4, "noise": 6}}
+  },
+  "tuning": {
+    "gear": {"label": "Gear ratio", "low": "Punchy", "high": "Fast", "stats": {"thrust": -10, "top_speed": 10}},
+    "fins": {"label": "Fin angle", "low": "Slippery", "high": "Grippy", "stats": {"grip": 8, "top_speed": -6}},
+    "damping": {"label": "Drive damping", "low": "Sharp", "high": "Plush", "stats": {"comfort": 8, "handling": -6, "noise": -4}}
+  },
+  "finishes": {
+    "gloss": {"name": "Gloss", "gloss": 0.35, "shadow": 0.62},
+    "matte": {"name": "Matte", "gloss": 0.0, "shadow": 0.7},
+    "metallic": {"name": "Metallic", "gloss": 0.9, "shadow": 0.48, "craft": 2},
+    "pearl": {"name": "Pearl", "gloss": 0.6, "shadow": 0.62, "pearl": 1.0, "knowledge": "knows_pearl"}
+  },
+  "mischief": {
+    "goose_horn": {"name": "Goose horn", "kind": "prank", "rapport": -1,
+      "desc": "The horn now honks like an affronted goose."},
+    "plaid": {"name": "Plaid upholstery", "kind": "prank", "rapport": -1,
+      "desc": "Every seat in eye-watering orange plaid."},
+    "bobblehead": {"name": "Rival bobblehead", "kind": "prank", "rapport": -1,
+      "desc": "A grinning bobblehead of their rival, glued to the dash."},
+    "smoke_rings": {"name": "Smoke-ring drive", "kind": "sabotage", "rapport": -2, "reputation": -1,
+      "desc": "The drive coughs a smoke ring at every takeoff.", "stats": {"noise": 10, "thrust": -4}},
+    "foam": {"name": "Foam surprise", "kind": "sabotage", "rapport": -2, "reputation": -1,
+      "desc": "The cockpit slowly fills with packing foam after ten minutes of flight.", "stats": {"comfort": -15}},
+    "spinout": {"name": "Hairpin hiccup", "kind": "sabotage", "rapport": -2, "reputation": -1,
+      "desc": "A loose stabilizer spins the ship at its first tight hairpin.", "stats": {"handling": -10}}
   },
   "palette": {
     "marigold": "e8a33d", "terracotta": "c8643f", "sage": "8fae7e", "teal": "3f8f8f", "dusk": "6b5a9e",

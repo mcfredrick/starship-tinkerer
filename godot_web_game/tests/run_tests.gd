@@ -4,11 +4,13 @@ extends SceneTree
 var _failures := 0
 var parts_data: Dictionary
 var world: Dictionary
+var perks_data: Dictionary
 
 
 func _init() -> void:
 	parts_data = JSON.parse_string(FileAccess.get_file_as_string("res://data/parts.json"))
 	world = JSON.parse_string(FileAccess.get_file_as_string("res://data/world.json"))
+	perks_data = JSON.parse_string(FileAccess.get_file_as_string("res://data/perks.json"))
 	test_pronoun_tokens()
 	test_dialogue_runner_follows_choices_flags_and_commands()
 	test_shipped_dialogue_parses()
@@ -17,6 +19,10 @@ func _init() -> void:
 	test_skill_levels()
 	test_content_matches_kit()
 	test_club_race_finishes_cleanly_and_upgrades_pay_off()
+	test_new_jobs_reward_tuning_and_finishes()
+	test_mischief_costs_rapport_and_sabotage_costs_the_tip()
+	test_perks_become_pending_and_add_up()
+	test_beats_and_jobs_point_at_real_dialogue()
 	print("FAILED: %d" % _failures if _failures else "all tests passed")
 	quit(1 if _failures else 0)
 
@@ -172,3 +178,81 @@ func test_club_race_finishes_cleanly_and_upgrades_pay_off() -> void:
 	check(b.times.kettle < a.times.kettle - 5.0, "upgrades make the Kettle faster: %.1f vs %.1f" % [b.times.kettle,
 		a.times.kettle])
 	check(b.times.kettle < b.times.brindle, "a racing build beats Brindle's tug")
+
+
+func _fixed(ship_id: String, job: Dictionary) -> Array:
+	var before: Dictionary = world.ships[ship_id].duplicate(true)
+	before.faults = job.faults.map(func(f): return {"type": f.type, "spot": f.spot, "fixed": false})
+	var after := before.duplicate(true)
+	for f in after.faults:
+		f.fixed = true
+	return [before, after]
+
+
+func test_new_jobs_reward_tuning_and_finishes() -> void:
+	var repairs := {0: 0.85, 1: 0.85}
+	var bj: Dictionary = world.jobs.brindle_1
+	var b := _fixed("bucket", bj)
+	var plain := Grading.grade(bj, world.pilots.brindle, b[0], b[1], repairs, parts_data)
+	check(plain.tier != "delighted", "Brindle's tug needs more than repairs: %s" % plain.tier)
+	b[1].tuning = {"damping": -1.0, "fins": 0.3}
+	var tuned := Grading.grade(bj, world.pilots.brindle, b[0], b[1], repairs, parts_data)
+	check(tuned.tier == "delighted", "sharp damping and grippy fins delight Brindle: %s" % [tuned.wants])
+
+	var cj: Dictionary = world.jobs.crake_1
+	var c := _fixed("magnificence", cj)
+	c[1].tuning = {"gear": 0.6}
+	var no_pearl := Grading.grade(cj, world.pilots.crake, c[0], c[1], repairs, parts_data)
+	check(not no_pearl.wants[1].met, "gloss isn't pearl")
+	c[1].finish = "pearl"
+	var best := Grading.grade(cj, world.pilots.crake, c[0], c[1], repairs, parts_data)
+	check(best.tier == "delighted", "fast and pearl delights Crake: %s" % [best.wants])
+	var haggled := cj.duplicate()
+	haggled.budget = 160
+	check(Grading.grade(haggled, world.pilots.crake, c[0], c[1], repairs, parts_data).pay == 200,
+		"a haggled budget pays less, tip included")
+
+
+func test_mischief_costs_rapport_and_sabotage_costs_the_tip() -> void:
+	var job: Dictionary = world.jobs.crake_1
+	var c := _fixed("magnificence", job)
+	c[1].tuning = {"gear": 0.6}
+	c[1].finish = "pearl"
+	var repairs := {0: 0.9, 1: 0.9}
+	var clean := Grading.grade(job, world.pilots.crake, c[0], c[1], repairs, parts_data)
+	c[1].mischief = ["goose_horn"]
+	var prank := Grading.grade(job, world.pilots.crake, c[0], c[1], repairs, parts_data)
+	check(prank.mischief == "prank" and prank.rapport == clean.rapport - 1, "a prank costs a little rapport")
+	check(prank.pay == clean.pay and prank.reputation == 0, "pranks keep the tip and the reputation")
+	c[1].mischief = ["goose_horn", "foam"]
+	var sab := Grading.grade(job, world.pilots.crake, c[0], c[1], repairs, parts_data)
+	check(sab.mischief == "sabotage" and sab.pay == job.budget and sab.reputation == -1,
+		"sabotage loses the tip and some reputation: %s" % sab)
+	var forgiven := Grading.grade(job, world.pilots.crake, c[0], c[1], repairs, parts_data,
+		{"mischief_forgiven": 1})
+	check(forgiven.reputation == 0, "Word of mouth softens the gossip")
+
+
+func test_perks_become_pending_and_add_up() -> void:
+	var xp := {"mechanics": 160, "electronics": 0, "diagnostics": 70, "craft": 0, "piloting": 0}
+	var pending := Perks.pending(xp, [], perks_data)
+	check(pending.size() == 3, "mechanics 2 and 3 plus diagnostics 2 are pending: %s" % [pending])
+	check(Perks.pending(xp, ["steady_torch", "salvager", "warm_hands"], perks_data).is_empty(), "choosing clears them")
+	check(is_equal_approx(Perks.value(["trickle_charge", "second_wind"], "spark_max", perks_data), 2.0),
+		"effects from different skills add up")
+	for skill in perks_data.perks:
+		for lvl in perks_data.perks[skill]:
+			check(perks_data.perks[skill][lvl].size() == 2, "%s level %s offers two perks" % [skill, lvl])
+
+
+func test_beats_and_jobs_point_at_real_dialogue() -> void:
+	var scenes := {}
+	for file in DirAccess.get_files_at("res://data/dialogue"):
+		scenes.merge(Dialogue.parse(FileAccess.get_file_as_string("res://data/dialogue/" + file)))
+	for beat in world.beats:
+		check(scenes.has(beat.scene), "beat scene %s exists" % beat.scene)
+	for id in world.jobs:
+		for tier in ["delighted", "pleased", "lukewarm"]:
+			check(scenes.has("%s_%s" % [world.jobs[id].dialogue, tier]), "%s has a %s scene" % [id, tier])
+	for kind in ["prank", "sabotage"]:
+		check(scenes.has("mischief_" + kind), "generic %s reaction exists" % kind)

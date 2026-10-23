@@ -6,19 +6,22 @@ var _job: Dictionary
 var _pilot: Dictionary
 var _grade: Dictionary
 var _card: VBoxContainer
+var _tricks: Array = []
 
 
 func _ready() -> void:
 	super()
 	_job_id = GameState.job.id
-	_job = Content.world.jobs[_job_id]
+	_job = GameState.job_terms()
 	_pilot = Content.world.pilots[_job.pilot]
 	var build: Dictionary = GameState.ships[_job.ship]
 	var repairs := {}
 	for i in build.faults.size():
 		if build.faults[i].fixed:
 			repairs[i] = build.faults[i].score
-	_grade = Grading.grade(_job, _pilot, GameState.job.before, build, repairs, Content.parts)
+	_grade = Grading.grade(_job, _pilot, GameState.job.before, build, repairs, Content.parts,
+		Perks.effects(GameState.perks, Content.perks))
+	_tricks = build.get("mischief", []).duplicate()
 
 	add_stage()
 	stage.spin_speed = 0.35
@@ -46,11 +49,16 @@ func _report() -> void:
 	if _grade.gift > 0:
 		_card.add_child(UI.label("You covered %d pebs yourself. %s noticed." % [_grade.gift, _pilot.short], 18,
 			UI.TEAL, true))
+	for id in _tricks:
+		_card.add_child(UI.label("Mischief: " + Content.parts.mischief[id].name, 18, UI.ROSE))
 
 
 func _play() -> void:
 	await get_tree().create_timer(0.8).timeout
 	await Router.talk("%s_%s" % [_job.dialogue, _grade.tier])
+	if _grade.mischief != "":
+		var scene: String = "%s_%s" % [_job.dialogue, _grade.mischief]
+		await Router.talk(scene if Content.dialogue.has(scene) else "mischief_" + _grade.mischief)
 	_pay()
 
 
@@ -63,6 +71,11 @@ func _pay() -> void:
 		gifts.append("%d × %s" % [_job.barter[item], Content.item(item).name])
 	GameState.rapport[_job.pilot] = GameState.rapport.get(_job.pilot, 0) + _grade.rapport
 	GameState.flags[_job_id + "_done"] = true
+	if _grade.mischief != "":
+		GameState.flags[_job_id + "_" + _grade.mischief] = true
+		GameState.flags.any_mischief = true
+		GameState.flags["any_mischief_" + _job.pilot] = true
+		GameState.reputation += _grade.reputation
 	for w in _job.wants:
 		if w.has("flag") and _grade.wants[_job.wants.find(w)].met:
 			GameState.flags[w.flag] = true
@@ -78,5 +91,7 @@ func _pay() -> void:
 		_card.add_child(UI.label("Including a tip, for work that delighted.", 17, UI.MUTED))
 	if gifts:
 		_card.add_child(UI.label("And: " + ", ".join(gifts), 19, UI.INK, true))
-	_card.add_child(UI.label("%s rapport +%d" % [_pilot.short, _grade.rapport], 19, UI.TEAL))
+	_card.add_child(UI.label("%s rapport %+d" % [_pilot.short, _grade.rapport], 19, UI.TEAL if _grade.rapport >= 0 else UI.BAD))
+	if _grade.reputation < 0:
+		_card.add_child(UI.label("The dock will hear about this. Reputation %d" % _grade.reputation, 17, UI.BAD, true))
 	_card.add_child(UI.button("Back to the shop", func(): Router.go("shop"), 22))

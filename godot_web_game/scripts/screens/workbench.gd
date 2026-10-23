@@ -1,11 +1,10 @@
-## The workbench: scan for faults, repair them, swap parts, paint and tune.
-## Works on the commission ship (with the pilot's wants) or on your own Kettle (with tuning).
+## The workbench: scan for faults, repair them, swap parts, paint, tune, and (if you must) make mischief.
+## Works on the commission ship (with the pilot's wants) or on your own Kettle.
 extends Screen
 
 const SCAN_RADIUS := 90.0
 const WARM_RADIUS := 220.0
 const SCAN_TIME := 1.4
-const TASKS := {"weld": "weld", "calibrate": "calibrate"}
 
 var ship_id: String
 var commission := false
@@ -13,7 +12,7 @@ var build: Dictionary
 var model: ShipModel
 var stats_panel: StatsPanel
 var _tab := ""
-var _tabs: HBoxContainer
+var _tabs: HFlowContainer
 var _content: VBoxContainer
 var _overlay: Control
 var _markers := {}
@@ -21,12 +20,14 @@ var _scan := {}
 var _painted := false
 var _confirm_finish := false
 var _open_repair := -1
+var _open_tab := ""
 
 
 func setup(params: Dictionary) -> void:
 	var job_ship: String = Content.world.jobs[GameState.job.id].ship if not GameState.job.is_empty() else "kettle"
 	ship_id = params.get("ship", job_ship)
 	_open_repair = int(params.get("repair", "-1"))
+	_open_tab = params.get("tab", "")
 
 
 func _ready() -> void:
@@ -48,7 +49,9 @@ func _ready() -> void:
 	ui.add_child(_overlay)
 	ui.add_child(Hud.new())
 
-	_tabs = UI.hbox([], 6)
+	_tabs = HFlowContainer.new()
+	_tabs.add_theme_constant_override("h_separation", 6)
+	_tabs.add_theme_constant_override("v_separation", 6)
 	_content = UI.vbox([], 10)
 	var title := UI.heading(build.name, 28)
 	# Tab content scrolls inside a panel that stops above the bottom buttons, so expanding part
@@ -81,14 +84,14 @@ func _ready() -> void:
 		UI.place(back, Control.PRESET_BOTTOM_LEFT, Vector2(16, -66), Vector2(160, 48))
 		ui.add_child(back)
 
-	var names := ["Scan", "Repair", "Parts", "Paint"] if commission else ["Parts", "Paint", "Tune"]
+	var names := ["Scan", "Repair", "Parts", "Paint", "Tune", "Mischief"] if commission else ["Parts", "Paint", "Tune"]
 	for n in names:
-		var b := UI.button(n, _select.bind(n), 18)
+		var b := UI.button(n, _select.bind(n), 17)
 		b.toggle_mode = true
 		b.name = n
 		_tabs.add_child(b)
 	stats_panel.show_build.call_deferred(build)
-	_select(names[0])
+	_select(_open_tab if _open_tab in names else names[0])
 	if _open_repair >= 0:
 		_repair.call_deferred(_open_repair)
 
@@ -114,6 +117,8 @@ func _select(tab: String) -> void:
 			_paint_tab()
 		"Tune":
 			_tune_tab()
+		"Mischief":
+			_mischief_tab()
 
 
 func _say(text: String, size := 19, color := UI.INK) -> Label:
@@ -164,9 +169,10 @@ func _update_scan(delta: float) -> void:
 			if _scan[i] >= SCAN_TIME:
 				f.found = true
 				Sfx.play("found")
-				GameState.add_xp("diagnostics", 12)
+				var xp := 12 + int(GameState.perk("scan_xp"))
+				GameState.add_xp("diagnostics", xp)
 				GameState.save()
-				Router.toast("Found it: %s.  Diagnostics +12" % Content.parts.faults[f.type].name)
+				Router.toast("Found it: %s.  Diagnostics +%d" % [Content.parts.faults[f.type].name, xp])
 				_select(_tab)
 
 
@@ -180,6 +186,8 @@ func _draw_overlay() -> void:
 			continue
 		var s := _screen_spot(f)
 		var d: float = mouse.distance_to(s[0])
+		if s[1] and GameState.perk("deep_scan") > 0:
+			_overlay.draw_circle(s[0], 9, Color(1.0, 0.8, 0.4, 0.25 + 0.1 * sin(Time.get_ticks_msec() / 300.0)))
 		if s[1] and d < WARM_RADIUS:
 			var warmth := 1.0 - d / WARM_RADIUS
 			var pulse := 0.8 + 0.2 * sin(Time.get_ticks_msec() / 120.0)
@@ -242,7 +250,7 @@ func _repair(i: int) -> void:
 	var spec: Dictionary = Content.parts.faults[f.type]
 	var game: Minigame = load("res://scripts/minigames/%s.gd" % spec.minigame).new()
 	game.setup(f.spot)
-	game.leniency = GameState.leniency(spec.skill, TASKS[spec.minigame])
+	game.leniency = GameState.leniency(spec.skill, spec.minigame)
 	game.theme = Router.theme
 	game.finished.connect(_on_repaired.bind(i))
 	ui.add_child(game)
@@ -275,7 +283,7 @@ func _parts_tab() -> void:
 		var options := UI.vbox([], 4)
 		for id in _candidates(slot, current):
 			var owned: int = GameState.parts.get(id, 0)
-			var text := "%s  ·  %s" % [Content.part(id).name, "on your shelf" if owned > 0 else UI.pebs(Content.part(id).price)]
+			var text := "%s  ·  %s" % [Content.part(id).name, "on your shelf" if owned > 0 else UI.pebs(Market.price(id))]
 			var b := UI.button(text, _install.bind(slot, id), 16)
 			b.tooltip_text = Content.part(id).desc
 			b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -320,7 +328,7 @@ func _install(slot: String, id: String) -> void:
 	if GameState.parts.get(id, 0) > 0:
 		GameState.take(GameState.parts, id)
 	else:
-		var price: int = Content.part(id).price
+		var price := Market.price(id)
 		if GameState.pebs < price:
 			Router.toast("Not enough pebs for the %s." % Content.part(id).name, UI.BAD)
 			return
@@ -344,6 +352,7 @@ func _remove(slot: String) -> void:
 # ---------------------------------------------------------------- paint
 
 func _paint_tab() -> void:
+	var hearts := commission and GameState.perk("taste_hearts") > 0
 	if commission:
 		_say(stats_panel.pilot.taste_hint, 17, UI.MUTED)
 	for zone in ["paint", "trim"]:
@@ -354,6 +363,9 @@ func _paint_tab() -> void:
 			var b := Button.new()
 			b.custom_minimum_size = Vector2(52, 40)
 			b.tooltip_text = name.capitalize()
+			if hearts and name in stats_panel.pilot.taste:
+				b.text = "♥"
+				b.add_theme_color_override("font_color", Color.WHITE)
 			var c := Content.color(name)
 			var chosen: bool = build[zone] == name
 			for state in ["normal", "hover", "pressed", "focus"]:
@@ -363,6 +375,30 @@ func _paint_tab() -> void:
 			b.pressed.connect(_paint.bind(zone, name))
 			grid.add_child(b)
 		_content.add_child(grid)
+	_content.add_child(UI.heading("Finish", 19))
+	var row := HFlowContainer.new()
+	row.add_theme_constant_override("h_separation", 6)
+	var current: String = build.get("finish", "gloss")
+	for id in Content.parts.finishes:
+		var f: Dictionary = Content.parts.finishes[id]
+		var b := UI.button(f.name, _finish_paint.bind(id), 16)
+		b.toggle_mode = true
+		b.button_pressed = id == current
+		if f.has("craft") and Skills.level(GameState.skills.craft) < f.craft:
+			b.disabled = true
+			b.tooltip_text = "Needs Craft level %d" % f.craft
+		elif f.has("knowledge") and not GameState.flags.has(f.knowledge):
+			b.disabled = true
+			b.tooltip_text = "You don't know how to lay this one down yet."
+		row.add_child(b)
+	_content.add_child(row)
+
+
+func _finish_paint(id: String) -> void:
+	build["finish"] = id
+	GameState.add_xp("craft", 2)
+	GameState.save()
+	_rebuild()
 
 
 func _paint(zone: String, color: String) -> void:
@@ -377,21 +413,59 @@ func _paint(zone: String, color: String) -> void:
 # ---------------------------------------------------------------- tune
 
 func _tune_tab() -> void:
-	_say("Gear ratio trades punch off the line for top speed.")
-	var slider := HSlider.new()
-	slider.min_value = -1
-	slider.max_value = 1
-	slider.step = 0.1
-	slider.value = build.get("tuning", {}).get("gear", 0.0)
-	slider.custom_minimum_size.x = 340
-	slider.value_changed.connect(func(v):
-		build["tuning"] = {"gear": v}
-		model.flash()
-		stats_panel.show_build(build))
-	slider.drag_ended.connect(func(_c): GameState.save())
-	_content.add_child(slider)
-	_content.add_child(UI.hbox([UI.label("Punchy", 16, UI.MUTED), UI.spacer(), UI.label("Fast", 16, UI.MUTED)]))
-	_say("The club race has no rating cap, but grander cups will.", 16, UI.MUTED)
+	if not build.has("tuning"):
+		build["tuning"] = {}
+	for knob in Content.parts.tuning:
+		var spec: Dictionary = Content.parts.tuning[knob]
+		_content.add_child(UI.heading(spec.label, 19))
+		var slider := HSlider.new()
+		slider.min_value = -1
+		slider.max_value = 1
+		slider.step = 0.05
+		slider.value = build.tuning.get(knob, 0.0)
+		slider.custom_minimum_size.x = 340
+		slider.value_changed.connect(func(v):
+			build.tuning[knob] = v
+			stats_panel.show_build(build))
+		slider.drag_ended.connect(func(_c):
+			model.flash()
+			GameState.save())
+		_content.add_child(slider)
+		_content.add_child(UI.hbox([UI.label(spec.low, 15, UI.MUTED), UI.spacer(), UI.label(spec.high, 15, UI.MUTED)]))
+	_say("Grander cups will cap race rating. The club race doesn't.", 15, UI.MUTED)
+
+
+# ---------------------------------------------------------------- mischief
+
+func _mischief_tab() -> void:
+	var pilot: Dictionary = stats_panel.pilot
+	_say("Nobody gets hurt and everything can be fixed later. But %s will notice, and the dock will talk." % pilot.short,
+		16, UI.MUTED)
+	if not build.has("mischief"):
+		build["mischief"] = []
+	for kind in ["prank", "sabotage"]:
+		_content.add_child(UI.heading("Pranks" if kind == "prank" else "Sabotage", 19))
+		for id in Content.parts.mischief:
+			var m: Dictionary = Content.parts.mischief[id]
+			if m.kind != kind:
+				continue
+			var on: bool = id in build.mischief
+			var b := UI.button(("✓ " if on else "") + m.name, _toggle_mischief.bind(id), 16)
+			b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			_content.add_child(b)
+			var line := UI.label(m.desc, 14, UI.MUTED, true)
+			line.custom_minimum_size.x = 300
+			_content.add_child(line)
+
+
+func _toggle_mischief(id: String) -> void:
+	if id in build.mischief:
+		build.mischief.erase(id)
+	else:
+		build.mischief.append(id)
+		Sfx.play("tick", 0.6)
+	GameState.save()
+	_rebuild()
 
 
 func _rebuild() -> void:

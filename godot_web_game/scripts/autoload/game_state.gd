@@ -20,7 +20,10 @@ var skills := {}
 var rapport := {}
 var flags := {}
 var buff := ""
-## The commission on the bench: {id, faults: [{type, spot, found, fixed, score}], before: build}.
+var perks: Array = []
+## Goes down with sabotage; the dock gossips.
+var reputation := 0
+## The commission on the bench: {id, before: build, budget}. Its faults live on the ship's build.
 var job := {}
 ## What happened today, for the night summary: {xp: {skill: n}, pebs: n, notes: [...]}.
 var today := {}
@@ -42,6 +45,8 @@ func new_game(name: String, pronouns: Variant) -> void:
 	rapport = {}
 	flags = {}
 	buff = ""
+	perks = []
+	reputation = 0
 	job = {}
 	_reset_today()
 	save()
@@ -65,7 +70,7 @@ func to_dict() -> Dictionary:
 	return {
 		"player": player, "day": day, "phase": phase, "spark": spark, "pebs": pebs, "parts": parts,
 		"items": items, "ships": ships, "skills": skills, "rapport": rapport, "flags": flags, "buff": buff,
-		"job": job, "today": today,
+		"job": job, "today": today, "perks": perks, "reputation": reputation,
 	}
 
 
@@ -84,6 +89,9 @@ func from_dict(d: Dictionary) -> void:
 	buff = d.buff
 	job = d.job
 	today = d.today
+	# Saves from before perks and reputation existed load with neither.
+	perks = d.get("perks", [])
+	reputation = int(d.get("reputation", 0))
 
 
 ## JSON numbers load as floats; counts should stay ints.
@@ -133,10 +141,26 @@ func buff_bonus(task: String) -> float:
 
 
 func leniency(skill: String, task: String) -> float:
-	return Skills.leniency(skills[skill], buff_bonus(task))
+	return Skills.leniency(skills[skill], buff_bonus(task) + perk(task + "_leniency"))
 
 
-## Commands from dialogue scripts ("! set flag", "! job id", "! give item n", "! pebs n").
+func perk(key: String) -> float:
+	return Perks.value(perks, key, Content.perks)
+
+
+func max_spark() -> int:
+	return MAX_SPARK + int(perk("spark_max"))
+
+
+## The job spec with the agreed budget, which haggling in dialogue may have changed.
+func job_terms() -> Dictionary:
+	var spec: Dictionary = Content.world.jobs[job.id].duplicate()
+	spec.budget = job.get("budget", spec.budget)
+	return spec
+
+
+## Commands from dialogue scripts ("! set flag", "! job id", "! give item n", "! pebs n",
+## "! budget n" to change the agreed budget of the job on the bench).
 func run_command(cmd: String, args: Array) -> void:
 	match cmd:
 		"set":
@@ -147,6 +171,8 @@ func run_command(cmd: String, args: Array) -> void:
 			give(items, args[0], int(args[1]) if args.size() > 1 else 1)
 		"pebs":
 			add_pebs(int(args[0]), "")
+		"budget":
+			job.budget = int(args[0])
 		_:
 			assert(false, "unknown dialogue command: " + cmd)
 	save()
@@ -167,8 +193,9 @@ func start_job(id: String) -> void:
 func end_day() -> void:
 	day += 1
 	phase = "morning"
-	spark = MAX_SPARK
+	spark = max_spark()
 	buff = ""
+	flags.erase("raced_today")
 	_reset_today()
 	save()
 

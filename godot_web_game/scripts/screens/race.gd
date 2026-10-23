@@ -38,7 +38,7 @@ func _ready() -> void:
 			race.rivals[pilot])
 	var kettle: Dictionary = GameState.ships.kettle
 	player = sim.add_racer("player", ShipStats.compute(kettle, Content.parts), ShipStats.gadget(kettle, Content.parts),
-		false)
+		false, 1.0, Perks.effects(GameState.perks, Content.perks))
 	_build_world()
 	_build_hud()
 	if DisplayServer.is_touchscreen_available():
@@ -361,7 +361,7 @@ func _update_hud() -> void:
 	_place.text = PLACES[sim.place_of(player) - 1]
 	_speed.text = "%d km/h" % roundi(player.v * 3.6)
 	_boost.value = player.boost / player.m.boost_capacity
-	_drift.value = clampf(player.charge / RaceSim.DRIFT_CHARGE, 0, 1)
+	_drift.value = clampf(player.charge / player.drift_need, 0, 1)
 	if player.gadget == "":
 		_gadget.text = "No gadget fitted"
 	elif player.cooldown > 0:

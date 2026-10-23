@@ -46,6 +46,11 @@ CHARACTERS = {
         "jacket": (0.78, 0.18, 0.2), "accent": (0.95, 0.95, 0.92), "head": (0.82, 0.82, 1.05),
         "hair_style": "bob", "goggles": True, "brow_color": (0.75, 0.62, 0.35),
     },
+    "crake": {
+        "skin": (0.9, 0.74, 0.66), "hair": (0.28, 0.2, 0.17), "iris": (0.35, 0.3, 0.2),
+        "jacket": (0.49, 0.25, 0.43), "accent": (0.79, 0.64, 0.29), "head": (0.8, 0.82, 1.08),
+        "hair_style": "slick", "mustache": True, "monocle": True, "brow_color": (0.25, 0.18, 0.15),
+    },
     "brindle": {
         "robot": True, "shell": (0.42, 0.62, 0.62), "jacket": (0.95, 0.5, 0.15), "glow": (0.55, 1.0, 0.85),
         "screen": (0.06, 0.1, 0.12), "accent": (0.25, 0.27, 0.3),
@@ -225,6 +230,14 @@ def human(c, e):
         dress(mesh_obj("hair", sphere_bm(1.0, 64, 32, cap), root), mats["hair"])
         bun = sphere_bm(0.42, 24, 12)
         dress(mesh_obj("bun", transform_bm(bun, lambda v: v + Vector((0, 0.45, 0.95))), root), mats["hair"])
+    elif c["hair_style"] == "slick":
+        # Combed back from a high hairline with a side part.
+        def slick(v):
+            cover = min(max(smooth(v.z - (0.55 - 0.08 * v.x)), smooth(v.y + 0.05)), smooth(v.z + 0.1))
+            p = hair_shell(v, head, 1.06, cover)
+            part = smooth(0.06 - abs(v.x + 0.35), 0.03) * cover
+            return p * (1.0 - 0.02 * part)
+        dress(mesh_obj("hair", sphere_bm(1.0, 64, 32, slick), root), mats["hair"])
     else:
         def bob(v):
             cover = min(max(smooth(v.z - (0.42 + 0.22 * v.x)), smooth(v.y + 0.25)), smooth(v.z + 0.6))
@@ -251,6 +264,22 @@ def human(c, e):
         bridge = [face_point(head, -0.12, 0.1, out=0.1), face_point(head, 0, 0.13, out=0.12),
                   face_point(head, 0.12, 0.1, out=0.1)]
         dress(mesh_obj("bridge", tube_bm(bridge, [0.018] * 3, 6), root), mats["metal"], line=0)
+    if c.get("mustache"):
+        for side in (-1, 1):
+            pts = []
+            for i in range(9):
+                u = i / 8
+                x = side * (0.03 + 0.3 * u)
+                z = -0.27 - 0.06 * math.sin(math.pi * u) + 0.12 * u ** 3
+                pts.append(face_point(head, x, z, out=0.04))
+            radii = [0.05 - 0.035 * (i / 8) ** 1.5 for i in range(9)]
+            dress(mesh_obj(f"stache{'lr'[side > 0]}", tube_bm(pts, radii, 10), root), mats["hair"], line=0.01)
+    if c.get("monocle"):
+        center = face_point(head, 0.31, 0.08, out=0.1)
+        ring = [center + Vector((math.cos(a) * 0.2, 0, math.sin(a) * 0.2)) for a in (2 * math.pi * i / 24 for i in range(25))]
+        dress(mesh_obj("monocle", tube_bm(ring, [0.026] * 25, 8, cap=False), root), mats["metal"], line=0)
+        chain = [center + Vector((0.2, 0.02, 0)), center + Vector((0.3, 0.1, -0.5)), center + Vector((0.32, 0.25, -1.1))]
+        dress(mesh_obj("chain", tube_bm(chain, [0.012] * 3, 6), root), mats["metal"], line=0)
     if c.get("goggles"):
         strap = [Vector((math.cos(a) * head[0] * 1.13, math.sin(a) * head[1] * 1.13, 0.62))
                  for a in (math.pi * i / 16 for i in range(17))]

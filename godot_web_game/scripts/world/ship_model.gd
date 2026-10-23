@@ -71,6 +71,11 @@ func _material(role: String, b: Dictionary) -> Material:
 			c = Content.color(b.trim)
 		m.set_shader_parameter("color", c)
 		m.set_shader_parameter("gloss", GLOSS.get(role, 0.0))
+		if role == "paint":
+			var finish: Dictionary = Content.parts.finishes[b.get("finish", "gloss")]
+			m.set_shader_parameter("gloss", finish.gloss)
+			m.set_shader_parameter("shadow", finish.shadow)
+			m.set_shader_parameter("pearl", finish.get("pearl", 0.0))
 		m.set_shader_parameter("highlight", _highlight)
 		var outline := ShaderMaterial.new()
 		outline.shader = OUTLINE

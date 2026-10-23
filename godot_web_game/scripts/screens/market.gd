@@ -1,9 +1,6 @@
 ## The dock's parts market: buy parts, teas and cakes; sell spare parts off your shelves.
 extends Screen
 
-## Share of the market price you get when selling a part back.
-const RESALE := 0.6
-
 var _buy: VBoxContainer
 var _sell: VBoxContainer
 
@@ -44,7 +41,8 @@ func _fill() -> void:
 		c.queue_free()
 	for id in Content.world.market:
 		var p: Dictionary = Content.part(id)
-		_buy.add_child(_row(p.name, p.desc, "Buy · %s" % UI.pebs(p.price), _buy_part.bind(id), GameState.pebs >= p.price))
+		var cost := Market.price(id)
+		_buy.add_child(_row(p.name, p.desc, "Buy · %s" % UI.pebs(cost), _buy_part.bind(id), GameState.pebs >= cost))
 	for id in Content.comforts.teas.keys() + Content.comforts.cakes.keys():
 		var item: Dictionary = Content.item(id)
 		if item.price > 0:
@@ -54,7 +52,7 @@ func _fill() -> void:
 		_sell.add_child(UI.label("Nothing spare right now.", 18, UI.MUTED))
 	for id in GameState.parts:
 		var p: Dictionary = Content.part(id)
-		var price := roundi(p.price * RESALE)
+		var price := Market.resale(id)
 		_sell.add_child(_row("%s  × %d" % [p.name, GameState.parts[id]], p.desc, "Sell · %s" % UI.pebs(price),
 			_sell_part.bind(id, price), true))
 
@@ -71,7 +69,7 @@ func _row(name: String, desc: String, action_text: String, action: Callable, ena
 
 func _buy_part(id: String) -> void:
 	var p: Dictionary = Content.part(id)
-	GameState.add_pebs(-p.price, "")
+	GameState.add_pebs(-Market.price(id), "")
 	GameState.give(GameState.parts, id)
 	GameState.save()
 	Router.toast("%s is on your shelf." % p.name)

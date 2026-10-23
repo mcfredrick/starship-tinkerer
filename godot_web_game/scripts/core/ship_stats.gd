@@ -1,14 +1,12 @@
 ## Ship numbers: stats from hull, parts, faults and tuning, and the performance rating races cap.
 ##
-## A build is a Dictionary: {hull, parts: {slot: part_id}, paint, trim, faults: [{type, spot, fixed}],
-## tuning: {gear: -1..1}}. `data` is parts.json.
+## A build is a Dictionary: {hull, parts: {slot: part_id}, paint, trim, finish, faults: [{type, spot, fixed}],
+## tuning: {gear|fins|damping: -1..1}, mischief: [id]}. `data` is parts.json.
 class_name ShipStats
 extends RefCounted
 
 const STATS := ["thrust", "top_speed", "handling", "grip", "boost", "mass", "comfort", "noise"]
 const SLOTS := ["engine", "fins", "cockpit", "lights", "top"]
-## Gear ratio trades acceleration for top speed.
-const GEAR_SWING := 10.0
 
 
 static func compute(build: Dictionary, data: Dictionary) -> Dictionary:
@@ -22,9 +20,14 @@ static func compute(build: Dictionary, data: Dictionary) -> Dictionary:
 	for f in build.get("faults", []):
 		if not f.get("fixed", false):
 			_add(stats, data.faults[f.type].stats)
-	var gear: float = build.get("tuning", {}).get("gear", 0.0)
-	stats.thrust -= gear * GEAR_SWING
-	stats.top_speed += gear * GEAR_SWING
+	# Each tuning slider scales its stat swing: -1 gives the opposite trade.
+	var tuning: Dictionary = build.get("tuning", {})
+	for knob in tuning:
+		var swing: Dictionary = data.tuning[knob].stats
+		for st in swing:
+			stats[st] += swing[st] * float(tuning[knob])
+	for id in build.get("mischief", []):
+		_add(stats, data.mischief[id].get("stats", {}))
 	for s in STATS:
 		stats[s] = maxf(stats[s], 0.0)
 	return stats

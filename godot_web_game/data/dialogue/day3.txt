@@ -1,0 +1,77 @@
+# Day three: Thaddeus Crake and the Magnificence. A haggler, and the first real temptation.
+
+== day3_morning
+* A chime sounds before the shop doors are even open. Then another. Then four in a row.
+end
+
+== crake_arrives
+* A long plum-and-brass yacht slides into the bay, takes up both bays, and stops with its nose six inches from your tea nook.
+crake grumpy: You. The new one. Halloran's replacement.
+crake thoughtful: I suppose you'll have to do. I am Thaddeus Crake. This is the Magnificence. You may admire her.
+> She's very... plum. => plum
+> Good morning to you too. => morning
+-- plum
+crake happy: Isn't she? Plum is the color of people who matter.
+=> job
+-- morning
+crake grumpy: Is it? I hadn't noticed. I've been waiting outside for nine minutes.
+=> job
+-- job
+crake: I want her to be the fastest yacht on the ring, and I want her to shine like money. Not that you'd know what that looks like.
+crake thoughtful: The posted rate for this sort of thing is two hundred and eighty pebs. I'll give you one sixty.
+> Two eighty, or find another shop. => firm
+> One sixty is fine. => cave
+-- firm
+crake grumpy: Hmph. Halloran never haggled. Fine. Two eighty. But I'll be watching.
+! job crake_1
+! set crake_held_firm
+end
+-- cave
+crake happy: Splendid. I knew you were sensible. Sensible people are so easy to work with.
+* He strolls out without a thank-you. The yacht's horn plays four notes of a march as he goes.
+! job crake_1
+! budget 160
+! set crake_haggled
+end
+
+== crake_1_delighted
+* Crake circles the Magnificence, cane tapping, saying nothing for a long time.
+crake surprised: Well. Well, well. She's... yes. She's exactly right.
+crake thoughtful: Don't let it go to your head. I'll mention your shop at the yacht club. Quietly.
+* He counts out the pebs with great ceremony and, after a visible struggle, adds a tip.
+end
+
+== crake_1_pleased
+crake thoughtful: Adequate. Better than adequate, if I'm generous, and I'm rarely generous.
+crake: Here. Payment, as agreed. Not a peb more.
+end
+
+== crake_1_lukewarm
+crake grumpy: This is it? This is what Quietwater calls craftsmanship?
+crake: I'll pay, because a Crake pays his debts. But I'll be telling people.
+end
+
+== crake_1_prank
+* Crake settles into the pilot's seat and taps the horn to announce his departure.
+* It honks. Or squeaks. Or something is grinning at him from the dash. The bay goes very quiet.
+crake surprised: What. Is. That.
+> A complimentary upgrade. => straight
+> I have no idea what you mean. => straight
+-- straight
+crake grumpy: You think you're very funny.
+crake thoughtful: ...
+crake grumpy: It is, I'll admit, slightly funny. Do not tell anyone I said that.
+* He leaves anyway. You get the feeling this isn't over.
+end
+
+== crake_1_sabotage
+* The Magnificence lifts off, wobbles, and something goes "pff."
+crake surprised: What was that? What did you DO?
+crake grumpy: You'll be hearing from my solicitor. I have three. They all hate you already.
+* He pays. Grudgingly, and in the smallest coins he has.
+end
+
+== day4_morning
+* Morning on Quietwater, and the dock has settled into its rhythm with you in it.
+* That's everything written so far. You can keep tinkering, trading, taking tea and racing, and more pilots are on their way.
+end

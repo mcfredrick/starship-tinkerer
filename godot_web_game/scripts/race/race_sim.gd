@@ -34,14 +34,21 @@ func _init(t: Track, lap_count: int) -> void:
 
 
 ## `skill` 0..1 scales how close an AI drives to its ship's limit; the player has no skill value.
-func add_racer(id: String, stats: Dictionary, gadget: String, ai: bool, skill := 1.0) -> Dictionary:
+## `perks` are summed perk effects (boost_capacity, boost_power, drift_charge, wall_grace,
+## gadget_cooldown), used for the player's ship.
+func add_racer(id: String, stats: Dictionary, gadget: String, ai: bool, skill := 1.0, perks := {}) -> Dictionary:
 	var grid := racers.size()
 	var r := {
 		"id": id, "ai": ai, "skill": skill, "m": ShipStats.handling_model(stats),
 		"s": -6.0 - grid * 9.0, "d": [3.0, -3.0, 0.0, 6.0][grid % 4], "v": 0.0, "psi": 0.0,
 		"steer": 0.0, "boost": 0.0, "boosting": false, "drift": false, "charge": 0.0, "mini": 0.0,
 		"gadget": gadget, "cooldown": 3.0, "shield": 0.0, "finish": -1.0, "bump": 0.0,
+		"drift_need": DRIFT_CHARGE * (1.0 - perks.get("drift_charge", 0.0)),
+		"wall_slow": 0.93 if perks.get("wall_grace", 0.0) > 0 else WALL_SLOW,
+		"gadget_time": GADGET_COOLDOWN * (1.0 - perks.get("gadget_cooldown", 0.0)),
 	}
+	r.m.boost_capacity += perks.get("boost_capacity", 0.0)
+	r.m.boost_power += perks.get("boost_power", 0.0)
 	r.boost = r.m.boost_capacity
 	racers.append(r)
 	return r
@@ -133,7 +140,7 @@ func _drive(r: Dictionary, input: Dictionary, dt: float) -> void:
 		r.v *= 1.0 - 0.12 * dt
 		r.charge += dt * absf(steer)
 	elif was_drifting:
-		if r.charge >= DRIFT_CHARGE:
+		if r.charge >= r.drift_need:
 			r.mini = MINI_BOOST
 			events.append({"type": "miniboost", "id": r.id})
 		r.charge = 0.0
@@ -151,7 +158,7 @@ func _drive(r: Dictionary, input: Dictionary, dt: float) -> void:
 		r.d = signf(r.d) * limit
 		r.psi *= -0.3
 		if r.shield <= 0 and r.bump <= 0:
-			r.v *= WALL_SLOW
+			r.v *= r.wall_slow
 			r.bump = 0.4
 			events.append({"type": "wall", "id": r.id})
 
@@ -166,7 +173,7 @@ func _coast(r: Dictionary, dt: float) -> void:
 
 
 func _use_gadget(r: Dictionary) -> void:
-	r.cooldown = GADGET_COOLDOWN
+	r.cooldown = r.gadget_time
 	match r.gadget:
 		"ribbon":
 			ribbons.append({"from": r.s + 4.0, "to": r.s + 4.0 + RIBBON_LENGTH, "d": r.d, "life": RIBBON_TIME})

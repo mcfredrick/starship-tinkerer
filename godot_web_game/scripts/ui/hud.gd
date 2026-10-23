@@ -28,7 +28,7 @@ func _ready() -> void:
 func refresh() -> void:
 	_day.text = "Day %d · %s" % [GameState.day, PHASES[GameState.phase]]
 	_pebs.text = UI.pebs(GameState.pebs)
-	_spark.text = "Spark " + "●".repeat(GameState.spark) + "○".repeat(GameState.MAX_SPARK - GameState.spark)
+	_spark.text = "Spark " + "●".repeat(GameState.spark) + "○".repeat(maxi(GameState.max_spark() - GameState.spark, 0))
 	_tea.text = Content.comforts.teas[GameState.buff].name if GameState.buff else ""
 	var unread := Tablet.unread()
 	_tablet.text = "Tablet  ● %d" % unread if unread else "Tablet"

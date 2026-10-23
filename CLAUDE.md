@@ -33,7 +33,7 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Logic tests | `godot --headless --script res://tests/run_tests.gd` |
 | Compile every script | `godot --headless res://tools/check_scripts.tscn` |
 | Race balance report | `godot --headless --script res://tools/race_report.gd` |
-| Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet] [--repair=0]` |
+| Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet] [--talk=scene]` plus screen params: workbench `--ship= --tab= --repair=N`, title `--form=[custom]` |
 | Ship kit | `$B -b --python blender/export_ship_kit.py` (repo root); preview with `preview_kit.py -- out.png [--front]` |
 | Portraits | `$B -b --python blender/portraits.py -- [character ...]` |
 | Prop icons | `$B -b --python blender/props.py` |
@@ -41,7 +41,8 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Sound effects | `uv run --with numpy python -I tools/sfx.py` (repo root) |
 | Check the live web build | `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --use-angle=swiftshader --enable-unsafe-swiftshader --window-size=1280,720 --timeout=40000 --user-data-dir=<tmp> --screenshot=out.png <url>` (add `--enable-logging=stderr --v=0` and grep `CONSOLE` for errors) |
 
-Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `evening`, `day2`.
+Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `evening`, `day2`, `brindle`,
+`crake`, `levelup`.
 
 ## Conventions
 
@@ -49,7 +50,10 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
 - Ship kit mesh names end in a material role (`_paint`, `_trim`, `_glass`, `_metal`, `_glow`,
   `_dark`). Sockets are `<hull>__socket_<slot>`, repair spots `<hull>__spot_<n>`. Ship nose is
   Blender +Y, which is Godot -Z.
-- Story progress is flags in `GameState.flags`. Shop beats mark themselves `seen_<scene>`.
+- Story progress is flags in `GameState.flags`. Story beats are listed in `world.json` `beats` and
+  mark themselves `seen_<scene>` after playing. Job reactions are `<job>_<tier>` scenes, with
+  optional `<job>_prank` / `<job>_sabotage` (generic `mischief_*` fallbacks).
+- New save fields must load with a default (`d.get(...)`) so older saves keep working.
 - Player-facing text uses pronoun tokens (`{name}`, `{they}`, `{is|are}`...) and never assumes a
   gender for the player.
 - Currency is pebs everywhere (`pebs`, never "credits" or "coins").

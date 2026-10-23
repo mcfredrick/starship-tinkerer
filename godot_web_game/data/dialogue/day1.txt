@@ -96,9 +96,3 @@ ilse thoughtful: Well, you finished. Most first-timers spin out on the sun-hairp
 brindle happy: Your Kettle has a very nice whistle when it is being passed.
 ilse: Tune her up. Come back next week.
 end
-
-== day2_morning
-* Morning on Quietwater. The drum gardens hiss with misters and somebody is frying moon-plum fritters.
-* Your tablet has new mail.
-* (That's the end of the vertical slice. You can keep tinkering on the Kettle, buy and sell parts, take tea, and race again.)
-end

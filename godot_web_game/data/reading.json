@@ -1,28 +1,128 @@
 {
   "entries": {
     "halloran_1": {
-      "kind": "letter", "title": "Welcome to the shop", "from": "Halloran", "day": 1,
+      "kind": "letter",
+      "title": "Welcome to the shop",
+      "from": "Halloran",
+      "day": 1,
       "body": "Dear {name},\n\nIf you're reading this, the dock office found you, and the hangar is yours. I'm sorry about the state of it. Every drawer has a story and most of them end in \"I'll finish that later.\"\n\nA few things you should know. The kettle in the tea nook is temperamental, so tap it twice. The Kettle under the tarp in the back bay is a different kettle, and it's yours too. She was going to be my last project. She's slow, she's loud and I love her. Make her fly.\n\nPilots will come. They always do. Listen to what they ask for, then listen again for what they mean. The ship always tells you the rest.\n\nI'm out past the comet line now, watching ice turn into fireworks. The tea here is terrible. I've never been happier.\n\nWith grease under every fingernail,\nHalloran\n\nP.S. Odessa Vell will stop by soon. Be kind to her Moth. That ship has carried more birthday presents than any freighter in the system."
     },
     "bulletin_1": {
-      "kind": "bulletin", "title": "Quietwater Dock Bulletin", "from": "Dock office", "day": 1,
+      "kind": "bulletin",
+      "title": "Quietwater Dock Bulletin",
+      "from": "Dock office",
+      "day": 1,
       "body": "DRUM GARDEN NEWS\nThe moon-plums are early this cycle. The gardeners ask that you stop eating them off the vine. You know who you are.\n\nCLUB RACE TONIGHT\nThe weekly Quietwater Club Race runs three laps around the ring at last bell. Entry is free and so is the cocoa. Captain Marrow is defending her title for the forty-first week running and would like everyone to stop counting.\n\nLOST AND FOUND\nOne (1) hat, knitted, with ear holes. Not for a human. Ask at the office.\n\nGOSSIP CORNER\nA certain maintenance unit was seen watching race replays through the observation glass until third shift. When asked, it said it was \"studying joy.\" We have no further questions."
     },
     "novel_1": {
-      "kind": "story", "title": "The Lighthouse Keeper of Lumen Reach, Chapter 1", "from": "Serial by T. Okonkwo-Hale", "day": 1,
+      "kind": "story",
+      "title": "The Lighthouse Keeper of Lumen Reach, Chapter 1",
+      "from": "Serial by T. Okonkwo-Hale",
+      "day": 1,
       "body": "Nobody had needed a lighthouse in Lumen Reach for ninety years, which is exactly why Wren Abara took the job.\n\nThe beacon still turned, out of habit more than purpose, sweeping its slow gold arm across a field of drifting ice. Ships had beacons of their own now, and maps, and minds that never got lost. Wren had a kettle, a cat named Corollary, and a logbook that the previous keeper had filled with nothing but weather.\n\n\"Calm,\" read one entry. \"Calm again,\" read the next. Then, three hundred pages in, in handwriting gone wobbly with excitement: \"A whale.\"\n\nWren read that entry four times. Then Wren put the kettle on, wrapped a blanket around both shoulders, and went up to the lamp room to wait.\n\nCorollary, who did not believe in whales, went to sleep on the logbook.\n\n(Chapter 2 arrives tomorrow.)"
     },
     "manual_hush": {
-      "kind": "manual", "title": "Hushdrive Owner's Pamphlet", "from": "Softwind Drive Co.", "day": 1, "unlock": "knows_hush",
+      "kind": "manual",
+      "title": "Hushdrive Owner's Pamphlet",
+      "from": "Softwind Drive Co.",
+      "day": 1,
+      "unlock": "knows_hush",
       "body": "CONGRATULATIONS on your Hushdrive!\n\nThe Hushdrive's teardrop shell is lined with a woven dampening mesh that turns rattle into purr. Fitted to a small hauler it can cut cabin noise by half, and passengers report it \"sounds like a cat thinking about a nap.\"\n\nTINKERER'S NOTE (in Halloran's handwriting): Noise isn't just the drive. Cracked seams sing at speed. Weld them first, then swap the drive, and you'll hear the difference.\n\nREADING THIS PAMPHLET: you'll recognize Hushdrive fittings at a glance, and quiet-ride requests will make more sense to you."
     },
     "odessa_letter_1": {
-      "kind": "letter", "title": "From the comet bloom", "from": "Odessa Vell", "day": 2, "requires": "odessa_1_quiet",
+      "kind": "letter",
+      "title": "From the comet bloom",
+      "from": "Odessa Vell",
+      "day": 2,
+      "requires": "odessa_1_quiet",
       "body": "Dear {name},\n\nWe saw it! The whole sky went silver and pink, and the little ones pressed their noses to the glass and narrated every single sparkle. I heard every word. Every word! Do you know how long it's been since I heard a whole sentence from my grandson? He has opinions about comets. Many opinions.\n\nThe Moth hums now. My granddaughter says it sounds like a cat thinking about a nap. I don't know where she got that.\n\nI'm thinking about something, and I'll tell you about it when I'm back through Quietwater. Keep the kettle warm.\n\nYours, with seed cake crumbs on the page,\nOdessa"
     },
     "odessa_letter_1b": {
-      "kind": "letter", "title": "From the comet bloom", "from": "Odessa Vell", "day": 2, "requires": "odessa_1_done", "excludes": "odessa_1_quiet",
+      "kind": "letter",
+      "title": "From the comet bloom",
+      "from": "Odessa Vell",
+      "day": 2,
+      "requires": "odessa_1_done",
+      "excludes": "odessa_1_quiet",
       "body": "Dear {name},\n\nWe saw it! The whole sky went silver and pink. The little ones pressed their noses to the glass and talked the whole way through. I caught about half of it, which is half more than last time.\n\nThe Moth still grumbles, bless her. Next time I'm through Quietwater, I think she and I need another visit.\n\nYours, with seed cake crumbs on the page,\nOdessa"
+    },
+    "manual_pearl": {
+      "kind": "manual",
+      "title": "The Pearl Lacquer Primer",
+      "from": "Halloran's margin notes",
+      "day": 2,
+      "unlock": "knows_pearl",
+      "body": "PEARL LACQUER, A PRIMER\n\nPearl isn't a color. It's a promise that the color will change when you're not looking. Three thin coats over a warm base, each one buffed until you can see your own doubt in it.\n\nTINKERER'S NOTE (in Halloran's handwriting): The rich ones always ask for pearl. Charge them for it. Then do it properly anyway, because the ship didn't do anything wrong.\n\nREADING THIS PRIMER: you can now lay down a pearl finish in the paint bay."
+    },
+    "novel_2": {
+      "kind": "story",
+      "title": "The Lighthouse Keeper of Lumen Reach, Chapter 2",
+      "from": "Serial by T. Okonkwo-Hale",
+      "day": 2,
+      "body": "Wren waited three nights for the whale.\n\nOn the first night Wren saw a comet, which was nice, and wrote it down. On the second night Wren saw a cargo hauler with one headlamp out, and radioed them about it, and they said thank you in the tone of people who would not be fixing it. On the third night Wren saw nothing at all and fell asleep in the lamp room with a cold cup of tea.\n\nCorollary woke Wren at dawn by sitting on Wren's face.\n\nThe beacon had stopped turning.\n\nIt had never stopped turning, not in ninety years. Wren climbed up to check the gears and found them perfectly fine, and found something else instead: a long, pale, gentle shape drifting past the window, close enough to touch, its eye as big as the lamp, looking in.\n\nLooking, Wren would swear for the rest of a long life, at the light.\n\n(Chapter 3 arrives tomorrow.)"
+    },
+    "novel_3": {
+      "kind": "story",
+      "title": "The Lighthouse Keeper of Lumen Reach, Chapter 3",
+      "from": "Serial by T. Okonkwo-Hale",
+      "day": 3,
+      "body": "The whale came back every night after that.\n\nIt never came closer than the first time, and it never stayed long. It drifted up out of the ice field, hung by the window while the beacon passed over it once, twice, three times, and then sank away again into the dark.\n\nWren started leaving the beacon on the slow setting. Then Wren started reading aloud, because it felt rude to just stare. Recipes, mostly, and the old keeper's weather log. Calm. Calm again.\n\nCorollary, who still did not believe in whales, began sleeping on the windowsill.\n\n(To be continued.)"
+    },
+    "bulletin_3": {
+      "kind": "bulletin",
+      "title": "Quietwater Dock Bulletin",
+      "from": "Dock office",
+      "day": 3,
+      "excludes": "any_mischief",
+      "body": "SHOP NEWS\nThe hangar at the end of Ring Four is open again under new management. Early reports describe the work as \"careful,\" \"cheerful,\" and \"not too expensive,\" which is high praise on this dock.\n\nCLUB RACE\nCaptain Marrow defended her title once more. A maintenance unit finished the race, came back to the start line, and asked if it could do it again. It was allowed.\n\nREMINDER\nThe moon-plums are still not for picking."
+    },
+    "bulletin_3b": {
+      "kind": "bulletin",
+      "title": "Quietwater Dock Bulletin",
+      "from": "Dock office",
+      "day": 3,
+      "requires": "any_mischief",
+      "body": "SHOP NEWS\nThe hangar at the end of Ring Four is open again under new management. Reports are mostly glowing, with one or two pilots muttering about \"surprises.\" We're sure it's nothing.\n\nCLUB RACE\nCaptain Marrow defended her title once more. A maintenance unit finished the race, came back to the start line, and asked if it could do it again. It was allowed.\n\nREMINDER\nThe moon-plums are still not for picking."
+    },
+    "brindle_letter_1": {
+      "kind": "letter",
+      "title": "A report on corners",
+      "from": "Brindle",
+      "day": 3,
+      "requires": "brindle_1_done",
+      "body": "Dear {name},\n\nI have taken the Bucket around the ring forty-one times since yesterday. I have attached a chart of my joy in corners. It goes up.\n\n(There is no chart. Brindle has drawn a line going up, then a smiling face, then another line going up off the edge of the page.)\n\nI have told everybody on the dock about your shop. Some of them did not ask. I told them anyway.\n\nYour friend and rival,\nBrindle"
+    },
+    "halloran_2": {
+      "kind": "letter",
+      "title": "Ice and fireworks",
+      "from": "Halloran",
+      "day": 3,
+      "body": "Dear {name},\n\nWord travels slow out here, but it travels. Odessa sent me a message that was mostly exclamation marks. I gather you made her Moth purr.\n\nA word of advice, since I can't help giving it. You'll get customers who are rude. Some of them will deserve a goose horn. Some of them will deserve worse. Remember that you have to live on that dock, and they'll remember you as long as you remember them.\n\nThat said. If Thaddeus Crake ever comes in, I left something in the second drawer from the left. It honks.\n\nThe comet bloom out here is starting. I've run out of words for it, so I'll stop.\n\nHalloran"
+    },
+    "crake_letter_polite": {
+      "kind": "letter",
+      "title": "Re: The Magnificence",
+      "from": "Thaddeus Crake",
+      "day": 4,
+      "requires": "crake_1_done",
+      "excludes": "any_mischief_crake",
+      "body": "{name},\n\nThe Magnificence performed acceptably at the yacht club regatta. Several people asked where she was serviced. I told them. You may expect a better class of customer.\n\nDo not mistake this for gratitude.\n\nT. Crake"
+    },
+    "crake_letter_prank": {
+      "kind": "letter",
+      "title": "A STRONGLY WORDED LETTER",
+      "from": "Thaddeus Crake",
+      "day": 4,
+      "requires": "crake_1_prank",
+      "body": "{name},\n\nI have been unable to remove the item. I have consulted three engineers. One of them laughed so hard he had to sit down.\n\nI want you to know that I am not amused, and that I will be returning, and that I am also, against my will, a little bit impressed.\n\nThis is not over.\n\nT. Crake\n\nP.S. The yacht club has started calling me \"Honky.\" I hope you're happy."
+    },
+    "crake_letter_sabotage": {
+      "kind": "letter",
+      "title": "NOTICE OF GRIEVANCE",
+      "from": "Crake, Crake & Thistlewood, Solicitors",
+      "day": 4,
+      "requires": "crake_1_sabotage",
+      "body": "To the proprietor,\n\nWe write on behalf of our client, Mr. Thaddeus Crake, regarding an incident involving his yacht, the Magnificence, a regatta, and approximately forty cubic meters of packing foam (or smoke rings, or a hairpin; our client's account varies).\n\nOur client demands the vessel be restored at your expense when next he docks.\n\nYours, with some reluctance, as Mr. Crake is not an easy client either,\nCrake, Crake & Thistlewood"
     }
   }
 }

@@ -1,0 +1,75 @@
+# Day two: Brindle's commission, and the mischief reactions shared by every job.
+
+== day2_morning
+* Morning on Quietwater. The drum gardens hiss with misters and somebody is frying moon-plum fritters.
+* Your tablet has new mail.
+end
+
+== brindle_arrives
+* A boxy yellow tug bumps gently into the bay door, backs up, and tries again. On the second go it fits.
+brindle happy: Good morning, {name}! I have come as a customer. I have never been a customer before. I am very excited.
+brindle thoughtful: I have been studying the Bucket in races. In corners it feels like... like a shopping trolley with one bad wheel.
+brindle sad: I measured my joy in corners. It was low. Lower than in straight lines. Lower than in queues.
+> What would make it better? => better
+> Shopping trolleys can be fun. => trolley
+-- trolley
+brindle laughing: That is true! I once rode one down the cargo ramp. It was the second-best day of my life.
+=> better
+-- better
+brindle: I would like the Bucket to turn like a happy thought, and stick to corners like a happy magnet.
+brindle: I have ninety pebs. I also have a Hushdrive I found in a salvage bin. It is in excellent condition. It hums like a sleepy cat.
+brindle thoughtful: I do not need it. My Bucket is supposed to clank. Clanking is part of its personality.
+brindle happy: Also, I should tell you something. If you make the Bucket better, I will use it to beat you in races. In a friendly way.
+> Deal, rival. => deal
+> I'll make it a little bit better. => deal
+-- deal
+brindle happy: Hooray. I will go and watch the misters in the drum gardens. They make small rainbows.
+! job brindle_1
+end
+
+== brindle_1_delighted
+* Brindle climbs in, takes the Bucket once around the bay, and comes back very slowly, as if it doesn't want the turn to end.
+brindle laughing: {name}! The corners! They are fun now! I turned three times on purpose!
+brindle happy: My joy in corners has gone up by a measurement I do not have a unit for. I am going to invent one. I will call it a {name}.
+brindle: Here are your pebs, and the Hushdrive. Please give it a good home.
+end
+
+== brindle_1_pleased
+brindle happy: It turns better! Not quite like a happy thought. More like a pleasant thought. That is still very good.
+brindle: Here are your pebs, and the Hushdrive, as promised.
+end
+
+== brindle_1_lukewarm
+brindle thoughtful: Hm. It is mostly the same trolley. But it is a cleaner trolley. Thank you for trying.
+brindle: The Hushdrive is still yours. A deal is a deal.
+end
+
+== brindle_1_prank
+brindle surprised: Oh! There is something new.
+brindle laughing: I love it. Is it a gift? It is the funniest thing I have ever owned. I am keeping it forever.
+* Somehow, that makes you feel worse than if it had been angry.
+end
+
+== brindle_1_sabotage
+brindle thoughtful: Something feels... wrong. I do not have a word for it.
+brindle sad: I trusted the readout. I trust most readouts. Maybe I should not.
+* Brindle's antenna droops. It pays in full anyway.
+end
+
+== odessa_1_prank
+odessa surprised: Hang on. What on earth is... oh, you rascal.
+odessa laughing: The grandkids are going to lose their minds. I'm never taking it off.
+end
+
+== odessa_1_sabotage
+odessa sad: I don't know what you did, love, but she's not right. I can feel it in the stick.
+odessa thoughtful: I'm sure you had your reasons. I'll have her looked at somewhere else, I think.
+end
+
+== mischief_prank
+* They notice the prank. There's a long pause, and then a reluctant snort of laughter.
+end
+
+== mischief_sabotage
+* They notice something's off on the way out. They don't say anything. They don't need to.
+end

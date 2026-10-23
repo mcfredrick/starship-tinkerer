@@ -1,0 +1,62 @@
+{
+  "perks": {
+    "mechanics": {
+      "2": [
+        {"id": "steady_torch", "name": "Steady torch", "desc": "Welds forgive a wobbly hand.", "effects": {"weld_leniency": 0.3}},
+        {"id": "tap_tap", "name": "Tap, tap", "desc": "Dents pop out with fewer taps.", "effects": {"dent_leniency": 0.3}}
+      ],
+      "3": [
+        {"id": "trade_prices", "name": "Trade prices", "desc": "The market gives you 10% off parts.", "effects": {"parts_discount": 0.1}},
+        {"id": "salvager", "name": "Salvager", "desc": "You sell parts for 15% more.", "effects": {"resale": 0.15}}
+      ],
+      "4": [
+        {"id": "deft_hands", "name": "Deft hands", "desc": "Repairs come out a little cleaner.", "effects": {"repair_quality": 0.08}},
+        {"id": "second_wind", "name": "Second wind", "desc": "One more spark each day.", "effects": {"spark_max": 1}}
+      ]
+    },
+    "electronics": {
+      "2": [
+        {"id": "color_sense", "name": "Color sense", "desc": "Rewiring gives you more time.", "effects": {"rewire_leniency": 0.3}},
+        {"id": "golden_ear", "name": "Golden ear", "desc": "Calibration locks from further away.", "effects": {"calibrate_leniency": 0.3}}
+      ],
+      "3": [
+        {"id": "trickle_charge", "name": "Trickle charge", "desc": "One more spark each day.", "effects": {"spark_max": 1}},
+        {"id": "boost_tinker", "name": "Boost tinkerer", "desc": "Your own ship's boost lasts longer.", "effects": {"boost_capacity": 0.6}}
+      ],
+      "4": [
+        {"id": "clean_signal", "name": "Clean signal", "desc": "Repairs come out a little cleaner.", "effects": {"repair_quality": 0.08}},
+        {"id": "overclock", "name": "Overclock", "desc": "Your own ship's boost hits harder.", "effects": {"boost_power": 0.1}}
+      ]
+    },
+    "diagnostics": {
+      "2": [
+        {"id": "warm_hands", "name": "Warm hands", "desc": "Scanning finds faults faster.", "effects": {"scan_leniency": 0.5}},
+        {"id": "deep_scan", "name": "Deep scan", "desc": "Hidden faults shimmer faintly even before you sweep them.", "effects": {"deep_scan": 1}}
+      ],
+      "3": [
+        {"id": "read_the_ship", "name": "Read the ship", "desc": "Spotting faults earns more XP.", "effects": {"scan_xp": 8}},
+        {"id": "appraiser", "name": "Appraiser", "desc": "You sell parts for 15% more.", "effects": {"resale": 0.15}}
+      ]
+    },
+    "craft": {
+      "2": [
+        {"id": "eye_for_taste", "name": "Eye for taste", "desc": "Swatches a pilot loves get a little heart.", "effects": {"taste_hearts": 1}},
+        {"id": "charm", "name": "Charm", "desc": "Pilots warm to you faster. +1 rapport per job.", "effects": {"rapport_bonus": 1}}
+      ],
+      "3": [
+        {"id": "showroom", "name": "Showroom polish", "desc": "Delighted pilots tip half again as much.", "effects": {"tip_bonus": 0.5}},
+        {"id": "word_of_mouth", "name": "Word of mouth", "desc": "Mischief costs you less reputation.", "effects": {"mischief_forgiven": 1}}
+      ]
+    },
+    "piloting": {
+      "2": [
+        {"id": "drift_whisperer", "name": "Drift whisperer", "desc": "Drifts charge their burst faster.", "effects": {"drift_charge": 0.3}},
+        {"id": "big_tank", "name": "Big tank", "desc": "More boost in the tank.", "effects": {"boost_capacity": 0.6}}
+      ],
+      "3": [
+        {"id": "wall_kisser", "name": "Wall kisser", "desc": "Brushing a wall barely slows you.", "effects": {"wall_grace": 1}},
+        {"id": "slipstream", "name": "Slipstreamer", "desc": "Gadgets recharge a third faster.", "effects": {"gadget_cooldown": 0.33}}
+      ]
+    }
+  }
+}

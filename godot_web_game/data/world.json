@@ -11,7 +11,10 @@
       "paint": "scarlet", "trim": "cream"},
     "bucket": {"name": "Bucket", "owner": "brindle", "hull": "bucket",
       "parts": {"engine": "engine_rattler", "fins": "fin_wing", "cockpit": "cockpit_bubble", "lights": "lights_round", "top": "gadget_bubble"},
-      "paint": "marigold", "trim": "slate"}
+      "paint": "marigold", "trim": "slate"},
+    "magnificence": {"name": "The Magnificence", "owner": "crake", "hull": "heron",
+      "parts": {"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_bay", "lights": "lights_bar"},
+      "paint": "plum", "trim": "brass"}
   },
   "pilots": {
     "odessa": {"name": "Odessa Vell", "short": "Odessa", "pronouns": "she", "ship": "pocket_moth",
@@ -25,7 +28,11 @@
     "brindle": {"name": "Brindle", "short": "Brindle", "pronouns": "it", "ship": "bucket",
       "taste": ["marigold", "mint", "teal"],
       "blurb": "A maintenance robot who wants to know what racing feels like.",
-      "taste_hint": "Brindle says yellow is \"the color of a good day.\""}
+      "taste_hint": "Brindle says yellow is \"the color of a good day.\""},
+    "crake": {"name": "Thaddeus Crake", "short": "Crake", "pronouns": "he", "ship": "magnificence",
+      "taste": ["plum", "brass", "scarlet"],
+      "blurb": "Owns a yacht, a cravat, and opinions about tipping.",
+      "taste_hint": "Crake's cufflinks are brass and his cravat is plum. He mentions both."}
   },
   "jobs": {
     "odessa_1": {
@@ -39,8 +46,42 @@
       ],
       "barter": {"cake_seed": 2},
       "dialogue": "odessa_1"
+    },
+    "brindle_1": {
+      "pilot": "brindle", "ship": "bucket", "budget": 90,
+      "request": "I would like the Bucket to turn like a happy thought and stick to corners like a happy magnet. I have measured my joy in corners and it is low.",
+      "faults": [{"type": "rewire", "spot": 1}, {"type": "dent", "spot": 4}],
+      "wants": [
+        {"stat": "handling", "min": 52, "label": "Turns like a happy thought", "weight": 1},
+        {"stat": "grip", "min": 66, "label": "Sticks like a happy magnet", "weight": 1},
+        {"taste": true, "label": "The color of a good day", "weight": 1}
+      ],
+      "barter": {"engine_hush": 1},
+      "dialogue": "brindle_1"
+    },
+    "crake_1": {
+      "pilot": "crake", "ship": "magnificence", "budget": 280,
+      "request": "Make her the fastest yacht on the ring, and make her shine like money. Not that you'd know what that looks like. Do be quick.",
+      "faults": [{"type": "calibrate", "spot": 2}, {"type": "dent", "spot": 4}],
+      "wants": [
+        {"stat": "top_speed", "min": 86, "label": "Fastest yacht on the ring", "weight": 2},
+        {"finish": "pearl", "label": "Shines like money", "weight": 1},
+        {"taste": true, "label": "His colors", "weight": 1}
+      ],
+      "barter": {},
+      "dialogue": "crake_1"
     }
   },
+  "beats": [
+    {"scene": "intro"},
+    {"scene": "odessa_arrives", "day": 1, "phase": "morning", "idle": true},
+    {"scene": "racers_visit", "phase": "evening", "requires": "odessa_1_done"},
+    {"scene": "day2_morning", "day": 2},
+    {"scene": "brindle_arrives", "day": 2, "phase": "morning", "idle": true},
+    {"scene": "day3_morning", "day": 3},
+    {"scene": "crake_arrives", "day": 3, "phase": "morning", "idle": true},
+    {"scene": "day4_morning", "min_day": 4}
+  ],
   "race": {
     "club": {"name": "Quietwater Club Race", "laps": 2, "rivals": {"ilse": 0.55, "brindle": 0.8},
       "prizes": [140, 80, 40]}

@@ -6,6 +6,8 @@ uniform float gloss = 0.0;
 uniform float shadow = 0.62;
 // Brightens the whole part, for hover and scanner highlights.
 uniform float highlight = 0.0;
+// Pearl finish: an iridescent sheen that shifts hue with the viewing angle.
+uniform float pearl = 0.0;
 
 void fragment() {
 	ALBEDO = color * (1.0 + highlight * 0.5);
@@ -13,6 +15,9 @@ void fragment() {
 	SPECULAR = 0.0;
 	float rim = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 4.0);
 	EMISSION = vec3(1.0, 0.85, 0.6) * rim * 0.12 + vec3(1.0, 0.8, 0.4) * highlight * 0.25;
+	float sheen = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 1.6);
+	vec3 hue = 0.5 + 0.5 * cos(6.2832 * (sheen * 1.3 + vec3(0.0, 0.33, 0.67)));
+	EMISSION += hue * sheen * pearl * 0.45;
 }
 
 void light() {

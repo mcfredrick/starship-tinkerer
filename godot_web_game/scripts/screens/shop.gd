@@ -1,14 +1,6 @@
 ## The hangar hub: story beats play here, and every activity starts from here.
 extends Screen
 
-## Story beats in order: [scene, condition]. The first unseen beat whose condition holds plays.
-var beats := [
-	["intro", func(): return true],
-	["odessa_arrives", func(): return GameState.day == 1 and GameState.phase == "morning" and GameState.job.is_empty()],
-	["racers_visit", func(): return GameState.phase == "evening"],
-	["day2_morning", func(): return GameState.day >= 2],
-]
-
 var _actions: VBoxContainer
 var _hint: Label
 
@@ -37,15 +29,25 @@ func _ship_on_cradle() -> String:
 	return "kettle"
 
 
+## Story beats come from world.json in order. Each plays once, when its conditions hold:
+## day (exact), min_day, phase, idle (no job on the bench), requires and excludes (flags).
 func _play_beats() -> void:
-	for beat in beats:
-		var seen: String = "seen_" + beat[0]
-		if not GameState.flags.has(seen) and beat[1].call():
-			await Router.talk(beat[0])
+	for beat in Content.world.beats:
+		var seen: String = "seen_" + beat.scene
+		if not GameState.flags.has(seen) and _beat_ready(beat):
+			await Router.talk(beat.scene)
 			# Marked after the scene so closing the game mid-conversation replays it.
 			GameState.flags[seen] = true
 			GameState.save()
 			_refresh()
+
+
+func _beat_ready(b: Dictionary) -> bool:
+	var f := GameState.flags
+	return (not b.has("day") or GameState.day == b.day) and GameState.day >= b.get("min_day", 0) \
+		and (not b.has("phase") or GameState.phase == b.phase) \
+		and (not b.get("idle", false) or GameState.job.is_empty()) \
+		and (not b.has("requires") or f.has(b.requires)) and (not b.has("excludes") or not f.has(b.excludes))
 
 
 func _refresh() -> void:

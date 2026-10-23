@@ -9,9 +9,11 @@ const TIERS := [
 ]
 
 
-## `before` and `after` are builds; `repairs` maps fault index to a minigame score 0..1.
+## `before` and `after` are builds; `repairs` maps fault index to a minigame score 0..1. `perks` maps
+## perk effect keys to their summed values. `job.budget` is the agreed budget, which haggling may
+## have changed from the posted one.
 static func grade(job: Dictionary, pilot: Dictionary, before: Dictionary, after: Dictionary, repairs: Dictionary,
-		data: Dictionary) -> Dictionary:
+		data: Dictionary, perks := {}) -> Dictionary:
 	var stats := ShipStats.compute(after, data)
 	var wants: Array = []
 	var fit_total := 0.0
@@ -26,15 +28,31 @@ static func grade(job: Dictionary, pilot: Dictionary, before: Dictionary, after:
 	for i in job.faults.size():
 		quality += repairs.get(i, 0.0)
 	quality /= maxf(job.faults.size(), 1)
+	if quality > 0:
+		quality = minf(quality + perks.get("repair_quality", 0.0), 1.0)
 
 	var cost := parts_cost(before, after, data)
 	var fit := fit_total / fit_weight
 	var overall := fit * 0.6 + quality * 0.4
 	var result: Dictionary = TIERS.filter(func(t): return overall >= t.min)[0].duplicate()
+	var tricks: Array = after.get("mischief", []).map(func(id): return data.mischief[id])
+	var kind := ""
+	if tricks.any(func(m): return m.kind == "sabotage"):
+		kind = "sabotage"
+	elif not tricks.is_empty():
+		kind = "prank"
+	var tip: float = 0.0 if kind == "sabotage" else result.tip * (1.0 + perks.get("tip_bonus", 0.0))
+	var reputation := 0
+	for m in tricks:
+		result.rapport += m.rapport
+		reputation += m.get("reputation", 0)
+	reputation = mini(reputation + int(perks.get("mischief_forgiven", 0)), 0)
 	result.merge({
 		"fit": fit, "quality": quality, "overall": overall, "wants": wants, "parts_cost": cost,
-		"gift": maxi(cost - job.budget, 0), "pay": job.budget + roundi(job.budget * result.tip),
-	})
+		"gift": maxi(cost - job.budget, 0), "pay": job.budget + roundi(job.budget * tip), "tip": tip,
+		"mischief": kind, "reputation": reputation,
+	}, true)
+	result.rapport += int(perks.get("rapport_bonus", 0))
 	# Going over budget is a gift the pilot notices.
 	if result.gift > 0:
 		result.rapport += 1
@@ -44,6 +62,8 @@ static func grade(job: Dictionary, pilot: Dictionary, before: Dictionary, after:
 static func want_met(want: Dictionary, stats: Dictionary, build: Dictionary, pilot: Dictionary) -> bool:
 	if want.get("taste", false):
 		return build.paint in pilot.taste
+	if want.has("finish"):
+		return build.get("finish", "gloss") == want.finish
 	var v: float = stats[want.stat]
 	return (not want.has("max") or v <= want.max) and (not want.has("min") or v >= want.min)
 
