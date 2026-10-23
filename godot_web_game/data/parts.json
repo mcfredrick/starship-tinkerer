@@ -1,14 +1,14 @@
 {
   "hulls": {
-    "moth": {"name": "Moth-class hauler", "stats": {"thrust": 30, "top_speed": 38, "handling": 34, "grip": 40, "boost": 20, "mass": 62, "comfort": 46, "noise": 30}},
-    "kettle": {"name": "Kettle", "stats": {"thrust": 28, "top_speed": 34, "handling": 36, "grip": 34, "boost": 22, "mass": 55, "comfort": 30, "noise": 34}},
-    "heron": {"name": "Heron-class racer", "stats": {"thrust": 46, "top_speed": 60, "handling": 52, "grip": 44, "boost": 34, "mass": 38, "comfort": 20, "noise": 40}},
-    "bucket": {"name": "Salvage tug", "stats": {"thrust": 40, "top_speed": 44, "handling": 38, "grip": 46, "boost": 28, "mass": 60, "comfort": 28, "noise": 38}},
-    "saucer": {"name": "Saucer", "stats": {"thrust": 34, "top_speed": 40, "handling": 56, "grip": 30, "boost": 26, "mass": 44, "comfort": 40, "noise": 26}},
-    "manta": {"name": "Manta-class yacht", "stats": {"thrust": 46, "top_speed": 60, "handling": 50, "grip": 48, "boost": 32, "mass": 42, "comfort": 34, "noise": 26}},
-    "barge": {"name": "Longhaul barge", "stats": {"thrust": 44, "top_speed": 30, "handling": 22, "grip": 50, "boost": 18, "mass": 92, "comfort": 52, "noise": 44}},
-    "snail": {"name": "Spiral cruiser", "stats": {"thrust": 22, "top_speed": 26, "handling": 40, "grip": 60, "boost": 40, "mass": 58, "comfort": 60, "noise": 12}},
-    "ringdart": {"name": "Ring-dart", "stats": {"thrust": 50, "top_speed": 64, "handling": 44, "grip": 36, "boost": 36, "mass": 34, "comfort": 14, "noise": 46}}
+    "moth": {"name": "Moth-class hauler", "value": 220, "stats": {"thrust": 30, "top_speed": 38, "handling": 34, "grip": 40, "boost": 20, "mass": 62, "comfort": 46, "noise": 30}},
+    "kettle": {"name": "Kettle", "value": 200, "stats": {"thrust": 28, "top_speed": 34, "handling": 36, "grip": 34, "boost": 22, "mass": 55, "comfort": 30, "noise": 34}},
+    "heron": {"name": "Heron-class racer", "value": 420, "stats": {"thrust": 46, "top_speed": 60, "handling": 52, "grip": 44, "boost": 34, "mass": 38, "comfort": 20, "noise": 40}},
+    "bucket": {"name": "Salvage tug", "value": 240, "stats": {"thrust": 40, "top_speed": 44, "handling": 38, "grip": 46, "boost": 28, "mass": 60, "comfort": 28, "noise": 38}},
+    "saucer": {"name": "Saucer", "value": 300, "stats": {"thrust": 34, "top_speed": 40, "handling": 56, "grip": 30, "boost": 26, "mass": 44, "comfort": 40, "noise": 26}},
+    "manta": {"name": "Manta-class yacht", "value": 440, "stats": {"thrust": 46, "top_speed": 60, "handling": 50, "grip": 48, "boost": 32, "mass": 42, "comfort": 34, "noise": 26}},
+    "barge": {"name": "Longhaul barge", "value": 360, "stats": {"thrust": 44, "top_speed": 30, "handling": 22, "grip": 50, "boost": 18, "mass": 92, "comfort": 52, "noise": 44}},
+    "snail": {"name": "Spiral cruiser", "value": 280, "stats": {"thrust": 22, "top_speed": 26, "handling": 40, "grip": 60, "boost": 40, "mass": 58, "comfort": 60, "noise": 12}},
+    "ringdart": {"name": "Ring-dart", "value": 460, "stats": {"thrust": 50, "top_speed": 64, "handling": 44, "grip": 36, "boost": 36, "mass": 34, "comfort": 14, "noise": 46}}
   },
   "parts": {
     "engine_rattler": {"name": "Rattler drive", "slot": "engine", "price": 30, "model": "part_engine_rattler",

@@ -1,0 +1,13 @@
+{
+  "events": {
+    "fin_shortage": {"slot": "fins", "factor": 1.45, "news": "A fin shortage: the ring series bought every grippy fin on the dock. Fin prices are up, and sellers are smiling."},
+    "engine_glut": {"slot": "engine", "factor": 0.7, "news": "A freighter unloaded a hold full of drives. Engines are cheap this week."},
+    "cockpit_fad": {"slot": "cockpit", "factor": 1.35, "news": "Picture windows are in fashion. Everyone wants a new cockpit, and the prices show it."},
+    "lights_sale": {"slot": "lights", "factor": 0.65, "news": "The lamp-makers' guild is clearing stock. Lights are going cheap."},
+    "gadget_craze": {"slot": "top", "factor": 1.5, "news": "Race gadgets are the talk of the dock. Prices for them have gone silly."}
+  },
+  "event_days": 3,
+  "drift": 0.12,
+  "worn_value": 0.3,
+  "worn_resale": 0.5
+}

@@ -16,6 +16,8 @@ var phase := "morning"
 var spark := MAX_SPARK
 var pebs := 0
 var parts := {}
+## Worn parts on the shelves, restorable at the market: {part id: count}.
+var worn := {}
 var items := {}
 var ships := {}
 var skills := {}
@@ -52,6 +54,7 @@ func new_game(name: String, pronouns: Variant) -> void:
 	spark = MAX_SPARK
 	pebs = start.pebs
 	parts = start.parts.duplicate()
+	worn = {}
 	items = start.items.duplicate()
 	ships = Content.world.ships.duplicate(true)
 	skills = {}
@@ -95,7 +98,7 @@ func to_dict() -> Dictionary:
 		"items": items, "ships": ships, "skills": skills, "rapport": rapport, "flags": flags, "buff": buff,
 		"job": job, "today": today, "perks": perks, "reputation": reputation, "seed": run_seed, "cast": cast,
 		"jobs": jobs, "board": board, "board_day": board_day, "next_id": next_id,
-		"stories": stories, "cat": cat,
+		"stories": stories, "cat": cat, "worn": worn,
 	}
 
 
@@ -126,6 +129,7 @@ func from_dict(d: Dictionary) -> void:
 	next_id = int(d.get("next_id", 1))
 	stories = d.get("stories", {})
 	cat = d.get("cat", _new_cat())
+	worn = _ints(d.get("worn", {}))
 
 
 ## JSON numbers load as floats; counts should stay ints.

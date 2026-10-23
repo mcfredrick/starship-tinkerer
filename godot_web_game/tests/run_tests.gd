@@ -330,6 +330,38 @@ func test_a_loved_cat_helps_more_and_meddles_less() -> void:
 	check(counts[0].sleepy > 0 and counts[10].sleepy > 0, "and Grommet still naps some days")
 
 
+func test_market_drifts_and_events_move_one_kind_of_part() -> void:
+	var trade: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/trade.json"))
+	var seen := {}
+	var quiet := 0
+	for day in range(1, 61):
+		var ev := Trade.event(42, day, trade)
+		check(ev == Trade.event(42, day, trade), "a day's event is stable")
+		if ev:
+			seen[ev] = true
+			var slot: String = trade.events[ev].slot
+			var hit := Trade.factor(42, day, "x", slot, trade)
+			var other := Trade.factor(42, day, "x", "nothing", trade)
+			check(absf(hit / other - float(trade.events[ev].factor)) < 0.001, "%s moves %s prices" % [ev, slot])
+		else:
+			quiet += 1
+		var f := Trade.factor(42, day, "fin_stub", "nothing", trade)
+		check(f >= 1.0 - trade.drift - 0.001 and f <= 1.0 + trade.drift + 0.001, "drift stays small: %f" % f)
+	check(seen.size() >= 4 and quiet > 20, "events vary and leave quiet spells: %s, %d quiet" % [seen.keys(), quiet])
+
+
+func test_a_ship_is_worth_more_fixed_clean_and_to_taste() -> void:
+	var ship := {"hull": "saucer", "parts": {"engine": "engine_hush"}, "paint": "teal",
+		"faults": [{"type": "weld", "fixed": false}], "grime": 0.8}
+	var junk := Trade.ship_value(ship, parts_data, [])
+	ship.faults[0].fixed = true
+	var fixed := Trade.ship_value(ship, parts_data, [])
+	ship.grime = 0.0
+	var clean := Trade.ship_value(ship, parts_data, [])
+	var loved := Trade.ship_value(ship, parts_data, ["teal"])
+	check(junk < fixed and fixed < clean and clean < loved, "value rises: %d %d %d %d" % [junk, fixed, clean, loved])
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1
