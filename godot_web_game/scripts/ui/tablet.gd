@@ -48,12 +48,14 @@ func _ready() -> void:
 	mat.set_shader_parameter("rect_size", SIZE)
 	glass.material = mat
 	UI.place(glass, Control.PRESET_CENTER, -SIZE / 2, SIZE)
+	UI.fit(glass)
 	add_child(glass)
 
 	var margin := MarginContainer.new()
 	for side in ["left", "right", "top", "bottom"]:
 		margin.add_theme_constant_override("margin_" + side, 34)
 	UI.place(margin, Control.PRESET_CENTER, -SIZE / 2, SIZE)
+	UI.fit(margin)
 	add_child(margin)
 
 	_list = UI.vbox([], 6)

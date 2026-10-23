@@ -41,7 +41,7 @@ func _ready() -> void:
 		false, 1.0, Perks.effects(GameState.perks, Content.perks))
 	_build_world()
 	_build_hud()
-	if DisplayServer.is_touchscreen_available():
+	if UI.touch:
 		_build_touch()
 	_engine = Sfx.loop("engine", self, -10.0)
 	_engine.play()
@@ -226,6 +226,7 @@ func _build_hud() -> void:
 	keys += "   ·   Shift boost   ·   E gadget"
 	var hint := UI.label(keys, 16, Color(UI.CREAM, 0.8))
 	UI.place(hint, Control.PRESET_BOTTOM_WIDE, Vector2(340, -40), Vector2(-360, 30))
+	hint.visible = not UI.touch
 	ui.add_child(hint)
 
 	_big = UI.heading("", 96, Color("ffd27a"))

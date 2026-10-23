@@ -82,7 +82,7 @@ func _area_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed and _recharging <= 0:
 			for i in _leads.size():
-				if i not in _done_leads and event.position.distance_to(_leads[i].pos) < 30:
+				if i not in _done_leads and event.position.distance_to(_leads[i].pos) < 30 * UI.reach():
 					_dragging = i
 		elif not event.pressed and _dragging >= 0:
 			_drop(event.position)
@@ -94,7 +94,7 @@ func _area_input(event: InputEvent) -> void:
 
 func _drop(at: Vector2) -> void:
 	for t in _terms:
-		if at.distance_to(t.pos) < 34:
+		if at.distance_to(t.pos) < 34 * UI.reach():
 			if t.color == _leads[_dragging].color:
 				_done_leads[_dragging] = true
 				Sfx.play("tick", 1.4)

@@ -14,6 +14,12 @@ const MUTED := Color("8a7565")
 const GOOD := Color("5f9e6e")
 const BAD := Color("c8643f")
 
+## Phones get a smaller canvas (so everything draws larger) and touch gets roomier hit areas.
+## Both are decided once at boot by `detect_device`.
+const COMPACT_SIZE := Vector2i(960, 540)
+static var compact := false
+static var touch := false
+
 static var heading_font: FontVariation
 static var body_font: FontVariation
 static var bold_font: FontVariation
@@ -66,6 +72,22 @@ static func build_theme() -> Theme:
 	t.set_constant("separation", "VBoxContainer", 10)
 	t.set_constant("separation", "HBoxContainer", 10)
 	return t
+
+
+static func detect_device(window: Window, args: PackedStringArray) -> void:
+	if OS.has_feature("web"):
+		touch = JavaScriptBridge.eval("matchMedia('(pointer: coarse)').matches", true)
+		compact = touch and JavaScriptBridge.eval("Math.min(screen.width, screen.height) <= 600", true)
+	if "--phone" in args:
+		touch = true
+		compact = true
+	if compact:
+		window.content_scale_size = COMPACT_SIZE
+
+
+## Scale for touch hit areas: fingers are blunter than cursors.
+static func reach() -> float:
+	return 1.6 if touch else 1.0
 
 
 static func _font(path: String, weight: int) -> FontVariation:
@@ -166,6 +188,33 @@ static func place(c: Control, preset: Control.LayoutPreset, offset: Vector2, siz
 	c.offset_right = offset.x + size.x
 	c.offset_bottom = offset.y + size.y
 	return c
+
+
+## Keeps a placed panel on screen. When it would run past the band between `top` and `bottom` (as
+## fixed desktop layouts do on a phone's shorter canvas), it is centered in that band and scaled to
+## fit. Offsets are always rebuilt from the placed and minimum sizes, so a transient size seen
+## mid-layout (wrapping labels start out very tall) never sticks.
+static func fit(c: Control, top := 12.0, bottom := 12.0) -> void:
+	var placed := [c.anchor_top, c.anchor_bottom, c.offset_top, c.offset_bottom, c.grow_vertical]
+	var placed_height: float = placed[3] - placed[2] if placed[0] == placed[1] else 0.0
+	var refit := func():
+		var view := c.get_viewport_rect().size
+		var need := c.get_combined_minimum_size()
+		need.y = maxf(need.y, placed_height)
+		var y: float = placed[0] * view.y + placed[2]
+		var fits: bool = y >= top and y + need.y <= view.y - bottom and need.x <= view.x
+		c.anchor_top = placed[0] if fits else 0.5
+		c.anchor_bottom = placed[1] if fits else 0.5
+		c.grow_vertical = placed[4] if fits else Control.GROW_DIRECTION_BOTH
+		var mid := (top - bottom) / 2
+		c.offset_top = placed[2] if fits else mid - need.y / 2
+		c.offset_bottom = placed[3] if fits else mid + need.y / 2
+		var room := Vector2(view.x - 24, view.y - top - bottom)
+		c.pivot_offset = need / 2
+		c.scale = Vector2.ONE * (1.0 if fits else minf(1.0, minf(room.x / need.x, room.y / need.y)))
+	c.resized.connect(refit)
+	c.minimum_size_changed.connect(refit)
+	c.ready.connect(func(): c.get_viewport().size_changed.connect(refit))
 
 
 static func full(c: Control) -> Control:

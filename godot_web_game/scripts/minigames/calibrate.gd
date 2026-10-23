@@ -76,7 +76,7 @@ func _area_input(event: InputEvent) -> void:
 
 func _dial_at(p: Vector2) -> int:
 	for i in DIALS.size():
-		if p.distance_to(DIALS[i]) < DIAL_R * 1.4:
+		if p.distance_to(DIALS[i]) < DIAL_R * 1.4 * UI.reach():
 			return i
 	return -1
 

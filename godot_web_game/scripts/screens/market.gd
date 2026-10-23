@@ -23,6 +23,7 @@ func _ready() -> void:
 	var back := UI.button("Back to the shop", func(): Router.go("shop"), 20)
 	var panel := UI.panel(UI.vbox([UI.heading("Quietwater parts market", 30), cols, back], 12), Color(UI.CREAM, 0.97), 22)
 	UI.place(panel, Control.PRESET_CENTER, Vector2(-560, -290), Vector2(1120, 0))
+	UI.fit(panel, 76)
 	ui.add_child(panel)
 	_fill()
 

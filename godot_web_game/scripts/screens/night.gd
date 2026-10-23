@@ -57,6 +57,7 @@ func _build() -> void:
 		box.add_child(choices)
 	_panel = UI.panel(box, UI.CREAM, 28)
 	UI.place(_panel, Control.PRESET_CENTER, Vector2(-340, -300), Vector2(680, 0))
+	UI.fit(_panel)
 	ui.add_child(_panel)
 
 

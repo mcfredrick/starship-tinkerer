@@ -18,6 +18,7 @@ var _toasts: VBoxContainer
 
 
 func _ready() -> void:
+	UI.detect_device(get_window(), OS.get_cmdline_user_args())
 	theme = UI.build_theme()
 	overlay = CanvasLayer.new()
 	overlay.layer = 10
@@ -35,6 +36,24 @@ func _ready() -> void:
 	_fade.color = Color("1b1626")
 	_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.add_child(_fade)
+	if UI.compact:
+		_add_rotate_prompt()
+
+
+## The shop is laid out for a wide screen; a phone held upright gets a nudge to turn it.
+func _add_rotate_prompt() -> void:
+	var prompt := UI.full(ColorRect.new())
+	prompt.color = Color("1b1626")
+	var text := UI.heading("Turn your phone sideways\nto open the shop", 90, UI.CREAM)
+	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	prompt.add_child(UI.full(text))
+	overlay.add_child(prompt)
+	var check := func():
+		var view := get_viewport().get_visible_rect().size
+		prompt.visible = view.y > view.x
+	get_viewport().size_changed.connect(check)
+	check.call()
 
 
 func go(name: String, params := {}) -> void:

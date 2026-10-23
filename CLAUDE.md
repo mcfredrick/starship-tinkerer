@@ -34,6 +34,7 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Compile every script | `godot --headless res://tools/check_scripts.tscn` |
 | Race balance report | `godot --headless --script res://tools/race_report.gd` |
 | Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet] [--talk=scene]` plus screen params: workbench `--ship= --tab= --repair=N`, title `--form=[custom]` |
+| Screenshot at phone size | add `--resolution 1170x540` before `--` and `--phone` after it (portrait: `--resolution 390x844`) |
 | Ship kit | `$B -b --python blender/export_ship_kit.py` (repo root); preview with `preview_kit.py -- out.png [--front]` |
 | Portraits | `$B -b --python blender/portraits.py -- [character ...]` |
 | Prop icons | `$B -b --python blender/props.py` |
@@ -69,6 +70,10 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
   scripts can see them.
 - GDScript can't infer types from Dictionary values: write `var x: float = d.v`, not `var x := d.v`.
 - Blender's EEVEE prints Metal shader errors in background mode but still renders correctly.
+
+- Phones (coarse pointer, short side ≤ 600 CSS px) run on a 960x540 canvas so everything draws
+  larger (`UI.detect_device`). Centered overlays go through `UI.fit` so they center and shrink when
+  taller than the screen, and touch hit areas scale by `UI.reach()`. Check new overlays at phone size.
 
 ## Verifying visual changes
 

@@ -27,6 +27,7 @@ func _ready() -> void:
 	var card := UI.panel(UI.vbox([UI.heading(title(), 30), UI.label(instructions(), 19, UI.INK, true), area,
 		_status], 10), UI.CREAM, 26)
 	UI.place(card, Control.PRESET_CENTER, -CARD / 2, CARD)
+	UI.fit(card)
 	add_child(card)
 
 

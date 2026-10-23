@@ -55,6 +55,9 @@ func _area_input(event: InputEvent) -> void:
 		return
 	_ripples.append({"at": event.position, "t": 0.0})
 	var outer := _outermost()
+	# A fingertip landing just inside the ring being worked meant that ring.
+	if UI.touch and ring == outer + 1 and (RINGS - 1 - outer) * RING_STEP - dist < RING_STEP * 0.4:
+		ring = outer
 	if ring == outer:
 		_depth[ring] = maxf(_depth[ring] - 1.0 / _taps_per_ring(), 0.0)
 		Sfx.play("tick", 0.7 + ring * 0.15)

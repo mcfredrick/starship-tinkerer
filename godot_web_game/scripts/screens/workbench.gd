@@ -72,6 +72,7 @@ func _ready() -> void:
 		stats_panel.wants = job.wants
 		stats_panel.pilot = Content.world.pilots[job.pilot]
 	UI.place(stats_panel, Control.PRESET_TOP_RIGHT, Vector2(-346, 84), Vector2(330, 0))
+	UI.fit(stats_panel, 84, 86)
 	ui.add_child(stats_panel)
 
 	var finish := UI.button("Hand over to %s" % stats_panel.pilot.short if commission else "Back to the shop",

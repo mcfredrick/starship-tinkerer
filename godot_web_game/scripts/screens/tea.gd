@@ -27,6 +27,7 @@ func _ready() -> void:
 		UI.label("Have a cake", 19, UI.MUTED), _cakes, _note, buttons], 10)
 	var panel := UI.panel(box, Color(UI.CREAM, 0.95), 24)
 	UI.place(panel, Control.PRESET_CENTER_LEFT, Vector2(60, -282), Vector2(700, 0))
+	UI.fit(panel, 76)
 	ui.add_child(panel)
 	_fill()
 

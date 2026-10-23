@@ -49,7 +49,7 @@ func _ready() -> void:
 
 
 func _tolerance() -> float:
-	return TOLERANCE * leniency
+	return TOLERANCE * leniency * UI.reach()
 
 
 func _process(_delta: float) -> void:
@@ -79,7 +79,7 @@ func _advance() -> void:
 	var best := -1
 	var best_dist := INF
 	for i in _path.size():
-		if _lengths[i] < _progress - 10 or _lengths[i] > _progress + 70:
+		if _lengths[i] < _progress - 10 or _lengths[i] > _progress + 70 * UI.reach():
 			continue
 		var d := _torch.distance_to(_path[i])
 		if d < best_dist:
