@@ -96,6 +96,9 @@ func _refresh() -> void:
 		_hint.text = "A quiet spell. Tinker, trade, or put the kettle on."
 	if GameState.phase == "morning" and not job_open:
 		_add("Job board", func(): Router.go("board"))
+	var visit := GameState.hawker_today()
+	if visit and GameState.phase != "evening":
+		_add("%s's cart" % GameState.pilot(visit.id).short, func(): Router.go("hawker"))
 	_add("Tea nook", func(): Router.go("tea"))
 	_add("Garage: the Kettle", func(): Router.go("workbench", {"ship": "kettle"}))
 	_add("Parts market", func(): Router.go("market"))

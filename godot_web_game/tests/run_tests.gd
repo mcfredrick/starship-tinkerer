@@ -362,6 +362,26 @@ func test_a_ship_is_worth_more_fixed_clean_and_to_taste() -> void:
 	check(junk < fixed and fixed < clean and clean < loved, "value rises: %d %d %d %d" % [junk, fixed, clean, loved])
 
 
+func test_hawkers_visit_later_with_carts_in_their_style() -> void:
+	var trade: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/trade.json"))
+	var hawkers := ["a", "b"]
+	check(Trade.hawker(9, 1, trade, hawkers) == "" and Trade.hawker(9, 2, trade, hawkers) == "", "no hawkers before day three")
+	var visits := 0
+	for day in range(3, 103):
+		visits += int(Trade.hawker(9, day, trade, hawkers) != "")
+	check(visits > 20 and visits < 60, "hawkers come some days, not every day: %d of 100" % visits)
+	var mystery := Trade.cart(9, 5, "mystery", trade, parts_data)
+	check(mystery.offers.size() == 4 and mystery.offers.filter(func(o): return o.kind == "mystery").size() == 3,
+		"a mystery hawker's cart is mostly crates")
+	for o in mystery.offers:
+		if o.kind == "mystery":
+			var known: bool = trade.trinkets.has(o.contents) if o.tier == "trinket" else parts_data.parts.has(o.contents)
+			check(known, "a crate holds something real: %s" % [o])
+	check(JSON.stringify(Trade.cart(9, 5, "fair", trade, parts_data)) == JSON.stringify(Trade.cart(9, 5, "fair", trade, parts_data)),
+		"a day's cart is stable")
+	check(Trade.cart(9, 5, "fair", trade, parts_data).wanted != "", "a fair hawker always wants something")
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1

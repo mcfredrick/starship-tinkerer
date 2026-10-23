@@ -61,6 +61,16 @@ static func apply(name: String) -> void:
 				GameState.accept_offer(0)
 				for f in _job_faults():
 					f.found = true
+		"hawker":
+			# Day five, Fennimore's cart outside, and a good enough ear to judge the crates.
+			for f in ["seen_intro", "seen_grommet_intro", "seen_day4_morning"]:
+				GameState.flags[f] = true
+			GameState.day = 5
+			GameState.pebs = 400
+			GameState.skills.diagnostics = 70
+			GameState.worn = {"fin_swept": 1}
+			GameState.hawker = {"day": 5, "id": "fennimore", "bought": [],
+				"cart": Trade.cart(GameState.run_seed, 5, "mystery", Content.trade, Content.parts)}
 		"levelup":
 			GameState.flags.seen_intro = true
 			GameState.flags.seen_grommet_intro = true

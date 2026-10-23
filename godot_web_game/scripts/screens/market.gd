@@ -64,6 +64,7 @@ func _fill() -> void:
 			"Sell · %s" % UI.pebs(Market.worn_resale(id)), _sell_worn.bind(id), true)
 		var restore := UI.button("Restore", _restore.bind(id), 16)
 		restore.disabled = GameState.spark <= 0
+		restore.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.get_child(0).add_child(restore)
 		_sell.add_child(row)
 	for id in GameState.parts:

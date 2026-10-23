@@ -1,5 +1,5 @@
-## A character portrait: the authored cast's rendered sheet, or a generated customer assembled
-## from paper-doll layers (see blender/dolls.py), each tinted by multiplying in one of their colors.
+## A character portrait: the authored cast's rendered sheet, or anyone with a `look` (generated
+## customers, hawkers) assembled from paper-doll layers (see blender/dolls.py), each tinted by multiplying in one of their colors.
 class_name Portrait
 extends Control
 
@@ -12,7 +12,7 @@ func show_pilot(pilot: Dictionary, expression: String) -> void:
 	for c in get_children():
 		c.queue_free()
 	var expr := expression if expression else "neutral"
-	if not pilot.get("generated", false):
+	if not pilot.has("look"):
 		_layer(Content.portrait(pilot.id, expr), Color.WHITE)
 		return
 	for l in Walkins.doll_layers(pilot.look, expr):

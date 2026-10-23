@@ -41,3 +41,47 @@ static func ship_value(build: Dictionary, parts: Dictionary, taste: Array) -> in
 	if build.paint in taste:
 		value *= 1.15
 	return roundi(value / 5.0) * 5
+
+
+## Which hawker parks outside today (one of `hawkers`, by id), or "".
+static func hawker(run_seed: int, day: int, data: Dictionary, hawkers: Array) -> String:
+	if day < int(data.hawker_from_day) or hawkers.is_empty():
+		return ""
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([run_seed, day, "hawker"])
+	return hawkers[rng.randi_range(0, hawkers.size() - 1)] if rng.randf() < float(data.hawker_chance) else ""
+
+
+## A hawker's cart: four offers in their style ("worn", "mystery" or "fair"), and maybe a kind of
+## part they're buying at a premium. Mystery crates decide their contents now, so a skilled ear can
+## tell a good one from a dud before buying.
+static func cart(run_seed: int, day: int, style: String, data: Dictionary, parts: Dictionary) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([run_seed, day, "cart"])
+	var kinds: Array = {"worn": ["worn", "worn", "part", "mystery"], "mystery": ["mystery", "mystery", "mystery", "trinket"],
+		"fair": ["part", "part", "trinket", "worn"]}[style]
+	var sellable: Array = parts.parts.keys().filter(func(id): return parts.parts[id].price > 0)
+	var offers: Array = []
+	for kind in kinds:
+		var part: String = sellable[rng.randi_range(0, sellable.size() - 1)]
+		var list: float = parts.parts[part].price
+		match kind:
+			"worn":
+				offers.append({"kind": "worn", "part": part, "price": roundi(list * float(data.worn_value) * rng.randf_range(0.9, 1.3))})
+			"part":
+				offers.append({"kind": "part", "part": part, "price": roundi(list * rng.randf_range(0.7, 0.85))})
+			"trinket":
+				offers.append({"kind": "trinket", "trinket": _any(rng, data.trinkets.keys()), "price": rng.randi_range(25, 60)})
+			"mystery":
+				var roll := rng.randf()
+				var tier := "trinket" if roll < 0.15 else ("good" if roll < 0.45 else "junk")
+				var contents: String = _any(rng, data.trinkets.keys()) if tier == "trinket" else part
+				offers.append({"kind": "mystery", "tier": tier, "contents": contents, "price": rng.randi_range(35, 75)})
+	var wanted := ""
+	if style == "fair" or rng.randf() < 0.5:
+		wanted = _any(rng, ["engine", "fins", "cockpit", "lights"])
+	return {"offers": offers, "wanted": wanted}
+
+
+static func _any(rng: RandomNumberGenerator, from: Array) -> Variant:
+	return from[rng.randi_range(0, from.size() - 1)]

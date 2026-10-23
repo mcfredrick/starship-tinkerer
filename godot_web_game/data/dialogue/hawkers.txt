@@ -1,0 +1,33 @@
+# Hawkers who park their carts outside the shop now and then. Each greets you once a visit.
+
+== hawker_mags
+* A cart piled high with tarps and dented things rumbles up to the bay door. A Moothe in overalls leans on it.
+mags happy: Morning! Mags Rattlecart. Everything on this cart is barely used.
+> Barely used by whom? => who
+> Let's see it. => see
+-- who
+mags thoughtful: By careful people. Mostly. Some of them were careful.
+mags laughing: Look, a part with history is a part with character!
+end
+-- see
+mags happy: That's the spirit. Mind the wobbly crate. Mind all the crates.
+end
+
+== hawker_fennimore
+* A small cart zips into the bay and stops a hand's width from your toes. A Tik in a jacket hops off, all four eyes gleaming.
+fennimore happy: Fennimore Zip, Zip Crates! Mystery crates! Could be anything!
+fennimore thoughtful: Probably bolts. But could be anything!
+> What was in the last one? => last
+> I'll have a look. => look
+-- last
+fennimore surprised: Bolts. But the one before that had a comet-glass marble in it! Allegedly!
+end
+-- look
+fennimore laughing: A connoisseur! Shake them, sniff them, listen to them. I won't tell.
+end
+
+== hawker_auntie_blue
+* A tidy cart with a striped awning glides up to the bay. A Burble in a velvet robe smiles at you over the top of it.
+auntie_blue happy: Hello, dear. Auntie Blue. Fair prices, good stock, and I'll buy what I need at a fair price too.
+auntie_blue thoughtful: Halloran used to haggle me down to nothing and then pay full price anyway. Sentimental, that one.
+end

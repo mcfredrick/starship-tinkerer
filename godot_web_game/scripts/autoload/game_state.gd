@@ -18,6 +18,10 @@ var pebs := 0
 var parts := {}
 ## Worn parts on the shelves, restorable at the market: {part id: count}.
 var worn := {}
+## Trinkets and curios found or bought: {trinket id: true}. See the tablet's Finds.
+var finds := {}
+## Today's hawker visit: {day, id, cart, bought: [offer indices]}.
+var hawker := {}
 var items := {}
 var ships := {}
 var skills := {}
@@ -55,6 +59,8 @@ func new_game(name: String, pronouns: Variant) -> void:
 	pebs = start.pebs
 	parts = start.parts.duplicate()
 	worn = {}
+	finds = {}
+	hawker = {}
 	items = start.items.duplicate()
 	ships = Content.world.ships.duplicate(true)
 	skills = {}
@@ -98,7 +104,7 @@ func to_dict() -> Dictionary:
 		"items": items, "ships": ships, "skills": skills, "rapport": rapport, "flags": flags, "buff": buff,
 		"job": job, "today": today, "perks": perks, "reputation": reputation, "seed": run_seed, "cast": cast,
 		"jobs": jobs, "board": board, "board_day": board_day, "next_id": next_id,
-		"stories": stories, "cat": cat, "worn": worn,
+		"stories": stories, "cat": cat, "worn": worn, "finds": finds, "hawker": hawker,
 	}
 
 
@@ -130,6 +136,8 @@ func from_dict(d: Dictionary) -> void:
 	stories = d.get("stories", {})
 	cat = d.get("cat", _new_cat())
 	worn = _ints(d.get("worn", {}))
+	finds = d.get("finds", {})
+	hawker = d.get("hawker", {})
 
 
 ## JSON numbers load as floats; counts should stay ints.
@@ -342,6 +350,48 @@ func _first_hidden_fault() -> Dictionary:
 		if not f.found:
 			return f
 	return {}
+
+
+## Today's hawker visit, or {} if nobody's parked outside.
+func hawker_today() -> Dictionary:
+	if int(hawker.get("day", 0)) != day:
+		var hawkers: Array = Content.world.pilots.keys().filter(func(id): return Content.world.pilots[id].has("hawker"))
+		var id := Trade.hawker(run_seed, day, Content.trade, hawkers)
+		hawker = {"day": day, "id": id, "bought": [],
+			"cart": Trade.cart(run_seed, day, Content.world.pilots[id].hawker, Content.trade, Content.parts) if id else {}}
+		save()
+	return hawker if hawker.id else {}
+
+
+## Buys cart offer `index`; returns a line describing what you got.
+func buy_from_cart(index: int) -> String:
+	var offer: Dictionary = hawker.cart.offers[index]
+	hawker.bought.append(index)
+	add_pebs(-int(offer.price), "")
+	var got := ""
+	match offer.kind:
+		"worn":
+			give(worn, offer.part)
+			got = "A worn %s, on your shelf." % Content.part(offer.part).name.to_lower()
+		"part":
+			give(parts, offer.part)
+			got = "%s, on your shelf." % Content.part(offer.part).name
+		"trinket":
+			finds[offer.trinket] = true
+			got = "%s, for your collection." % Content.trade.trinkets[offer.trinket].name
+		"mystery":
+			match offer.tier:
+				"good":
+					give(parts, offer.contents)
+					got = "Inside: a sound %s!" % Content.part(offer.contents).name.to_lower()
+				"trinket":
+					finds[offer.contents] = true
+					got = "Inside: %s." % Content.trade.trinkets[offer.contents].name
+				_:
+					give(worn, offer.contents)
+					got = "Inside: a very worn %s, and a lot of bolts." % Content.part(offer.contents).name.to_lower()
+	save()
+	return got
 
 
 ## The storylet scene `pilot_id` plays at `hook` now, or "".
