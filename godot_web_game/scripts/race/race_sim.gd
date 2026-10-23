@@ -7,6 +7,7 @@
 class_name RaceSim
 extends RefCounted
 
+const BOOST_RELIGHT := 0.25
 const COUNTDOWN := 3.0
 const DRAG := 3.0
 const BRAKE := 26.0
@@ -108,7 +109,10 @@ func _drive(r: Dictionary, input: Dictionary, dt: float) -> void:
 	r.cooldown = maxf(r.cooldown - dt, 0.0)
 	r.bump = maxf(r.bump - dt, 0.0)
 
-	r.boosting = input.get("boost", false) and r.boost > 0.0
+	# Once the tank runs dry it has to refill to a quarter before boost will fire again, so holding
+	# the button doesn't flicker boost on with every trickle of recharge.
+	var ready: bool = r.boost > 0.0 if r.boosting else r.boost >= m.boost_capacity * BOOST_RELIGHT
+	r.boosting = input.get("boost", false) and ready
 	if r.boosting:
 		r.boost = maxf(r.boost - dt, 0.0)
 		top *= m.boost_power

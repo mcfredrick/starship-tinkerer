@@ -189,6 +189,21 @@ func _fixed(ship_id: String, job: Dictionary) -> Array:
 	return [before, after]
 
 
+func test_empty_boost_stays_off_until_it_refills() -> void:
+	var sim := RaceSim.new(Track.quietwater(), 2)
+	var r := sim.add_racer("p", ShipStats.compute(world.ships.kettle, parts_data), "", false)
+	var held := {"throttle": true, "boost": true, "steer": 0.0}
+	while sim.time < 0:
+		sim.step(1.0 / 60.0, {})
+	while r.boost > 0:
+		sim.step(1.0 / 60.0, held)
+	var relit := 0
+	for i in 60:
+		sim.step(1.0 / 60.0, held)
+		relit += int(r.boosting)
+	check(relit == 0, "holding boost on an empty tank doesn't boost: %d frames" % relit)
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1

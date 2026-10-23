@@ -23,9 +23,20 @@ var _gadget: Label
 var _big: Label
 var _results: PanelContainer
 var _touch := {}
+var _pads := {}
+## Touch index -> the pad key that finger is on.
+var _fingers := {}
+var _paused := false
+var _start_paused := false
+var _pause_panel: PanelContainer
 var _done := false
 var _engine: AudioStreamPlayer
 var _count := 4
+
+
+## Screen params: `paused` opens the pause menu once the race is built (for screenshots).
+func setup(params: Dictionary) -> void:
+	_start_paused = params.has("paused")
 
 
 func _ready() -> void:
@@ -45,6 +56,8 @@ func _ready() -> void:
 		_build_touch()
 	_engine = Sfx.loop("engine", self, -10.0)
 	_engine.play()
+	if _start_paused:
+		_toggle_pause.call_deferred()
 
 
 # ---------------------------------------------------------------- world
@@ -219,11 +232,18 @@ func _build_hud() -> void:
 	var dash := UI.vbox([_speed, UI.hbox([UI.label("Boost", 16, UI.CREAM), _boost]),
 		UI.hbox([UI.label("Drift", 16, UI.CREAM), _drift]), _gadget], 4)
 	var dash_panel := UI.panel(dash, Color(0.1, 0.07, 0.16, 0.6), 12)
-	UI.place(dash_panel, Control.PRESET_BOTTOM_LEFT, Vector2(24, -190), Vector2(300, 0))
+	# Touch pads need the bottom corners, so the dash moves up out of their way.
+	if UI.touch:
+		UI.place(dash_panel, Control.PRESET_TOP_RIGHT, Vector2(-330, 86), Vector2(300, 0))
+	else:
+		UI.place(dash_panel, Control.PRESET_BOTTOM_LEFT, Vector2(24, -190), Vector2(300, 0))
 	ui.add_child(dash_panel)
+	var pause := UI.button("Pause", _toggle_pause, 18)
+	UI.place(pause, Control.PRESET_TOP_RIGHT, Vector2(-130 if UI.touch else -214, 20), Vector2(110, 48))
+	ui.add_child(pause)
 
 	var keys := "A/D or arrows steer   ·   S brake   ·   hold Space while turning to drift, release for a burst"
-	keys += "   ·   Shift boost   ·   E gadget"
+	keys += "   ·   Shift boost   ·   E gadget   ·   Esc pause"
 	var hint := UI.label(keys, 16, Color(UI.CREAM, 0.8))
 	UI.place(hint, Control.PRESET_BOTTOM_WIDE, Vector2(340, -40), Vector2(-360, 30))
 	hint.visible = not UI.touch
@@ -246,27 +266,88 @@ func _bar(color: Color) -> ProgressBar:
 	return b
 
 
+## Touch pads track each finger themselves (buttons only see one pointer), so you can steer and
+## boost at once, and a finger can slide from one arrow to the other.
 func _build_touch() -> void:
-	var left := UI.hbox([_touch_button("◀", "left"), _touch_button("▶", "right")], 16)
-	UI.place(left, Control.PRESET_BOTTOM_LEFT, Vector2(30, -330), Vector2(260, 110))
+	var left := UI.hbox([_pad("left", "", 1), _pad("right", "", -1)], 14)
+	UI.place(left, Control.PRESET_BOTTOM_LEFT, Vector2(24, -134), Vector2(254, 110))
 	ui.add_child(left)
-	var right := UI.hbox([_touch_button("Drift", "drift"), _touch_button("Boost", "boost"),
-		_touch_button("Gadget", "gadget")], 12)
-	UI.place(right, Control.PRESET_BOTTOM_RIGHT, Vector2(-420, -150), Vector2(400, 110))
+	var right := UI.hbox([_pad("drift", "Drift"), _pad("boost", "Boost"), _pad("gadget", "Gadget")], 12)
+	UI.place(right, Control.PRESET_BOTTOM_RIGHT, Vector2(-404, -134), Vector2(380, 110))
 	ui.add_child(right)
 
 
-func _touch_button(text: String, key: String) -> Button:
-	var b := UI.button(text, func(): pass, 26)
-	b.custom_minimum_size = Vector2(120, 100)
-	b.button_down.connect(func(): _touch[key] = true)
-	b.button_up.connect(func(): _touch[key] = false)
-	return b
+## A touch pad showing `text`, or an arrow pointing left (1) or right (-1).
+func _pad(key: String, text: String, arrow := 0) -> PanelContainer:
+	var pad := PanelContainer.new()
+	pad.custom_minimum_size = Vector2(120, 110)
+	pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pad.add_theme_stylebox_override("panel", UI.box(Color(0.1, 0.07, 0.16, 0.55), 22, 0, false, Color(1, 1, 1, 0.5)))
+	var face := Control.new()
+	face.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	face.draw.connect(func():
+		var c := face.size / 2
+		var col := Color(1, 1, 1, 0.95 if _touch.get(key, false) else 0.75)
+		if arrow != 0:
+			var w := 26.0 * arrow
+			face.draw_colored_polygon(PackedVector2Array([c + Vector2(-w, 0), c + Vector2(w * 0.8, -30),
+				c + Vector2(w * 0.8, 30)]), col)
+		else:
+			face.draw_string(UI.heading_font, c + Vector2(-50, 9), text, HORIZONTAL_ALIGNMENT_CENTER, 100, 24, col))
+	pad.add_child(face)
+	_pads[key] = pad
+	return pad
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_ESCAPE, KEY_P]:
+		_toggle_pause()
+	elif event is InputEventScreenTouch or event is InputEventScreenDrag:
+		var pressed: bool = event.pressed if event is InputEventScreenTouch else true
+		var key := ""
+		if pressed:
+			for k in _pads:
+				if _pads[k].visible and _pads[k].get_global_rect().grow(8).has_point(event.position):
+					key = k
+		if key:
+			_fingers[event.index] = key
+		else:
+			_fingers.erase(event.index)
+		for k in _pads:
+			var held: bool = k in _fingers.values()
+			if held != _touch.get(k, false):
+				_touch[k] = held
+				_pads[k].modulate = Color(1.25, 1.2, 1.1) if held else Color.WHITE
+				_pads[k].get_child(0).queue_redraw()
+
+
+# ---------------------------------------------------------------- pause
+
+func _toggle_pause() -> void:
+	if _done:
+		return
+	_paused = not _paused
+	_engine.stream_paused = _paused
+	if not _paused:
+		_pause_panel.queue_free()
+		return
+	_touch.clear()
+	_fingers.clear()
+	var box := UI.vbox([UI.heading("Paused", 34), UI.button("Keep racing", _toggle_pause, 22),
+		UI.button("Restart the race", func(): Router.go("race"), 20),
+		UI.button("Quit to the shop", func(): Router.go("shop"), 20),
+		UI.label("Quitting forfeits the prize, but costs nothing.", 16, UI.MUTED)], 10)
+	_pause_panel = UI.panel(box, UI.CREAM, 26)
+	UI.place(_pause_panel, Control.PRESET_CENTER, Vector2(-200, -150), Vector2(400, 0))
+	UI.fit(_pause_panel)
+	ui.add_child(_pause_panel)
 
 
 # ---------------------------------------------------------------- loop
 
 func _physics_process(delta: float) -> void:
+	if _paused:
+		return
 	sim.step(delta, _input_state())
 	for e in sim.events:
 		if e.id != "player":
@@ -300,8 +381,10 @@ func _input_state() -> Dictionary:
 
 
 func _process(delta: float) -> void:
-	_update_visuals(minf(delta * 5.0, 1.0))
 	_update_hud()
+	if _paused:
+		return
+	_update_visuals(minf(delta * 5.0, 1.0))
 	_engine.pitch_scale = 0.6 + player.v / 40.0 + (0.25 if player.boosting or player.mini > 0 else 0.0)
 	var count := ceili(-sim.time)
 	if count != _count and count >= 0:
@@ -362,6 +445,7 @@ func _update_hud() -> void:
 	_place.text = PLACES[sim.place_of(player) - 1]
 	_speed.text = "%d km/h" % roundi(player.v * 3.6)
 	_boost.value = player.boost / player.m.boost_capacity
+	_boost.modulate.a = 1.0 if player.boosting or _boost.value >= RaceSim.BOOST_RELIGHT else 0.45
 	_drift.value = clampf(player.charge / player.drift_need, 0, 1)
 	if player.gadget == "":
 		_gadget.text = "No gadget fitted"
