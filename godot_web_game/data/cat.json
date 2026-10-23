@@ -1,0 +1,5 @@
+{
+  "events": {"helpful": ["sniff", "gift", "cuddle"], "mischief": ["hide_part", "bench", "spill"]},
+  "gifts": ["fin_stub", "lights_round", "lights_stalks", "cockpit_bubble", "lights_bar"],
+  "max_affection": 10
+}

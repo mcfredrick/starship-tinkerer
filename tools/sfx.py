@@ -110,6 +110,15 @@ def main():
     hiss = noise(1.0)
     x = t(1.0)
     save("spray", (hiss - lowpass(hiss, 0.08)) * (0.85 + 0.15 * np.sin(2 * np.pi * 23 * x)), 0.3)
+    # Grommet's purr: a low rumble pulsing about 25 times a second, swelling on each breath.
+    x = t(1.4)
+    rumble = lowpass(noise(1.4), 0.04) * (0.6 + 0.4 * np.sin(2 * np.pi * 25 * x)) * (0.5 + 0.5 * np.sin(np.pi * x / 0.7) ** 2)
+    save("purr", rumble * env(len(x), attack=0.1, release=0.2), 0.55)
+    # A short "mrrp": a chirp that rises and falls.
+    x = t(0.28)
+    f = 520 + 380 * np.sin(np.pi * x / 0.28)
+    chirp = np.sin(2 * np.pi * np.cumsum(f) / RATE) * env(len(x), attack=0.03, release=0.3)
+    save("mrrp", chirp + 0.3 * np.sin(2 * np.pi * 2 * np.cumsum(f) / RATE) * env(len(x), attack=0.03, release=0.3), 0.35)
 
 
 if __name__ == "__main__":

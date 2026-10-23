@@ -6,6 +6,7 @@ const NOOK := preload("res://shaders/nook.gdshader")
 var _teas: HBoxContainer
 var _cakes: HBoxContainer
 var _note: Label
+var _treat: Button
 
 
 func _ready() -> void:
@@ -21,7 +22,8 @@ func _ready() -> void:
 	_cakes = UI.hbox([], 14)
 	_note = UI.label("", 19, UI.MUTED, true)
 	_note.custom_minimum_size.x = 640
-	var buttons := UI.hbox([UI.button("Read on the tablet", Tablet.open, 20), UI.spacer(),
+	_treat = UI.button("Share a cake with Grommet", _share, 20)
+	var buttons := UI.hbox([UI.button("Read on the tablet", Tablet.open, 20), _treat, UI.spacer(),
 		UI.button("Back to work", func(): Router.go("shop"), 20)])
 	var box := UI.vbox([UI.heading("The tea nook", 32), UI.label("Pick a tea", 19, UI.MUTED), _teas,
 		UI.label("Have a cake", 19, UI.MUTED), _cakes, _note, buttons], 10)
@@ -29,6 +31,13 @@ func _ready() -> void:
 	UI.place(panel, Control.PRESET_CENTER_LEFT, Vector2(60, -282), Vector2(700, 0))
 	UI.fit(panel, 76)
 	ui.add_child(panel)
+	# On a cuddly day Grommet curls up in your lap, once, and it's worth a spark.
+	if int(GameState.cat.cuddle) == GameState.day:
+		GameState.cat.cuddle = 0
+		GameState.spark = mini(GameState.spark + 1, GameState.max_spark())
+		GameState.save()
+		Sfx.play("purr")
+		_note.text = "Grommet climbs into your lap and settles, purring like a small engine. Spark +1."
 	_fill()
 
 
@@ -44,6 +53,7 @@ func _fill() -> void:
 			_cakes.add_child(_card(id, GameState.items[id], _eat))
 	if not any_cake:
 		_cakes.add_child(UI.label("The cake tin is empty. The market sells a few.", 18, UI.MUTED))
+	_treat.disabled = not Content.comforts.cakes.keys().any(func(id): return GameState.items.get(id, 0) > 0)
 	if _note.text == "":
 		_note.text = "Spark %d of %d. A tea lasts until you sleep." % [GameState.spark, GameState.max_spark()]
 
@@ -80,6 +90,15 @@ func _brew(id: String) -> void:
 	GameState.save()
 	var tea: Dictionary = Content.comforts.teas[id]
 	_note.text = "You brew a pot of %s. %s" % [tea.name, tea.desc]
+	_fill()
+
+
+func _share() -> void:
+	var cake: String = Content.comforts.cakes.keys().filter(func(id): return GameState.items.get(id, 0) > 0)[0]
+	GameState.treat_cat(cake)
+	Sfx.play("purr")
+	_note.text = "You break off a corner of %s for Grommet, who eats it with great dignity and then headbutts your hand." % \
+		Content.comforts.cakes[cake].name
 	_fill()
 
 

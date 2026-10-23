@@ -8,6 +8,7 @@ var reading: Dictionary
 var perks: Dictionary
 var walkins: Dictionary
 var storylets: Dictionary
+var cat: Dictionary
 var dialogue := {}
 
 
@@ -19,6 +20,7 @@ func _ready() -> void:
 	perks = _json("res://data/perks.json")
 	walkins = _json("res://data/walkins.json")
 	storylets = _json("res://data/storylets.json")
+	cat = _json("res://data/cat.json")
 	for id in world.pilots:
 		world.pilots[id]["id"] = id
 	# JSON and .txt aren't Godot resources; export_presets.cfg includes data/ by filter.

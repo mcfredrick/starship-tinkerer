@@ -252,6 +252,16 @@ Events are data like everything else: a date (or condition), a scene to load, wh
 dialogue that plays. Playthroughs vary which minor events happen in which season, while the story
 events stay fixed.
 
+## Grommet the shop cat
+
+Halloran's cat came with the hangar and will not be leaving: a moody tuxedo with green eyes, a
+green collar and a gold tag. Each morning Grommet's mood decides the day. On a sweet day Grommet
+sniffs out a hidden fault, brings you a found part, or curls up in your lap at tea for an extra
+spark. On a grumpy day a part goes missing (it turns up on the shelf tomorrow), Grommet lies across
+the workbench and makes repairs fiddlier, or a tin of tea ends up on the floor. Plenty of days
+Grommet just naps. Petting (when offered) and sharing a cake build affection, and a loved cat helps
+more and meddles less.
+
 ## Tea breaks and the tablet
 
 The tea nook is a sunny corner of the hangar with a window onto Bramble's bands.

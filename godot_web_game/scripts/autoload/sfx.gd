@@ -3,7 +3,7 @@
 extends Node
 
 const NAMES := ["click", "ping", "found", "success", "weld", "tick", "pour", "coins", "bonk", "engine", "whoosh",
-	"bump", "beep", "go", "spray"]
+	"bump", "beep", "go", "spray", "purr", "mrrp"]
 const POOL := 8
 
 var _streams := {}

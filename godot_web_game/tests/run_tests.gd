@@ -315,6 +315,21 @@ func test_storylets_unfold_by_hook_and_day() -> void:
 	check(picked.keys() == ["rival_shop"], "a haggler gets the story written for hagglers: %s" % [picked.keys()])
 
 
+func test_a_loved_cat_helps_more_and_meddles_less() -> void:
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/cat.json"))
+	var counts := {}
+	for affection in [0, 10]:
+		var tally := {"sweet": 0, "grumpy": 0, "sleepy": 0}
+		for i in 400:
+			var rng := RandomNumberGenerator.new()
+			rng.seed = i
+			tally[CatMood.pick(rng, affection, data).mood] += 1
+		counts[affection] = tally
+	check(counts[10].sweet > counts[0].sweet * 1.5, "affection brings more helpful days: %s" % [counts])
+	check(counts[10].grumpy < counts[0].grumpy, "and fewer mischievous ones: %s" % [counts])
+	check(counts[0].sleepy > 0 and counts[10].sleepy > 0, "and Grommet still naps some days")
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1

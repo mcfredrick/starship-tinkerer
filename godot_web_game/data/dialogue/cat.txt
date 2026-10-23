@@ -1,0 +1,68 @@
+# Grommet, the shop cat Halloran left behind. A moody tuxedo with a green collar and a gold tag.
+# One scene plays some mornings (see CatMood); "! cat <effect>" does the helping or the mischief.
+
+== grommet_intro
+* Something shifts on top of the parts shelf. Two green eyes open in the gloom.
+* A black-and-white cat drops to the floor, lands without a sound, and inspects you from your boots upward.
+grommet thoughtful: Mrrp.
+* The gold tag on its green collar reads GROMMET. On the back, in Halloran's handwriting: "Came with the shop. Will not be leaving."
+> Hello, Grommet. => hello
+> Are you allowed in here? => allowed
+-- hello
+grommet happy: Mrrrow.
+* Grommet bumps your shin once, as if stamping a form, and strolls off to sit in the warmest patch of the hangar.
+end
+-- allowed
+grommet grumpy: Mrr.
+* Grommet looks at you the way you'd look at someone asking if the floor is allowed in here.
+end
+
+== cat_sniff
+* Grommet is standing very still in the middle of the bay, nose working.
+grommet thoughtful: Mrrp?
+* They pad over to the cradle, sniff along a seam, and sit down pointedly beside one spot.
+* Huh. There's something there.
+! cat sniff
+end
+
+== cat_gift
+* There's something on your workbench that wasn't there last night. Grommet is sitting next to it, looking extremely pleased.
+grommet happy: Mrrrow!
+* It's a part. Slightly chewed. Where Grommet got it, you'd rather not ask.
+! cat gift
+end
+
+== cat_cuddle
+* Grommet follows you everywhere this morning, chirping, and keeps glancing toward the tea nook.
+grommet happy: Prrrp.
+* It's very clearly a hint.
+! cat cuddle
+end
+
+== cat_hide_part
+* One of your shelves has a suspicious gap in it.
+* Grommet is washing a paw on top of the drawers and not making eye contact.
+grommet thoughtful: ...
+! cat hide_part
+end
+
+== cat_return_part
+* The missing part is back on your shelf this morning, set down precisely in its old spot.
+grommet happy: Mrrp.
+* Grommet acts as though this is a great kindness on their part.
+! cat return_part
+end
+
+== cat_bench
+* Grommet has claimed the workbench. All of it. They're lying across the tools like a small black-and-white rug.
+grommet grumpy: Mrrrrr.
+* You'll be working around them today. Carefully.
+! cat bench
+end
+
+== cat_spill
+* A crash from the tea nook. A tin rolls slowly across the floor, trailing tea leaves.
+grommet surprised: !
+* Grommet stares at the tin as though it attacked first, then leaves at speed.
+! cat spill
+end

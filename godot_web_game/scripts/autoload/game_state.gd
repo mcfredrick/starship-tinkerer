@@ -40,6 +40,8 @@ var board_day := 0
 var next_id := 1
 ## Storylets running with generated customers, by pilot id (see Storylets).
 var stories := {}
+## Grommet the shop cat: affection, today's mood and event, and a part they've hidden away.
+var cat := {}
 
 
 func new_game(name: String, pronouns: Variant) -> void:
@@ -68,6 +70,7 @@ func new_game(name: String, pronouns: Variant) -> void:
 	board_day = 0
 	next_id = 1
 	stories = {}
+	cat = _new_cat()
 	_reset_today()
 	save()
 
@@ -92,7 +95,7 @@ func to_dict() -> Dictionary:
 		"items": items, "ships": ships, "skills": skills, "rapport": rapport, "flags": flags, "buff": buff,
 		"job": job, "today": today, "perks": perks, "reputation": reputation, "seed": run_seed, "cast": cast,
 		"jobs": jobs, "board": board, "board_day": board_day, "next_id": next_id,
-		"stories": stories,
+		"stories": stories, "cat": cat,
 	}
 
 
@@ -122,6 +125,7 @@ func from_dict(d: Dictionary) -> void:
 	board_day = int(d.get("board_day", 0))
 	next_id = int(d.get("next_id", 1))
 	stories = d.get("stories", {})
+	cat = d.get("cat", _new_cat())
 
 
 ## JSON numbers load as floats; counts should stay ints.
@@ -171,7 +175,9 @@ func buff_bonus(task: String) -> float:
 
 
 func leniency(skill: String, task: String) -> float:
-	return Skills.leniency(skills[skill], buff_bonus(task) + perk(task + "_leniency"))
+	# Grommet sitting on the bench makes the day's repairs a little fiddlier.
+	var cat_in_the_way := -0.15 if int(cat.get("bench", 0)) == day else 0.0
+	return Skills.leniency(skills[skill], buff_bonus(task) + perk(task + "_leniency") + cat_in_the_way)
 
 
 func perk(key: String) -> float:
@@ -246,6 +252,94 @@ func accept_offer(index: int) -> String:
 	return id
 
 
+static func _new_cat() -> Dictionary:
+	return {"affection": 2, "day": 0, "event": "", "mood": "sleepy", "stash": "", "petted": false, "bench": 0,
+		"cuddle": 0}
+
+
+## Grommet's scene for this morning, once per day ("" on a nap day). A hidden part always comes
+## back the next morning.
+func cat_morning() -> String:
+	if int(cat.day) == day:
+		return ""
+	cat.day = day
+	cat.petted = false
+	if cat.stash:
+		cat.event = "return_part"
+		cat.mood = "sweet"
+	else:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = hash([run_seed, day, "cat"])
+		var today := CatMood.pick(rng, int(cat.affection), Content.cat)
+		cat.event = today.event
+		cat.mood = today.mood
+	save()
+	return "cat_" + cat.event if cat.event else ""
+
+
+## Petting Grommet: "purr" (and a little affection, once a day), "content" if already petted
+## today, or "swat" on a grumpy day.
+func pet_cat() -> String:
+	if cat.mood == "grumpy":
+		return "swat"
+	if cat.petted:
+		return "content"
+	cat.petted = true
+	cat.affection = mini(int(cat.affection) + 1, int(Content.cat.max_affection))
+	save()
+	return "purr"
+
+
+func treat_cat(cake: String) -> void:
+	take(items, cake)
+	cat.affection = mini(int(cat.affection) + 2, int(Content.cat.max_affection))
+	if cat.mood == "grumpy":
+		cat.mood = "sweet"
+	save()
+
+
+func _cat_effect(effect: String) -> void:
+	match effect:
+		"sniff":
+			# Finds a fault on the job on the bench, or on the next one to arrive.
+			if not job.is_empty() and _first_hidden_fault():
+				_first_hidden_fault().found = true
+			else:
+				flags.cat_sniff = true
+		"gift":
+			var gift: String = Content.cat.gifts[randi() % Content.cat.gifts.size()]
+			give(parts, gift)
+			Router.toast("Grommet's gift: %s, on your shelf." % Content.part(gift).name)
+		"cuddle":
+			cat.cuddle = day
+		"hide_part":
+			if parts.is_empty():
+				return
+			var id: String = parts.keys()[randi() % parts.size()]
+			take(parts, id)
+			cat.stash = id
+			Router.toast("Missing from your shelves: %s." % Content.part(id).name, UI.BAD)
+		"return_part":
+			give(parts, cat.stash)
+			Router.toast("Back on your shelf: %s." % Content.part(cat.stash).name)
+			cat.stash = ""
+		"bench":
+			cat.bench = day
+		"spill":
+			var teas: Array = items.keys().filter(func(i): return Content.comforts.teas.has(i))
+			if teas:
+				var spilt: String = teas[randi() % teas.size()]
+				take(items, spilt)
+				Router.toast("Spilt: one %s." % Content.comforts.teas[spilt].name, UI.BAD)
+
+
+func _first_hidden_fault() -> Dictionary:
+	for f in ships[job_spec(job.id).ship].faults:
+		if not f.found:
+			return f
+	return {}
+
+
 ## The storylet scene `pilot_id` plays at `hook` now, or "".
 func story_scene(pilot_id: String, hook: String) -> String:
 	return Storylets.scene_at(stories[pilot_id], hook, day, Content.storylets) if stories.has(pilot_id) else ""
@@ -282,6 +376,8 @@ func run_command(cmd: String, args: Array) -> void:
 			add_pebs(int(args[0]), "")
 		"budget":
 			job.budget = int(args[0])
+		"cat":
+			_cat_effect(args[0])
 		_:
 			assert(false, "unknown dialogue command: " + cmd)
 	save()
@@ -294,6 +390,9 @@ func start_job(id: String) -> void:
 		faults.append({"type": f.type, "spot": f.spot, "found": false, "fixed": false, "score": 0.0})
 	var ship: Dictionary = ships[spec.ship]
 	ship["faults"] = faults
+	if flags.has("cat_sniff") and faults:
+		faults[0].found = true
+		flags.erase("cat_sniff")
 	job = {"id": id, "before": ship.duplicate(true)}
 	phase = "day"
 	save()

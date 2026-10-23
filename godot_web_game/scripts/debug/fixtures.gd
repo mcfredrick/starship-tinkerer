@@ -10,16 +10,19 @@ static func apply(name: String) -> void:
 			pass
 		"job":
 			GameState.flags.seen_intro = true
+			GameState.flags.seen_grommet_intro = true
 			GameState.flags.seen_odessa_arrives = true
 			GameState.start_job("odessa_1")
 		"scanned":
 			GameState.flags.seen_intro = true
+			GameState.flags.seen_grommet_intro = true
 			GameState.flags.seen_odessa_arrives = true
 			GameState.start_job("odessa_1")
 			for f in _job_faults():
 				f.found = true
 		"finished":
 			GameState.flags.seen_intro = true
+			GameState.flags.seen_grommet_intro = true
 			GameState.flags.seen_odessa_arrives = true
 			GameState.start_job("odessa_1")
 			for f in _job_faults():
@@ -32,7 +35,7 @@ static func apply(name: String) -> void:
 			moth.parts.engine = "engine_hush"
 			moth.paint = "marigold"
 		"brindle", "crake", "midway":
-			for f in ["seen_intro", "seen_odessa_arrives", "odessa_1_done", "seen_racers_visit", "race_open",
+			for f in ["seen_intro", "seen_grommet_intro", "seen_odessa_arrives", "odessa_1_done", "seen_racers_visit", "race_open",
 					"seen_day2_morning", "knows_pearl"]:
 				GameState.flags[f] = true
 			var who := "crake" if name == "midway" else name
@@ -47,7 +50,7 @@ static func apply(name: String) -> void:
 					f.scores = [0.8]
 		"board", "walkin":
 			# Day four: the cast's first jobs are done and walk-ins have started.
-			for f in ["seen_intro", "seen_odessa_arrives", "odessa_1_done", "seen_racers_visit", "race_open",
+			for f in ["seen_intro", "seen_grommet_intro", "seen_odessa_arrives", "odessa_1_done", "seen_racers_visit", "race_open",
 					"seen_day2_morning", "seen_brindle_arrives", "brindle_1_done", "seen_day3_morning",
 					"seen_crake_arrives", "crake_1_done", "seen_day4_morning", "knows_pearl"]:
 				GameState.flags[f] = true
@@ -60,12 +63,14 @@ static func apply(name: String) -> void:
 					f.found = true
 		"levelup":
 			GameState.flags.seen_intro = true
+			GameState.flags.seen_grommet_intro = true
 			GameState.phase = "evening"
 			GameState.skills.mechanics = 70
 			GameState.skills.diagnostics = 65
 			GameState.today.xp = {"mechanics": 70, "diagnostics": 65}
 		"evening":
 			GameState.flags.seen_intro = true
+			GameState.flags.seen_grommet_intro = true
 			GameState.flags.odessa_1_done = true
 			GameState.flags.odessa_1_quiet = true
 			GameState.flags.seen_odessa_arrives = true
@@ -75,6 +80,7 @@ static func apply(name: String) -> void:
 			GameState.give(GameState.items, "cake_seed", 2)
 		"day2":
 			GameState.flags.seen_intro = true
+			GameState.flags.seen_grommet_intro = true
 			GameState.flags.odessa_1_done = true
 			GameState.flags.odessa_1_quiet = true
 			GameState.flags.seen_odessa_arrives = true

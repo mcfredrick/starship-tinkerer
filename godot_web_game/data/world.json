@@ -32,7 +32,9 @@
     "crake": {"name": "Thaddeus Crake", "short": "Crake", "pronouns": "he", "ship": "magnificence",
       "taste": ["plum", "brass", "scarlet"],
       "blurb": "Owns a yacht, a cravat, and opinions about tipping.",
-      "taste_hint": "Crake's cufflinks are brass and his cravat is plum. He mentions both."}
+      "taste_hint": "Crake's cufflinks are brass and his cravat is plum. He mentions both."},
+    "grommet": {"name": "Grommet", "short": "Grommet", "pronouns": "they", "taste": [],
+      "blurb": "The shop cat. Came with the hangar. Will not be leaving.", "taste_hint": ""}
   },
   "jobs": {
     "odessa_1": {
@@ -74,6 +76,7 @@
   },
   "beats": [
     {"scene": "intro"},
+    {"scene": "grommet_intro"},
     {"scene": "odessa_arrives", "day": 1, "phase": "morning", "idle": true},
     {"scene": "racers_visit", "phase": "evening", "requires": "odessa_1_done"},
     {"scene": "day2_morning", "day": 2},

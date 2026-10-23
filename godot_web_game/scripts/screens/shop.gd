@@ -1,7 +1,12 @@
 ## The hangar hub: story beats play here, and every activity starts from here.
 extends Screen
 
+## Grommet's spot on the deck, by the cradle.
+const CAT_SPOT := Vector3(-3.9, 0.0, 3.6)
+
+var _cat_override := ""
 var _actions: VBoxContainer
+var _cat: CatModel
 var _hint: Label
 
 
@@ -12,6 +17,12 @@ func _ready() -> void:
 	stage.camera.target = Vector3(1.8, 2.2, 0)
 	stage.camera.refresh()
 	show_ship(_ship_on_cradle())
+	_cat = CatModel.new()
+	_cat.pose(_cat_mood() == "sleepy")
+	_cat.position = CAT_SPOT
+	_cat.rotation.y = -2.1
+	_cat.scale = Vector3.ONE * 1.4
+	stage.add_child(_cat)
 	ui.add_child(Hud.new())
 
 	_hint = UI.label("", 20, UI.INK, true)
@@ -22,6 +33,15 @@ func _ready() -> void:
 	ui.add_child(side)
 	_refresh()
 	_play_beats.call_deferred()
+
+
+## Screen params: `cat=<mood>` shows Grommet in that mood (for screenshots).
+func setup(params: Dictionary) -> void:
+	_cat_override = params.get("cat", "")
+
+
+func _cat_mood() -> String:
+	return _cat_override if _cat_override else GameState.cat.get("mood", "sleepy")
 
 
 func _ship_on_cradle() -> String:
@@ -44,6 +64,10 @@ func _play_beats() -> void:
 	if GameState.phase == "morning":
 		for id in GameState.stories.keys():
 			await Router.story(id, "morning")
+		var cat_scene := GameState.cat_morning()
+		if cat_scene:
+			await Router.talk(cat_scene)
+		_refresh()
 
 
 func _beat_ready(b: Dictionary) -> bool:
@@ -80,6 +104,28 @@ func _refresh() -> void:
 		b.disabled = GameState.flags.has("raced_today")
 	if GameState.phase == "evening" or GameState.day >= 2:
 		_add("Sleep", func(): Router.go("night"))
+
+
+## Clicking Grommet pets them, mood permitting.
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
+		return
+	var at := stage.camera.unproject_position(_cat.global_position + Vector3.UP * 0.7)
+	if event.position.distance_to(at) > 70 * UI.reach():
+		return
+	match GameState.pet_cat():
+		"purr":
+			_cat.purr()
+			Sfx.play("purr")
+			Router.toast("Grommet leans into your hand, purring.")
+		"content":
+			_cat.purr()
+			Sfx.play("mrrp")
+		"swat":
+			_cat.swat()
+			Sfx.play("mrrp", 0.7)
+			Router.toast("Grommet swats your hand away. Not today.", UI.BAD)
+	get_viewport().set_input_as_handled()
 
 
 func _add(text: String, action: Callable) -> Button:

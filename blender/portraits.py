@@ -59,6 +59,9 @@ CHARACTERS = {
     # A maintenance robot with a face screen.
     "brindle": {"build": "robot", "shell": hexc("3fb8af"), "jacket": hexc("ff8c1a"), "accent": hexc("4a4e69"),
                 "glow": hexc("9dffd9"), "screen": hexc("10232b")},
+    # Grommet, the shop cat Halloran left behind: a moody tuxedo with a green collar and a gold tag.
+    "grommet": {"build": "cat", "skin": hexc("3b3742"), "jacket": hexc("2f9e5b"), "stache": hexc("e8b931"),
+                "accent": hexc("f4f1ea"), "trim": hexc("f4a6b8"), "iris": hexc("b7e24a"), "head": (1.08, 0.86, 0.84)},
 }
 
 
@@ -448,7 +451,83 @@ def robot(c, e):
     dress(mesh_obj("mouth", tube_bm(pts, [0.03 + 0.05 * open_] * 9, 8), root), mats["glow"])
 
 
-BUILDERS = {"odessa": odessa, "ilse": ilse, "crake": crake, "robot": robot}
+def cat(c, e):
+    """A tuxedo cat: black with a white blaze, muzzle and chest, a green collar with a gold tag,
+    slit-pupil eyes, and ears that tell you the mood (up when surprised, flat when grumpy, drooping
+    when sad). The fur is a deep charcoal so the ink still reads against it."""
+    head = c["head"]
+    mats = palette(c)
+    root = empty("portrait")
+    egg_head(head, mats, root, jowl=0.18)
+    blaze = sphere_bm(0.2, 16, 8, lambda v: Vector((v.x * 0.55, v.y * 0.25, v.z * 1.4)))
+    dress(mesh_obj("blaze", transform_bm(blaze, lambda v: v + face_point(head, 0, 0.0, out=-0.03)), root), mats["accent"])
+    tilt = {"grumpy": 1.15, "sad": 0.9, "surprised": -0.15}.get(_expression_name(e), 0.2)
+    for side in (-1, 1):
+        ear = lathe_bm([(0.0, 0.34), (0.55, 0.02)], axis="z", squash=(1.0, 0.45))
+        inner = lathe_bm([(0.02, 0.22), (0.4, 0.02)], axis="z", squash=(1.0, 0.3))
+        def place(v, s=side):
+            v = Vector((v.x, v.y, v.z))
+            a = s * tilt
+            x, z = v.x * math.cos(a) - v.z * math.sin(a), v.x * math.sin(a) + v.z * math.cos(a)
+            return Vector((x + s * head[0] * 0.55, v.y + 0.05, z + head[2] * 0.62))
+        dress(mesh_obj(f"ear{side}", transform_bm(ear, place), root), mats["skin"])
+        dress(mesh_obj(f"earin{side}", transform_bm(inner, lambda v, f=place: f(v) + Vector((0, -0.08, 0))), root),
+              mats["trim"])
+    for side in (-1, 1):
+        cheek = sphere_bm(0.24, 16, 8, lambda v: Vector((v.x, v.y * 0.5, v.z * 0.75)))
+        dress(mesh_obj(f"muzzle{side}", transform_bm(cheek, lambda v, s=side: v + face_point(head, s * 0.16, -0.3, out=0.02)),
+                       root), mats["accent"])
+        for k in range(3):
+            start = face_point(head, side * 0.3, -0.27 + k * 0.07, out=0.06)
+            whisker = [start, start + Vector((side * 0.45, -0.05, 0.06 - k * 0.07)),
+                       start + Vector((side * 0.85, 0.0, 0.1 - k * 0.12))]
+            dress(mesh_obj(f"whisker{side}{k}", tube_bm(whisker, [0.012, 0.01, 0.006], 5), root), mats["line"])
+    nose = sphere_bm(0.07, 12, 6, lambda v: Vector((v.x * 1.3, v.y * 0.6, v.z * 0.8)))
+    dress(mesh_obj("nose", transform_bm(nose, lambda v: v + face_point(head, 0, -0.2, out=0.12)), root), mats["trim"])
+    for side in (-1, 1):
+        x = side * 0.36
+        base = face_point(head, x, 0.12, out=-0.02)
+        if e["eye"] == "arc":
+            pts = [base + Vector(((i / 8 - 0.5) * 0.3, -0.06, 0.05 * math.sin(math.pi * i / 8))) for i in range(9)]
+            dress(mesh_obj(f"lid{side}", tube_bm(pts, [0.024] * 9, 8), root), mats["line"])
+            continue
+        open_ = e["eye"]
+        iris = sphere_bm(0.16, 24, 12, lambda v: Vector((v.x * 1.1, v.y * 0.5, v.z * 0.95 * open_)))
+        dress(mesh_obj(f"iris{side}", transform_bm(iris, lambda v: v + base), root), mats["iris"])
+        lx, lz = e["look"]
+        slit = sphere_bm(0.15, 12, 8, lambda v: Vector((v.x * 0.22, v.y * 0.3, v.z * 0.85 * min(open_, 1.0))))
+        dress(mesh_obj(f"slit{side}", transform_bm(slit, lambda v: v + base + Vector((lx, -0.09, lz))), root), mats["line"])
+        glint = sphere_bm(0.035, 8, 4)
+        dress(mesh_obj(f"glint{side}", transform_bm(glint, lambda v: v + base + Vector((-0.05, -0.11, 0.06))), root),
+              mats["white"])
+    if _expression_name(e) in ("grumpy", "sad", "thoughtful"):
+        build_brows(e, mats, root, head, brow_z=0.32, spacing=0.36, length=0.18)
+    smile, open_, width = e["mouth"]
+    for side in (-1, 1):
+        pts = [face_point(head, side * (0.02 + 0.12 * u), -0.33 - 0.05 * math.sin(math.pi * u) + smile * 0.03 * u, out=0.1)
+               for u in (i / 6 for i in range(7))]
+        dress(mesh_obj(f"mouth{side}", tube_bm(pts, [0.016] * 7, 6), root), mats["line"])
+    if open_ > 0.3:
+        gape = sphere_bm(0.08, 12, 6, lambda v: Vector((v.x * 1.1, v.y * 0.3, v.z * open_ * 1.4)))
+        dress(mesh_obj("gape", transform_bm(gape, lambda v: v + face_point(head, 0, -0.45, out=0.06)), root), mats["mouth"])
+    body = lathe_bm([(-0.7, 0.55), (-0.95, 0.85), (-1.3, 1.05), (-1.7, 1.12), (-2.3, 1.15)], axis="z", squash=(1.25, 0.65))
+    dress(mesh_obj("body", body, root), mats["skin"])
+    shirt = sphere_bm(0.5, 20, 10, lambda v: Vector((v.x * 0.9, v.y * 0.3, v.z * 1.15)))
+    dress(mesh_obj("shirt", transform_bm(shirt, lambda v: v + Vector((0, -0.68, -1.55))), root), mats["accent"])
+    collar = [Vector((math.cos(a) * 0.7, math.sin(a) * 0.55 - 0.06, -0.98 + 0.05 * math.sin(a)))
+              for a in (2 * math.pi * i / 32 for i in range(33))]
+    dress(mesh_obj("collar", tube_bm(collar, [0.085] * 33, 10, cap=False), root), mats["jacket"])
+    loop = [Vector((0, -0.66 - 0.08 * i, -1.03 - 0.05 * i)) for i in range(3)]
+    dress(mesh_obj("loop", tube_bm(loop, [0.025] * 3, 6), root), mats["stache"])
+    tag = lathe_bm([(0.03, 0.14), (-0.03, 0.14)], axis="y")
+    dress(mesh_obj("tag", transform_bm(tag, lambda v: v + Vector((0, -0.9, -1.24))), root), mats["stache"])
+
+
+def _expression_name(e):
+    return next(name for name, spec in EXPRESSIONS.items() if spec is e)
+
+
+BUILDERS = {"odessa": odessa, "ilse": ilse, "crake": crake, "robot": robot, "cat": cat}
 
 
 # ---------------------------------------------------------------- render

@@ -39,6 +39,7 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Ship kit | `$B -b --python blender/export_ship_kit.py` (repo root); preview with `preview_kit.py -- out.png [--front]` |
 | Portraits | `$B -b --python blender/portraits.py -- [character ...]` |
 | Paper-doll layers (generated customers) | `$B -b --python blender/dolls.py -- [layer-prefix ...]` |
+| Grommet the cat (3D) | `$B -b --python blender/cat.py` (portrait sheet: `portraits.py -- grommet`) |
 | Prop icons | `$B -b --python blender/props.py` |
 | Web build | `./export_web.sh` (repo root; output in `godot_web_game/build/web/`) |
 | Sound effects | `uv run --with numpy python -I tools/sfx.py` (repo root) |
@@ -46,7 +47,7 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 
 Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `evening`, `day2`, `brindle`,
 `crake`, `midway` (Crake's job with every fault one step in), `board` (day 4, walk-ins on the board),
-`walkin` (a walk-in's job on the bench), `levelup`.
+`walkin` (a walk-in's job on the bench), `levelup`. The shop also takes `--cat=sweet|grumpy|sleepy`.
 
 ## Conventions
 
