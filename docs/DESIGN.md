@@ -452,7 +452,7 @@ really left.
 7. **Racing.** Done. Three tracks in data (Quietwater Ring, the Ring Shadow night run, the Drum
    Garden twist), each with its own scenery theme; a weekly calendar of cups with rating caps beside
    the nightly club race; four gadgets (ribbon, bubble, tow magnet, foghorn); race any fixed ship.
-8. **The cast.** Second commissions and arcs for Odessa, Ilse, Brindle and Crake, letters between,
-   and two special events: the Close Pass (day 11) and the Lighthouse of Lumen Reach (day 15), with
-   epilogues after the Garden Dash. Still to come: the Okafor siblings, Pip and Dr. Yaneva.
+8. **The cast.** Done. Second commissions and arcs for Odessa, Ilse, Brindle and Crake; new arcs for
+   Pip, Tam and Juniper Okafor and Dr. Yaneva, each with two commissions, a choice or a cup, and
+   letters; two special events, the Close Pass (day 11) and the Lighthouse of Lumen Reach (day 15).
 9. **Polish and launch** on starship-tinkerer.crap.games.

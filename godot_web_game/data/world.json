@@ -14,7 +14,16 @@
       "paint": "marigold", "trim": "slate", "livery": "checker", "grime": 0.6},
     "magnificence": {"name": "The Magnificence", "owner": "crake", "hull": "manta",
       "parts": {"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_bay", "lights": "lights_bar"},
-      "paint": "plum", "trim": "brass", "livery": "two_tone", "grime": 0.3}
+      "paint": "plum", "trim": "brass", "livery": "two_tone", "grime": 0.3},
+    "dandelion": {"name": "Dandelion", "owner": "pip", "hull": "ringdart",
+      "parts": {"engine": "engine_rattler", "fins": "fin_stub", "cockpit": "cockpit_bubble", "lights": "lights_round"},
+      "paint": "cream", "trim": "marigold", "livery": "dots", "grime": 0.5},
+    "brothy": {"name": "The Brothy", "owner": "tam", "hull": "barge",
+      "parts": {"engine": "engine_rattler", "fins": "fin_wing", "cockpit": "cockpit_bay", "lights": "lights_bar"},
+      "paint": "terracotta", "trim": "cream", "livery": "bands", "grime": 0.7},
+    "glasshouse": {"name": "The Glasshouse", "owner": "yaneva", "hull": "saucer",
+      "parts": {"engine": "engine_hush", "fins": "fin_feather", "cockpit": "cockpit_bubble", "lights": "lights_stalks"},
+      "paint": "sage", "trim": "rose", "livery": "solid", "grime": 0.4}
   },
   "pilots": {
     "odessa": {"name": "Odessa Vell", "short": "Odessa", "pronouns": "she", "ship": "pocket_moth",
@@ -33,6 +42,22 @@
       "taste": ["plum", "brass", "scarlet"],
       "blurb": "Owns a yacht, a cravat, and opinions about tipping.",
       "taste_hint": "Crake's cufflinks are brass and his cravat is plum. He mentions both."},
+    "pip": {"name": "Pip Arkwright", "short": "Pip", "pronouns": "they", "ship": "dandelion",
+      "taste": ["mint", "rose", "cream"],
+      "blurb": "A brand-new pilot with a fresh license, a tiny budget and a secondhand racer.",
+      "taste_hint": "Pip's scarf is the color of mustard and their notebook is mint green with rose doodles."},
+    "tam": {"name": "Tam Okafor", "short": "Tam", "pronouns": "he", "ship": "brothy",
+      "taste": ["terracotta", "marigold", "cream"],
+      "blurb": "Runs the noodle cart with his sister. Loud, warm, always holding a ladle.",
+      "taste_hint": "The Okafors' awning is terracotta and marigold, like a bowl of chili broth."},
+    "juniper": {"name": "Juniper Okafor", "short": "Juniper", "pronouns": "she", "ship": "brothy",
+      "taste": ["terracotta", "marigold", "cream"],
+      "blurb": "Runs the noodle cart with her brother. Keeps the books, and the peace.",
+      "taste_hint": "The Okafors' awning is terracotta and marigold, like a bowl of chili broth."},
+    "yaneva": {"name": "Dr. Sol Yaneva", "short": "Dr. Yaneva", "pronouns": "he", "ship": "glasshouse",
+      "taste": ["sage", "mint", "rose"],
+      "blurb": "A traveling botanist, part plant himself, whose ship is half greenhouse.",
+      "taste_hint": "Dr. Yaneva describes colors as plants: sage, mint, and the pink of a rose in rain."},
     "mags": {"name": "Mags Rattlecart", "short": "Mags", "pronouns": "she", "taste": [], "hawker": "worn",
       "blurb": "A Moothe hawker. Everything she sells is barely used.", "taste_hint": "",
       "look": {"head": "bean", "eyes": 2, "extras": ["horns", "ears"], "outfit": "overalls", "skin": "c9a27e",
@@ -140,6 +165,88 @@
       ],
       "barter": {},
       "dialogue": "crake_2"
+    },
+    "pip_1": {
+      "pilot": "pip",
+      "ship": "dandelion",
+      "budget": 160,
+      "request": "The Dandelion shakes in corners. A lot. I closed my eyes in the sun-hairpin and I don't think you're supposed to do that. Could she be less... frightening?",
+      "faults": [{"type": "rewire", "spot": 2}, {"type": "dent", "spot": 4}],
+      "wants": [
+        {"stat": "handling", "min": 54, "label": "Steady in the corners", "weight": 2},
+        {"stat": "grip", "min": 48, "label": "Doesn't slide", "weight": 1},
+        {"stat": "comfort", "min": 18, "label": "Less frightening", "weight": 1}
+      ],
+      "barter": {"tea_steady_leaf": 1},
+      "dialogue": "pip_1"
+    },
+    "pip_2": {
+      "pilot": "pip",
+      "ship": "dandelion",
+      "budget": 200,
+      "request": "I entered the Ring Shadow Night Run. Ilse says I'm ready. I'm not ready. It's Class B, so the Dandelion has to stay under the cap, but she has to be quick in the dark.",
+      "faults": [{"type": "calibrate", "spot": 1}, {"type": "weld", "spot": 5}],
+      "wants": [
+        {"rating_max": 245, "label": "Inside Class B", "weight": 2},
+        {"stat": "handling", "min": 56, "label": "Nimble in the dark", "weight": 1},
+        {"taste": true, "label": "Colors Pip loves", "weight": 1}
+      ],
+      "barter": {},
+      "dialogue": "pip_2"
+    },
+    "okafor_1": {
+      "pilot": "tam",
+      "ship": "brothy",
+      "budget": 230,
+      "request": "Every time we take a corner the soup goes everywhere. Everywhere! The ceiling has soup on it! Make her smooth and steady, please, for the soup's sake.",
+      "faults": [{"type": "weld", "spot": 1}, {"type": "calibrate", "spot": 3}],
+      "wants": [
+        {"stat": "comfort", "min": 66, "label": "Smooth enough for soup", "weight": 2},
+        {"stat": "handling", "min": 36, "label": "Steady round corners", "weight": 1},
+        {"taste": true, "label": "Chili-broth colors", "weight": 1}
+      ],
+      "barter": {"cake_nebula_roll": 2},
+      "dialogue": "okafor_1"
+    },
+    "okafor_2": {
+      "pilot": "tam",
+      "ship": "brothy",
+      "budget": 280,
+      "request": "Lunch rush, both ends of the ring, one hour. The soup has to arrive hot and the customers have to hear themselves order.",
+      "faults": [{"type": "coupling", "spot": 2}, {"type": "dent", "spot": 6}],
+      "wants": [
+        {"stat": "top_speed", "min": 42, "label": "Both ends of the ring by lunch", "weight": 2},
+        {"stat": "noise", "max": 55, "label": "Quiet enough to take orders", "weight": 1}
+      ],
+      "barter": {"cake_moon_plum": 2},
+      "dialogue": "okafor_2"
+    },
+    "yaneva_1": {
+      "pilot": "yaneva",
+      "ship": "glasshouse",
+      "budget": 240,
+      "request": "My seedlings dislike vibration. Also noise, also sudden turns, also me humming. I can't help the humming. Could you help the rest?",
+      "faults": [{"type": "rewire", "spot": 3}, {"type": "weld", "spot": 5}],
+      "wants": [
+        {"stat": "noise", "max": 24, "label": "Hushed for the seedlings", "weight": 2},
+        {"stat": "comfort", "min": 64, "label": "Gentle as a greenhouse", "weight": 1},
+        {"taste": true, "label": "Garden colors", "weight": 1}
+      ],
+      "barter": {"tea_drift_bloom": 2, "tea_steady_leaf": 1},
+      "dialogue": "yaneva_1"
+    },
+    "yaneva_2": {
+      "pilot": "yaneva",
+      "ship": "glasshouse",
+      "budget": 320,
+      "request": "The ember fern blooms for one night, on a moon at the far end of the ring, and that night is in four days. I need speed I've never needed before.",
+      "faults": [{"type": "calibrate", "spot": 2}, {"type": "breach", "spot": 4}],
+      "wants": [
+        {"stat": "top_speed", "min": 62, "label": "Fast enough to make the bloom", "weight": 2},
+        {"stat": "boost", "min": 30, "label": "A burst for the last stretch", "weight": 1}
+      ],
+      "barter": {"tea_bright_ember": 3},
+      "dialogue": "yaneva_2"
     }
   },
   "beats": [
@@ -160,6 +267,13 @@
     {"scene": "close_pass_call", "min_day": 11, "phase": "morning", "idle": true, "requires": "seen_close_pass_eve", "event": "close_pass"},
     {"scene": "ilse_after_dash", "min_day": 13, "phase": "morning", "requires": "seen_close_pass_call"},
     {"scene": "brindle_commentator", "min_day": 14, "phase": "morning", "requires": "seen_ilse_after_dash"},
+    {"scene": "pip_arrives", "min_day": 12, "phase": "morning", "idle": true, "requires": "seen_close_pass_call"},
+    {"scene": "okafor_arrives", "min_day": 13, "phase": "morning", "idle": true, "requires": "pip_1_done"},
+    {"scene": "yaneva_arrives", "min_day": 14, "phase": "morning", "idle": true, "requires": "okafor_1_done"},
+    {"scene": "pip_returns", "min_day": 16, "phase": "morning", "idle": true, "requires": "yaneva_1_done"},
+    {"scene": "okafor_returns", "min_day": 17, "phase": "morning", "idle": true, "requires": "pip_2_done"},
+    {"scene": "yaneva_returns", "min_day": 18, "phase": "morning", "idle": true, "requires": "okafor_2_done"},
+    {"scene": "pip_cup", "min_day": 25, "phase": "morning", "requires": "pip_2_done"},
     {"scene": "lumen_call", "min_day": 15, "phase": "morning", "idle": true, "requires": "read_lumen_invite", "event": "lumen_reach"}
   ],
   "events": {

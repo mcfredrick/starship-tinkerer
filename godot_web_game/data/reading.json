@@ -216,6 +216,39 @@
       "day": 15,
       "requires": "event_lumen_reach",
       "body": "The tinkerer came on the third night, in a small round ship that whistled when it braked.\n\nThey did not read the manual. They climbed to the lamp room, put a hand flat against the gear housing, and listened. Then they turned two dials a very small amount, and the gears hummed a different note, a sure one, and the gold arm swept out across the ice again as if it had never stopped.\n\nThe whale rose out of the ice field before the beam had crossed it twice. It sang, long and low, and the glass in the lamp room sang back.\n\nCorollary watched the whale through the window for a very long time. Then Corollary sat down on the logbook, which is how a cat says: all right. I believe you now.\n\nThe End.\n\n(Dedicated to the tinkerer of Quietwater, who hears things.)"
+    },
+    "okafor_letter_restaurant": {
+      "kind": "letter",
+      "title": "Opening night",
+      "from": "Juniper and Tam Okafor",
+      "day": 20,
+      "requires": "okafor_restaurant",
+      "body": "Dear {name},\n\nThe restaurant is called The Brothy, because Tam refused to call it anything else. It has a window over the drum gardens and a kitchen that does not move, and I have cried in it twice, both times happily.\n\nThe Brothy the ship does deliveries now, all round the ring. Tam flies it on Tuesdays and comes back windblown and smug.\n\nThere is a table by the window with a little card on it that says RESERVED FOR THE TINKERER. Tam made the card. The spelling is his.\n\nJuniper (and TAM)"
+    },
+    "okafor_letter_cart": {
+      "kind": "letter",
+      "title": "From the far end of the ring",
+      "from": "Tam and Juniper Okafor",
+      "day": 20,
+      "requires": "okafor_cart",
+      "body": "{name}!!!\n\nWe did the lunch rush at both ends of the ring and a mining crew on the third moon cheered when we arrived. CHEERED. For noodles. Juniper pretended not to cry. She cried.\n\nWe're staying a cart forever. Wherever people are cold and hungry, that's where we'll be. If you ever smell ginger on the wind, look up.\n\nTam (and Juniper, who says to say she was right about the bowls)"
+    },
+    "yaneva_letter_found": {
+      "kind": "letter",
+      "title": "An ember fern, blooming",
+      "from": "Dr. Sol Yaneva",
+      "day": 19,
+      "requires": "yaneva_2_done",
+      "excludes": "yaneva_2_lukewarm",
+      "body": "Dear {name},\n\nWe made it with a day to spare, so I spent the day lying on my back on the moss, waiting, and humming.\n\nAt dusk the ember fern opened. It glows from inside, like a coal someone has decided to be kind about. There were not one but forty of them, all along a crater wall, all blooming at once. Not extinct at all. Only waiting for someone to look.\n\nI've pressed a frond for you. It still glows a little when it's dark. I've also, I'm afraid, named a subspecies after your shop. It seemed only fair.\n\nWith gratitude and soil under my nails,\nSol Yaneva"
+    },
+    "yaneva_letter_missed": {
+      "kind": "letter",
+      "title": "Next time",
+      "from": "Dr. Sol Yaneva",
+      "day": 19,
+      "requires": "yaneva_2_lukewarm",
+      "body": "Dear {name},\n\nWe arrived as the last frond was folding closed. I saw the glow for perhaps a minute. It was the most beautiful minute of my life.\n\nI'm not sad. I know where they are now, and that they're not extinct, and a decade is nothing to a fern. I've planted a marker by the crater and I'll be back.\n\nThe Glasshouse and I will need some more speed by then. I'll bring her to you.\n\nPatiently,\nSol Yaneva"
     }
   }
 }

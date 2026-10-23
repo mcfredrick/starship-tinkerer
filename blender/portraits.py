@@ -59,6 +59,25 @@ CHARACTERS = {
     # A maintenance robot with a face screen.
     "brindle": {"build": "robot", "shell": hexc("3fb8af"), "jacket": hexc("ff8c1a"), "accent": hexc("4a4e69"),
                 "glow": hexc("9dffd9"), "screen": hexc("10232b")},
+    # Pip Arkwright: a small, nervous new pilot with huge eyes, floppy ears and a flight scarf.
+    "pip": {"build": "alien", "skin": hexc("c9a7f2"), "jacket": hexc("2a9d8f"), "accent": hexc("ffd166"),
+            "trim": hexc("f4a6b8"), "iris": hexc("1d3557"), "head": (0.92, 0.84, 0.86), "jowl": 0.1,
+            "eyes": {"count": 2, "r": 0.2, "spacing": 0.33, "z": 0.06}, "mouth_z": -0.38,
+            "extras": ["floppy_ears", "scarf", "freckles"]},
+    # Tam and Juniper Okafor: Moothe siblings who run a noodle cart, horned and soft-eared.
+    "tam": {"build": "alien", "skin": hexc("d9a066"), "jacket": hexc("f4f1ea"), "accent": hexc("c8433f"),
+            "trim": hexc("8a5a3c"), "iris": hexc("2b1d14"), "head": (1.08, 0.88, 0.92), "jowl": 0.2,
+            "eyes": {"count": 2, "r": 0.13, "spacing": 0.36, "z": 0.1}, "mouth_z": -0.4,
+            "extras": ["horns", "cow_ears", "chef_hat"]},
+    "juniper": {"build": "alien", "skin": hexc("b8805a"), "jacket": hexc("e9c46a"), "accent": hexc("2a9d8f"),
+                "trim": hexc("8a5a3c"), "iris": hexc("2b1d14"), "head": (1.0, 0.86, 0.94), "jowl": 0.12,
+                "eyes": {"count": 2, "r": 0.14, "spacing": 0.34, "z": 0.1}, "mouth_z": -0.4,
+                "extras": ["horns", "cow_ears", "headscarf"]},
+    # Dr. Sol Yaneva: a tall, leafy botanist who is at least partly a plant, with round spectacles.
+    "yaneva": {"build": "alien", "skin": hexc("7fb069"), "jacket": hexc("f4f1ea"), "accent": hexc("6b4226"),
+               "trim": hexc("e48aa0"), "iris": hexc("3a2410"), "head": (0.78, 0.8, 1.2), "taper": 0.12,
+               "eyes": {"count": 2, "r": 0.12, "spacing": 0.28, "z": 0.2}, "mouth_z": -0.45,
+               "extras": ["leaves", "spectacles"]},
     # Grommet, the shop cat Halloran left behind: a moody tuxedo with a green collar and a gold tag.
     "grommet": {"build": "cat", "skin": hexc("3b3742"), "jacket": hexc("2f9e5b"), "stache": hexc("e8b931"),
                 "accent": hexc("f4f1ea"), "trim": hexc("f4a6b8"), "iris": hexc("b7e24a"), "head": (1.08, 0.86, 0.84)},
@@ -451,6 +470,86 @@ def robot(c, e):
     dress(mesh_obj("mouth", tube_bm(pts, [0.03 + 0.05 * open_] * 9, 8), root), mats["glow"])
 
 
+def smooth(d, width=0.08):
+    """0 below -width, 1 above +width, smooth in between: soft hairlines without jagged steps."""
+    t = min(max((d + width) / (2 * width), 0.0), 1.0)
+    return t * t * (3 - 2 * t)
+
+
+def alien(c, e):
+    """A data-driven alien bust: head shape, eyes and a list of `extras` (ears, horns, hats, scarves,
+    leaves, spectacles, freckles), so new cast members are mostly a dictionary."""
+    head = c["head"]
+    mats = palette(c)
+    root = empty("portrait")
+    egg_head(head, mats, root, taper_top=c.get("taper", 0.0), jowl=c.get("jowl", 0.0))
+    ex = c.get("extras", [])
+    eyes = c["eyes"]
+    build_eyes(e, mats, root, head, eye_z=eyes["z"], spacing=eyes["spacing"], eye_r=eyes["r"], count=eyes["count"])
+    build_brows(e, mats, root, head, brow_z=eyes["z"] + eyes["r"] + 0.14, spacing=eyes["spacing"])
+    build_mouth(e, mats, root, head, mouth_z=c.get("mouth_z", -0.42))
+    top = head[2]
+    if "floppy_ears" in ex:
+        for side in (-1, 1):
+            pts = [Vector((side * (head[0] * 0.72 + 0.5 * u), 0.08, top * 0.62 + 0.2 * u - 0.75 * u * u)) for u in
+                   (i / 9 for i in range(10))]
+            dress(mesh_obj(f"ear{side}", tube_bm(pts, [0.15 * (1 - 0.25 * i / 9) for i in range(10)], 10), root), mats["skin"])
+            tip = sphere_bm(0.11, 12, 6)
+            dress(mesh_obj(f"eartip{side}", transform_bm(tip, lambda v, p=pts[-1]: v + p), root), mats["trim"])
+    if "cow_ears" in ex:
+        for side in (-1, 1):
+            ear = sphere_bm(0.2, 16, 8, lambda v: Vector((v.x * 1.6, v.y * 0.35, v.z * 0.7)))
+            dress(mesh_obj(f"cowear{side}", transform_bm(ear, lambda v, s=side: v + Vector((s * head[0] * 1.08, 0.05, top * 0.3))), root),
+                  mats["skin"])
+    if "horns" in ex:
+        for side in (-1, 1):
+            pts = [Vector((side * (head[0] * 0.45 + 0.25 * u), 0.05, top * 0.78 + 0.35 * u - 0.12 * u * u)) for u in
+                   (i / 7 for i in range(8))]
+            dress(mesh_obj(f"horn{side}", tube_bm(pts, [0.1 * (1 - i / 8) + 0.015 for i in range(8)], 10), root), mats["trim"])
+    if "chef_hat" in ex:
+        band = lathe_bm([(top * 0.88, head[0] * 0.62), (top * 1.12, head[0] * 0.62)], axis="z")
+        dress(mesh_obj("hatband", band, root), mats["jacket"])
+        puff = sphere_bm(0.55, 24, 12, lambda v: Vector((v.x * 1.1, v.y * 1.0, v.z * 0.75)))
+        dress(mesh_obj("hatpuff", transform_bm(puff, lambda v: v + Vector((0, 0, top * 1.12 + 0.3))), root), mats["jacket"])
+    if "headscarf" in ex:
+        def scarf(v):
+            cover = smooth(v.z - 0.35)
+            return Vector((v.x * head[0], v.y * head[1], v.z * top)) * (1.0 + 0.07 * cover)
+        cap = sphere_bm(1.0, 48, 24, lambda v: scarf(v) if v.z > 0.25 else scarf(Vector((v.x, v.y, 0.25))) * 0.98)
+        dress(mesh_obj("headscarf", cap, root), mats["accent"])
+        knot = sphere_bm(0.14, 12, 6)
+        dress(mesh_obj("knot", transform_bm(knot, lambda v: v + Vector((head[0] * 0.55, 0.25, top * 0.7))), root), mats["accent"])
+    if "leaves" in ex:
+        for i, (x, tilt, size) in enumerate(((-0.3, -0.7, 0.6), (0.05, 0.1, 0.8), (0.35, 0.8, 0.55))):
+            stem = [Vector((x * 0.6, 0.05, top * 0.95)), Vector((x, 0.05, top * 0.95 + size * 0.6))]
+            dress(mesh_obj(f"stem{i}", tube_bm(stem, [0.03, 0.025], 6), root), mats["skin"])
+            leaf = sphere_bm(size * 0.5, 16, 8, lambda v: Vector((v.x * 0.55, v.y * 0.12, v.z)))
+            def place(v, x=x, tilt=tilt, size=size):
+                c_, s_ = math.cos(tilt), math.sin(tilt)
+                return Vector((v.x * c_ + v.z * s_ + x + s_ * size * 0.5, v.y + 0.05, -v.x * s_ + v.z * c_ + top * 0.95 + size * 0.6 + c_ * size * 0.45))
+            dress(mesh_obj(f"leaf{i}", transform_bm(leaf, place), root), mats["skin"])
+        bud = sphere_bm(0.1, 12, 6)
+        dress(mesh_obj("bud", transform_bm(bud, lambda v: v + Vector((0.05, 0.05, top * 0.95 + 0.85))), root), mats["trim"])
+    if "spectacles" in ex:
+        for side in (-1, 1):
+            rim = ring(face_point(head, side * eyes["spacing"], eyes["z"], out=0.1), eyes["r"] + 0.06, eyes["r"] + 0.05)
+            dress(mesh_obj(f"rim{side}", tube_bm(rim, [0.022] * len(rim), 8, cap=False), root), mats["accent"])
+        bridge = [face_point(head, -0.09, eyes["z"] + 0.02, out=0.11), face_point(head, 0.09, eyes["z"] + 0.02, out=0.11)]
+        dress(mesh_obj("bridge", tube_bm(bridge, [0.018] * 2, 6), root), mats["accent"])
+    if "freckles" in ex:
+        for side in (-1, 1):
+            for k, (dx, dz) in enumerate(((0.0, 0.0), (0.08, 0.04), (0.04, -0.06), (0.12, -0.02))):
+                dot = sphere_bm(0.022, 8, 4, lambda v: Vector((v.x, v.y * 0.3, v.z)))
+                at = face_point(head, side * (0.32 + dx), -0.2 + dz, out=0.0)
+                dress(mesh_obj(f"freckle{side}{k}", transform_bm(dot, lambda v, a=at: v + a), root), mats["trim"])
+    bust(mats, root)
+    if "scarf" in ex:
+        loop = [Vector((math.cos(a) * 0.62, math.sin(a) * 0.5, -0.8 + 0.05 * math.sin(a))) for a in (2 * math.pi * i / 32 for i in range(33))]
+        dress(mesh_obj("scarf", tube_bm(loop, [0.11] * 33, 10, cap=False), root), mats["accent"])
+        tail = [Vector((0.3, -0.5, -0.85)), Vector((0.42, -0.55, -1.2)), Vector((0.38, -0.58, -1.55))]
+        dress(mesh_obj("scarftail", tube_bm(tail, [0.1, 0.1, 0.09], 10), root), mats["accent"])
+
+
 def cat(c, e):
     """A tuxedo cat: black with a white blaze, muzzle and chest, a green collar with a gold tag,
     slit-pupil eyes, and ears that tell you the mood (up when surprised, flat when grumpy, drooping
@@ -527,7 +626,7 @@ def _expression_name(e):
     return next(name for name, spec in EXPRESSIONS.items() if spec is e)
 
 
-BUILDERS = {"odessa": odessa, "ilse": ilse, "crake": crake, "robot": robot, "cat": cat}
+BUILDERS = {"odessa": odessa, "ilse": ilse, "crake": crake, "robot": robot, "cat": cat, "alien": alien}
 
 
 # ---------------------------------------------------------------- render

@@ -21,6 +21,8 @@ structured play-test of what only a person can judge (feel, fun, pacing, clarity
   can actually set; every beat, job, storylet, event, race, drawer and gift points at real scenes,
   tracks, parts and items.
 - **The web build can draw every character** shown anywhere (data, dialogue, script strings).
+- **Every authored job is winnable**: a search over market parts and tuning finds a build that meets
+  all its stat, rating and gadget wants.
 - **Generated work is fair.** Every walk-in job is winnable with market parts and tuning; flipping a
   junker only pays if you fix it; the yard's stock and carts are stable for their day.
 - **Racing rules hold.** Empty boost can't be held on; the tow magnet pulls, the foghorn startles
@@ -58,6 +60,7 @@ Play on desktop first, then a phone. For each item note: works / confusing / not
 - [ ] Tow magnet and foghorn in a race
 - [ ] The Close Pass on day 11: does it land emotionally? Do your earlier choices show?
 - [ ] The novel chapters, Themba's letter, and the Lumen Reach lighthouse on day 15
+- [ ] From day 12: Pip (two jobs, then the Night Run), the Okafors (restaurant or cart), Dr. Yaneva (the ember fern)
 
 **The evergreen game**
 - [ ] Job board: varied, readable, fairly priced walk-ins? A storylet's three beats over two days?

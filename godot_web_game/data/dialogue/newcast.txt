@@ -1,0 +1,219 @@
+# Pip, the Okafor siblings and Dr. Yaneva: the cast who arrive after the Close Pass.
+
+# ---------------------------------------------------------------- Pip: confidence
+
+== pip_arrives
+? won_garden_dash => with_ilse
+* A small cream racer with mustard polka dots wobbles into the bay, overcorrects, and stops very carefully.
+=> meet
+-- with_ilse
+* Ilse strolls in first, cocoa in hand. Behind her, a small cream racer with mustard polka dots wobbles into the bay and stops very carefully.
+ilse happy: {name}, this is the kid I told you about. My first student. Be nice. They're braver than they look.
+-- meet
+pip surprised: H-hello! I'm Pip. Pip Arkwright. They, them. I just got my license. Four days ago. Not that I'm counting.
+pip sad: This is the Dandelion. I bought her secondhand. She was the only racer I could afford, and I think I know why.
+pip thoughtful: She shakes in corners. A lot. I closed my eyes in the sun-hairpin and I don't think you're supposed to do that.
+> You're not. But we can fix that. => fix
+> Everybody's scared at first. => scared
+-- scared
+pip surprised: Even Ilse?
+* From somewhere behind the Dandelion, Ilse coughs.
+pip happy: Oh. Okay. That helps, actually.
+=> fix
+-- fix
+pip: I have a hundred and sixty pebs. And a tin of Steady Leaf. Somebody said it helps your hands.
+! job pip_1
+end
+
+== pip_1_delighted
+* Pip takes the Dandelion once around the ring, slowly, then again, a little faster. They come back with their eyes very wide.
+pip laughing: I kept my eyes open! The whole hairpin! She just... went round it!
+pip happy: Thank you, {name}. I think I might actually be a pilot.
+end
+
+== pip_1_pleased
+pip happy: She only shakes a little now. A normal amount, I think. Is there a normal amount?
+pip: Thank you. Really.
+end
+
+== pip_1_lukewarm
+pip thoughtful: Still a bit wobbly. But that might be me, too.
+pip: I'll practice. Thank you for trying.
+end
+
+== pip_returns
+* The Dandelion glides into the bay, straight and steady. Pip climbs out with a race entry form clutched in both hands.
+pip surprised: I entered the Ring Shadow Night Run. Ilse says I'm ready.
+pip sad: I'm not ready. It's at night. Through Bramble's shadow. It's Class B, so the Dandelion has to stay under the cap, but she has to be quick in the dark.
+> You're readier than you think. => brave
+> We'll make sure the ship is ready, at least. => ship
+-- brave
+pip thoughtful: Do you really think so?
+pip happy: Okay. Okay! I'll hold on to that.
+! set pip_encouraged
+=> job
+-- ship
+pip happy: That's half of it, at least. The scary half is me.
+=> job
+-- job
+pip: Two hundred pebs. Everything I saved from delivering moon-plums.
+! job pip_2
+end
+
+== pip_2_delighted
+pip surprised: She's... she's so fast. And she still goes where I point her.
+pip laughing: I'm going to be terrified on the night. But I'm going to be terrified fast.
+end
+
+== pip_2_pleased
+pip happy: She's ready. I think. Ready-ish.
+end
+
+== pip_2_lukewarm
+pip thoughtful: It'll have to do. I'll just have to be brave enough for both of us.
+end
+
+== pip_cup
+* There's a photo pinned to your workbench this morning: the Dandelion crossing the line in the dark, under the glowing rings.
+? pip_2_delighted => podium
+? pip_2_lukewarm => last
+* Underneath, in small careful handwriting: "Fifth! Fifth out of eight! I didn't close my eyes once. Thank you. Pip."
+end
+-- podium
+* Underneath, in big wobbly handwriting: "THIRD!!! A PODIUM!!! In the DARK!!! Ilse cried. She says she didn't. She did. Pip."
+? pip_encouraged => brave
+end
+-- brave
+* And a smaller line, added later: "You said I was readier than I thought. You were right."
+end
+-- last
+* Underneath, in small careful handwriting: "Last. But I finished, and I flew the whole thing with my eyes open, and next time I won't be last. Pip."
+end
+
+# ---------------------------------------------------------------- the Okafors: big or small
+
+== okafor_arrives
+* A long, rumbling barge noses into the bay, trailing the smell of ginger and chili. A hatch on its side flips open into a serving counter.
+tam laughing: HELLO, Quietwater's newest tinkerer! Tam Okafor! This is my sister Juniper! This is our noodle cart! It's called the Brothy!
+juniper happy: Hello. Sorry. He's always like this. Even at funerals.
+tam happy: ESPECIALLY at funerals!
+juniper thoughtful: Every time we take a corner the soup goes everywhere. The ceiling has soup on it.
+tam sad: The ceiling has a lot of soup on it.
+juniper: Smooth and steady, please, for the soup's sake. Two hundred and thirty pebs, and Tam's nebula rolls.
+tam thoughtful: And while you're in there... we have a question for you. A big one. Juniper and I can't agree, so we're asking everyone.
+juniper: Someone's offered us a real restaurant. Bricks, windows, a kitchen that doesn't move. Or we stay a cart and keep flying to wherever people are hungry.
+> Take the restaurant. Let them come to you. => restaurant
+> Stay a cart. Go to where the hunger is. => cart
+-- restaurant
+juniper happy: That's what I said! Tam, that's what I said.
+tam grumpy: Two votes for bricks. Hmph. I'll think about it.
+! set okafor_restaurant
+=> job
+-- cart
+tam laughing: Ha! See, Juniper? Noodles should fly!
+juniper thoughtful: One vote for flying. I'll think about it.
+! set okafor_cart
+=> job
+-- job
+! job okafor_1
+end
+
+== okafor_1_delighted
+* Tam fills a bowl to the brim and drives the Brothy twice around the bay. Not a drop leaves the bowl.
+tam laughing: LOOK! Look at the soup! It's just sitting there! Like soup!
+juniper happy: Thank you. Truly. Free noodles, forever. I've written it down so he can't argue.
+end
+
+== okafor_1_pleased
+juniper happy: Much steadier. Only a little splash on the hairpin.
+tam: A little splash is a garnish! Thank you!
+end
+
+== okafor_1_lukewarm
+juniper thoughtful: Still some sloshing. We'll serve smaller bowls.
+tam sad: Smaller bowls. The tragedy of it.
+end
+
+== okafor_returns
+* The Brothy rumbles in, and Tam and Juniper climb out together, unusually quiet.
+? okafor_restaurant => restaurant
+juniper: We decided. We're staying a cart. Tam's right. People who need hot soup are usually somewhere you can't build a restaurant.
+tam happy: And Juniper's right that we need to be faster about it. Lunch rush, both ends of the ring, one hour.
+=> job
+-- restaurant
+tam: We decided. We're taking the restaurant. Juniper's right, our backs aren't what they were.
+juniper happy: But Tam's right too. So the Brothy becomes our delivery ship. Lunch rush, both ends of the ring, one hour.
+-- job
+juniper thoughtful: The soup has to arrive hot, and the customers have to hear themselves order.
+tam: Two hundred and eighty pebs, and two moon-plum tarts. Juniper made them, so they're actually good.
+! job okafor_2
+end
+
+== okafor_2_delighted
+tam laughing: Both ends of the ring in forty minutes! The soup was still bubbling!
+juniper happy: And I could hear every order. Do you know how rare that is? Thank you, {name}.
+end
+
+== okafor_2_pleased
+juniper happy: Both ends in the hour. Just about. The soup was hot enough.
+tam: Hot enough is hot! Thank you!
+end
+
+== okafor_2_lukewarm
+juniper thoughtful: We'll be a bit late at the far end. People will understand. Mostly.
+tam: We'll bring extra dumplings to apologize.
+end
+
+# ---------------------------------------------------------------- Dr. Yaneva: the ember fern
+
+== yaneva_arrives
+* A saucer glides into the bay with its canopy full of green: ferns, vines, a lemon tree, all pressed gently against the glass.
+* A tall, leafy figure in a lab coat climbs down, carrying a seedling tray as if it were made of soap bubbles.
+yaneva happy: Good morning! Dr. Sol Yaneva. Botanist. Please excuse the leaves, they're mine.
+yaneva thoughtful: These are my seedlings. They dislike vibration. Also noise, also sudden turns, also me humming. I can't help the humming.
+> What are you growing? => growing
+> I can help the rest. => help
+-- growing
+yaneva happy: Everything I can find. But really, I'm looking for one thing. The ember fern. Everyone says it's extinct.
+yaneva thoughtful: Everyone says that about things they've stopped looking for.
+=> help
+-- help
+yaneva: Two hundred and forty pebs, and some teas I grew myself. The Drift Bloom is particularly good. I talked to it a lot.
+! job yaneva_1
+end
+
+== yaneva_1_delighted
+* Dr. Yaneva sets the seedling tray on the Glasshouse's floor and watches it through a full lap of the bay. The seedlings don't so much as tremble.
+yaneva surprised: They're... they're stretching. They've never stretched in flight before.
+yaneva happy: Thank you, {name}. They'll remember this. Plants remember more than people think.
+end
+
+== yaneva_1_pleased
+yaneva happy: Much gentler. Only one seedling looked offended, and it's always offended.
+end
+
+== yaneva_1_lukewarm
+yaneva thoughtful: Still a little rattly for them. I'll hum more quietly to make up for it.
+end
+
+== yaneva_returns
+* The Glasshouse comes in fast, for once, and Dr. Yaneva is out before it's settled.
+yaneva surprised: {name}! I've found it. A report from a moon at the far end of the ring. An ember fern, alive, about to bloom.
+yaneva thoughtful: It blooms for one night. One night a decade. And that night is in four days, and the Glasshouse was built for patience, not speed.
+yaneva: Three hundred and twenty pebs, and every tin of Bright Ember I have. I need speed I've never needed before.
+! job yaneva_2
+end
+
+== yaneva_2_delighted
+yaneva laughing: Oh, she's quick! Quick as a seed in a gale! We'll be there with a day to spare!
+yaneva happy: I'll write to you from the moon. I'll press a frond for you, if it lets me.
+end
+
+== yaneva_2_pleased
+yaneva happy: That should do it. Just. I'll fly through the night and hum very fast.
+end
+
+== yaneva_2_lukewarm
+yaneva sad: It'll be close. Closer than I'd like.
+yaneva thoughtful: Still. A decade isn't so long, for a fern. Or for me. Thank you, {name}.
+end

@@ -492,6 +492,44 @@ func test_every_race_has_a_real_track_and_rivals() -> void:
 		check(sim.finished() and walls == 0, "AI laps %s cleanly: finished %s, %d walls" % [id, sim.finished(), walls])
 
 
+## Every authored job can be won: some build from market parts and tuning, repaired and washed,
+## meets all its stat, rating and gadget wants (taste and finish are just paint, always reachable).
+func test_every_authored_job_is_winnable() -> void:
+	var by_slot := {}
+	for id in world.market:
+		by_slot.get_or_add(parts_data.parts[id].slot, []).append(id)
+	for job_id in world.jobs:
+		var job: Dictionary = world.jobs[job_id]
+		var wants: Array = job.wants.filter(func(w): return w.has("stat") or w.has("rating_max") or w.has("has_slot"))
+		var base: Dictionary = world.ships[job.ship].duplicate(true)
+		base.erase("grime")
+		var won := false
+		for e in by_slot.engine + [base.parts.engine]:
+			for f in by_slot.fins + [base.parts.fins]:
+				for c in by_slot.cockpit + [base.parts.cockpit]:
+					for top in by_slot.top + [""]:
+						for t in [[-1.0, 1.0, -1.0], [1.0, -1.0, 1.0], [0.0, 0.0, 0.0], [1.0, 1.0, -1.0], [-1.0, -1.0, 1.0],
+								[1.0, 1.0, 1.0], [-1.0, 1.0, 1.0], [-1.0, -1.0, -1.0], [1.0, -1.0, -1.0]]:
+							var b := base.duplicate(true)
+							b.parts.engine = e
+							b.parts.fins = f
+							b.parts.cockpit = c
+							if top:
+								b.parts.top = top
+							else:
+								b.parts.erase("top")
+							b.tuning = {"gear": t[0], "fins": t[1], "damping": t[2]}
+							var stats := ShipStats.compute(b, parts_data)
+							if wants.all(func(w): return Grading.want_met(w, stats, b, {})):
+								won = true
+								break
+						if won: break
+					if won: break
+				if won: break
+			if won: break
+		check(won, "job %s can be won with market parts and tuning" % job_id)
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1
