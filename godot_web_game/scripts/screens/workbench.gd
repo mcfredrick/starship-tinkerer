@@ -6,6 +6,8 @@ const SCAN_RADIUS := 90.0
 const WARM_RADIUS := 220.0
 const SCAN_TIME := 1.4
 const MARKER_LIFT := 56.0
+## Scrubbing counts as done at this share of the hull, since some skin hides behind parts.
+const WASH_DONE := 0.7
 
 var ship_id: String
 var commission := false
@@ -26,6 +28,8 @@ var _focus := -1
 var _fix_demo := -1
 var _demo := ""
 var _view: Array = []
+var _scrubbing := false
+var _wash_bar: ProgressBar
 
 
 func setup(params: Dictionary) -> void:
@@ -93,7 +97,8 @@ func _ready() -> void:
 		UI.place(back, Control.PRESET_BOTTOM_LEFT, Vector2(16, -66), Vector2(160, 48))
 		ui.add_child(back)
 
-	var names := ["Scan", "Repair", "Parts", "Paint", "Tune", "Mischief"] if commission else ["Parts", "Paint", "Tune"]
+	var names := ["Scan", "Repair", "Wash", "Parts", "Paint", "Tune", "Mischief"] if commission else [
+		"Wash", "Parts", "Paint", "Tune"]
 	for n in names:
 		var b := UI.button(n, _select.bind(n), 17)
 		b.toggle_mode = true
@@ -107,8 +112,11 @@ func _ready() -> void:
 		_lean_in.call_deferred(_focus)
 	if _fix_demo >= 0:
 		_demo_fix.call_deferred(_fix_demo)
-	# Screenshot aids for the animated actions: `paint` repaints, `part` swaps the engine.
+	# Screenshot aids for the animated actions: `paint` repaints, `part` swaps the engine, `scrub`
+	# strokes the brush across the middle of the screen.
 	match _demo:
+		"scrub":
+			_demo_scrub.call_deferred()
 		"paint":
 			_paint.call_deferred("paint", "plum" if build.paint != "plum" else "teal")
 		"part":
@@ -121,6 +129,7 @@ func _faults() -> Array:
 
 func _select(tab: String) -> void:
 	_tab = tab
+	stage.camera.drag_filter = _on_hull if tab == "Wash" else Callable()
 	for b in _tabs.get_children():
 		b.button_pressed = b.name == tab
 	for c in _content.get_children():
@@ -134,6 +143,8 @@ func _select(tab: String) -> void:
 			_parts_tab()
 		"Paint":
 			_paint_tab()
+		"Wash":
+			_wash_tab()
 		"Tune":
 			_tune_tab()
 		"Mischief":
@@ -202,6 +213,12 @@ func _draw_overlay() -> void:
 			var spot := m.position + Vector2(20, 20 + MARKER_LIFT)
 			_overlay.draw_line(spot, m.position + Vector2(20, 40), Color(UI.CREAM, 0.8), 2.0, true)
 			_overlay.draw_circle(spot, 3.5, Color(UI.CREAM, 0.9))
+	if _tab == "Wash" and build.get("grime", 0.0) > 0:
+		var at := ui.get_local_mouse_position()
+		_overlay.draw_arc(at, 30, 0, TAU, 32, Color(1, 1, 1, 0.8 if _scrubbing else 0.5), 3.0)
+		for k in 6:
+			var a := TAU * k / 6 + Time.get_ticks_msec() / 400.0
+			_overlay.draw_circle(at + Vector2(cos(a), sin(a)) * 30, 4, Color(1, 1, 1, 0.6))
 	if _tab != "Scan":
 		return
 	var mouse := ui.get_local_mouse_position()
@@ -465,6 +482,80 @@ func _paint(zone: String, color: String) -> void:
 	_rebuild()
 	model.sweep_paint(zone, old)
 	Sfx.play("weld", 1.6)
+
+
+# ---------------------------------------------------------------- wash
+
+func _wash_tab() -> void:
+	if build.get("grime", 0.0) <= 0:
+		_say("Spotless. You can see your face in it.", 19, UI.GOOD)
+		return
+	model.make_scrubbable()
+	_say("Drag over the hull to scrub it down. Drag empty space to turn the view. Scrubbing costs no spark.")
+	_wash_bar = ProgressBar.new()
+	_wash_bar.max_value = 1.0
+	_wash_bar.show_percentage = false
+	_wash_bar.custom_minimum_size = Vector2(300, 18)
+	_wash_bar.value = model.scrub_coverage() / WASH_DONE
+	_content.add_child(_wash_bar)
+	_say("A grimy ship rides rougher and handles heavier.", 16, UI.MUTED)
+
+
+func _hull_point(screen: Vector2) -> Variant:
+	var cam := stage.camera
+	var query := PhysicsRayQueryParameters3D.create(cam.project_ray_origin(screen),
+		cam.project_ray_origin(screen) + cam.project_ray_normal(screen) * 50.0)
+	var hit := stage.get_world_3d().direct_space_state.intersect_ray(query)
+	return hit.position if hit else null
+
+
+func _on_hull(screen: Vector2) -> bool:
+	return _hull_point(screen) != null
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _tab != "Wash" or build.get("grime", 0.0) <= 0:
+		return
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		_scrubbing = event.pressed and _on_hull(event.position)
+		if not event.pressed:
+			GameState.save()
+	elif event is InputEventMouseMotion and _scrubbing:
+		var at: Variant = _hull_point(event.position)
+		if at != null and model.scrub(model.to_local(at)):
+			Fx.burst(model, at, stage.camera.global_position - at, Color(1, 1, 1, 0.9), 10, 1.2, 0.08, -2.0, 0.6)
+			if randf() < 0.3:
+				Sfx.play("tick", randf_range(1.8, 2.2))
+			var coverage := model.scrub_coverage()
+			_wash_bar.value = coverage / WASH_DONE
+			if coverage >= WASH_DONE or model.scrub_full():
+				_finish_wash()
+
+
+func _demo_scrub() -> void:
+	await get_tree().create_timer(0.3).timeout
+	for y in [330.0, 380.0, 430.0]:
+		for x in range(480, 900, 12):
+			var press := InputEventMouseButton.new()
+			press.button_index = MOUSE_BUTTON_LEFT
+			press.pressed = true
+			press.position = Vector2(x, y)
+			_unhandled_input(press)
+			var move := InputEventMouseMotion.new()
+			move.position = Vector2(x, y)
+			_unhandled_input(move)
+	print("coverage ", model.scrub_coverage())
+
+
+func _finish_wash() -> void:
+	_scrubbing = false
+	build.grime = 0.0
+	build.erase("clean")
+	GameState.add_xp("craft", 8)
+	GameState.save()
+	Sfx.play("success")
+	Router.toast("Squeaky clean.  Craft +8")
+	_rebuild()
 
 
 # ---------------------------------------------------------------- tune

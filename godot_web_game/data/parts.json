@@ -56,6 +56,7 @@
     "dent": {"name": "Dented panel", "minigame": "dent", "look": "dent", "skill": "mechanics",
       "stats": {"grip": -8, "top_speed": -4, "noise": 6}}
   },
+  "grime": {"stats": {"comfort": -10, "handling": -4}},
   "tuning": {
     "gear": {"label": "Gear ratio", "low": "Punchy", "high": "Fast", "stats": {"thrust": -10, "top_speed": 10}},
     "fins": {"label": "Fin angle", "low": "Slippery", "high": "Grippy", "stats": {"grip": 8, "top_speed": -6}},

@@ -196,8 +196,11 @@ func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var plain := Grading.grade(bj, world.pilots.brindle, b[0], b[1], repairs, parts_data)
 	check(plain.tier != "delighted", "Brindle's tug needs more than repairs: %s" % plain.tier)
 	b[1].tuning = {"damping": -1.0, "fins": 0.3}
+	var grimy := Grading.grade(bj, world.pilots.brindle, b[0], b[1], repairs, parts_data)
+	check(grimy.tier != "delighted", "grime still drags on the tuned tug's handling")
+	b[1].grime = 0.0
 	var tuned := Grading.grade(bj, world.pilots.brindle, b[0], b[1], repairs, parts_data)
-	check(tuned.tier == "delighted", "sharp damping and grippy fins delight Brindle: %s" % [tuned.wants])
+	check(tuned.tier == "delighted", "tuned and washed, the tug delights Brindle: %s" % [tuned.wants])
 
 	var cj: Dictionary = world.jobs.crake_1
 	var c := _fixed("magnificence", cj)

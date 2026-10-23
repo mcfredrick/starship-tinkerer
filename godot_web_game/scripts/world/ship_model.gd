@@ -16,6 +16,9 @@ const LINE := 0.035
 const FAULT_SCALE := 1.9
 ## Paint sweeps cover this span along the ship, comfortably more than the longest hull.
 const SWEEP_LENGTH := 9.0
+## Scrubbing: each stroke cleans a patch this wide, and the shader holds this many patches.
+const BRUSH := 0.7
+const MAX_CLEAN := 64
 
 static var _kit: Node
 
@@ -26,6 +29,7 @@ var _faults: Array[FaultFx] = []
 var _slots := {}
 var _highlight := 0.0
 var _build: Dictionary
+var _scrub_samples: Array[Vector3] = []
 
 
 func build(b: Dictionary) -> void:
@@ -33,6 +37,7 @@ func build(b: Dictionary) -> void:
 		hull.free()
 	_materials.clear()
 	_slots.clear()
+	_scrub_samples.clear()
 	_build = b
 	if _kit == null:
 		_kit = KIT_SCENE.instantiate()
@@ -49,6 +54,73 @@ func build(b: Dictionary) -> void:
 	for mi in hull.find_children("*", "MeshInstance3D", true, false):
 		mi.material_override = _material(_role(mi.name), b)
 	_show_faults(b.get("faults", []))
+	_apply_grime()
+
+
+func _process(_delta: float) -> void:
+	if _build.get("grime", 0.0) > 0:
+		var inverse := global_transform.affine_inverse()
+		for m in _materials.values():
+			if m.shader == TOON:
+				m.set_shader_parameter("ship_inverse", inverse)
+
+
+func _apply_grime() -> void:
+	var spots: Array = _build.get("clean", []).map(func(c): return Vector4(c[0], c[1], c[2], c[3]))
+	for m in _materials.values():
+		if m.shader == TOON:
+			m.set_shader_parameter("grime", _build.get("grime", 0.0))
+			m.set_shader_parameter("ship_inverse", global_transform.affine_inverse())
+			m.set_shader_parameter("clean_spots", spots)
+			m.set_shader_parameter("clean_count", spots.size())
+
+
+## Gives every hull mesh a collider so the scrub brush can find the skin under the pointer.
+func make_scrubbable() -> void:
+	for mi: MeshInstance3D in hull.find_children("*", "MeshInstance3D", true, false):
+		if mi.get_child_count() == 0:
+			mi.create_trimesh_collision()
+
+
+## Scrubs a patch around `point` (in this node's space). Patches close to an existing one are
+## skipped, so a stroke back and forth doesn't fill the shader's list. Returns whether it cleaned.
+func scrub(point: Vector3) -> bool:
+	var clean: Array = _build.get_or_add("clean", [])
+	if clean.size() >= MAX_CLEAN:
+		return false
+	for c in clean:
+		if point.distance_to(Vector3(c[0], c[1], c[2])) < BRUSH * 0.5:
+			return false
+	clean.append([point.x, point.y, point.z, BRUSH])
+	_apply_grime()
+	return true
+
+
+func scrub_full() -> bool:
+	return _build.get("clean", []).size() >= MAX_CLEAN
+
+
+## The share of the hull's skin that is scrubbed, from a fixed sample of mesh vertices.
+func scrub_coverage() -> float:
+	if _scrub_samples.is_empty():
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 7
+		var to_ship := global_transform.affine_inverse()
+		var all: Array[Vector3] = []
+		for mi: MeshInstance3D in hull.find_children("*", "MeshInstance3D", true, false):
+			var verts: PackedVector3Array = mi.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+			for k in range(0, verts.size(), 7):
+				all.append(to_ship * mi.global_transform * verts[k])
+		for k in 160:
+			_scrub_samples.append(all[rng.randi_range(0, all.size() - 1)])
+	var clean: Array = _build.get("clean", [])
+	var hit := 0
+	for p in _scrub_samples:
+		for c in clean:
+			if p.distance_to(Vector3(c[0], c[1], c[2])) < c[3] * 0.85:
+				hit += 1
+				break
+	return float(hit) / _scrub_samples.size()
 
 
 func _show_faults(faults: Array) -> void:

@@ -10,6 +10,8 @@ var interactive := false
 var min_distance := 5.0
 var max_distance := 16.0
 var _dragging := false
+## When set, a press it returns true for belongs to someone else (the scrub brush) and won't orbit.
+var drag_filter: Callable
 
 
 func _ready() -> void:
@@ -22,7 +24,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseButton:
 		if event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
-			_dragging = event.pressed
+			_dragging = event.pressed and not (event.button_index == MOUSE_BUTTON_LEFT and drag_filter.is_valid()
+				and drag_filter.call(event.position))
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			distance = maxf(distance * 0.92, min_distance)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:

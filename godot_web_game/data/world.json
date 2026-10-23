@@ -2,19 +2,19 @@
   "ships": {
     "pocket_moth": {"name": "Pocket Moth", "owner": "odessa", "hull": "moth",
       "parts": {"engine": "engine_rattler", "fins": "fin_stub", "cockpit": "cockpit_bubble", "lights": "lights_round"},
-      "paint": "slate", "trim": "cream"},
+      "paint": "slate", "trim": "cream", "grime": 0.8},
     "kettle": {"name": "Kettle", "owner": "player", "hull": "kettle",
       "parts": {"engine": "engine_rattler", "fins": "fin_stub", "cockpit": "cockpit_bubble", "lights": "lights_round"},
-      "paint": "teal", "trim": "brass"},
+      "paint": "teal", "trim": "brass", "grime": 0.5},
     "heron": {"name": "Heron", "owner": "ilse", "hull": "heron",
       "parts": {"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_visor", "lights": "lights_bar", "top": "gadget_ribbon"},
       "paint": "scarlet", "trim": "cream"},
     "bucket": {"name": "Bucket", "owner": "brindle", "hull": "bucket",
       "parts": {"engine": "engine_rattler", "fins": "fin_wing", "cockpit": "cockpit_bubble", "lights": "lights_round", "top": "gadget_bubble"},
-      "paint": "marigold", "trim": "slate"},
+      "paint": "marigold", "trim": "slate", "grime": 0.6},
     "magnificence": {"name": "The Magnificence", "owner": "crake", "hull": "heron",
       "parts": {"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_bay", "lights": "lights_bar"},
-      "paint": "plum", "trim": "brass"}
+      "paint": "plum", "trim": "brass", "grime": 0.3}
   },
   "pilots": {
     "odessa": {"name": "Odessa Vell", "short": "Odessa", "pronouns": "she", "ship": "pocket_moth",

@@ -1,7 +1,7 @@
 ## Ship numbers: stats from hull, parts, faults and tuning, and the performance rating races cap.
 ##
 ## A build is a Dictionary: {hull, parts: {slot: part_id}, paint, trim, finish, faults: [{type, spot, fixed}],
-## tuning: {gear|fins|damping: -1..1}, mischief: [id]}. `data` is parts.json.
+## tuning: {gear|fins|damping: -1..1}, mischief: [id], grime: 0..1}. `data` is parts.json.
 class_name ShipStats
 extends RefCounted
 
@@ -26,6 +26,9 @@ static func compute(build: Dictionary, data: Dictionary) -> Dictionary:
 		var swing: Dictionary = data.tuning[knob].stats
 		for st in swing:
 			stats[st] += swing[st] * float(tuning[knob])
+	var grime: Dictionary = data.grime.stats
+	for st in grime:
+		stats[st] += grime[st] * float(build.get("grime", 0.0))
 	for id in build.get("mischief", []):
 		_add(stats, data.mischief[id].get("stats", {}))
 	for s in STATS:

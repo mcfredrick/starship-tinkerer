@@ -14,15 +14,50 @@ uniform vec3 sweep_origin = vec3(0.0);
 uniform vec3 sweep_axis = vec3(0.0, 0.0, 1.0);
 uniform float sweep = 1000.0;
 
+// Grime: blotchy dirt fixed in the ship's own space, minus the patches scrubbed clean.
+uniform float grime = 0.0;
+uniform mat4 ship_inverse;
+uniform vec4 clean_spots[64];
+uniform int clean_count = 0;
+
 varying float along;
+varying vec3 ship_pos;
 
 void vertex() {
-	along = dot((MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz - sweep_origin, sweep_axis);
+	vec4 world = MODEL_MATRIX * vec4(VERTEX, 1.0);
+	along = dot(world.xyz - sweep_origin, sweep_axis);
+	ship_pos = (ship_inverse * world).xyz;
+}
+
+float hash(vec3 p) {
+	return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
+}
+
+float noise(vec3 p) {
+	vec3 i = floor(p);
+	vec3 f = fract(p);
+	f = f * f * (3.0 - 2.0 * f);
+	return mix(mix(mix(hash(i), hash(i + vec3(1, 0, 0)), f.x), mix(hash(i + vec3(0, 1, 0)), hash(i + vec3(1, 1, 0)), f.x), f.y),
+		mix(mix(hash(i + vec3(0, 0, 1)), hash(i + vec3(1, 0, 1)), f.x), mix(hash(i + vec3(0, 1, 1)), hash(i + vec3(1, 1, 1)), f.x), f.y), f.z);
+}
+
+float dirt() {
+	if (grime <= 0.0) {
+		return 0.0;
+	}
+	float blotch = noise(ship_pos * 2.3) * 0.65 + noise(ship_pos * 7.0) * 0.35;
+	float d = grime * (0.3 + 0.7 * smoothstep(0.42, 0.62, blotch));
+	float clean = 0.0;
+	for (int i = 0; i < clean_count; i++) {
+		clean = max(clean, 1.0 - smoothstep(clean_spots[i].w * 0.6, clean_spots[i].w, distance(ship_pos, clean_spots[i].xyz)));
+	}
+	return d * (1.0 - clean);
 }
 
 void fragment() {
 	vec3 base = along < sweep ? color : old_color;
 	float wet = 1.0 - smoothstep(0.0, 0.25, abs(along - sweep));
+	base = mix(base, vec3(0.34, 0.28, 0.22), dirt() * 0.8);
 	ALBEDO = mix(base, vec3(1.0), wet * 0.5) * (1.0 + highlight * 0.5);
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.0;
