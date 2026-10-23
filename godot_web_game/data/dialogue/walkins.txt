@@ -1,0 +1,141 @@
+# Walk-in customers from the job board. "guest" is whoever this is; {guest}, {guest_ship} and
+# {request} fill in their name, ship and what they asked for. Arrivals vary by their first trait,
+# reactions by tier, with trait-specific reactions where the trait would change things.
+
+== walkin_arrives
+* The {guest_ship} eases into the bay, and its owner climbs down.
+guest: Hello. I'm {guest}. I saw your notice on the board.
+guest thoughtful: {request}
+> I'll take good care of her. => done
+> Leave it with me. => done
+-- done
+guest happy: Thank you. I'll be about the dock.
+end
+
+== walkin_arrives_chatty
+* The {guest_ship} bumps into the bay, and its owner is talking before the hatch is fully open.
+guest happy: Hello, hello! I'm {guest}. Is that a tea nook? You have a tea nook! Lovely.
+guest laughing: Sorry, I talk when I'm excited. And when I'm nervous. And on Tuesdays.
+guest thoughtful: Anyway. {request}
+> Tell me more about her. => more
+> I'll get started. => done
+-- more
+guest happy: Oh, she's been everywhere. Twice round the rings, once through a moon-plum storm. I'll tell you all about it later. Probably at length.
+=> done
+-- done
+guest happy: Wonderful. I'll be in the drum gardens, telling the misters about you.
+end
+
+== walkin_arrives_haggler
+* The {guest_ship} pulls in with a squeak of brakes. Its owner hops down with a folded list of prices.
+guest thoughtful: {guest}. I've seen the board. I know what this sort of work goes for.
+guest: {request}
+> The posted rate is fair. => fair
+> We can talk about it after. => fair
+-- fair
+guest grumpy: Hm. We'll see what the work's worth when I see it.
+end
+
+== walkin_arrives_generous
+* The {guest_ship} settles gently into the bay.
+guest happy: Hello! I'm {guest}. Thank you for fitting me in.
+guest: {request}
+guest happy: No rush at all. Good work's worth waiting for.
+end
+
+== walkin_arrives_nervous
+* The {guest_ship} hovers at the bay door for a long moment before it creeps inside.
+guest surprised: Oh! Hello. Sorry. I'm {guest}. I didn't book. Is that all right?
+> Of course it is. => ok
+> You're very welcome here. => ok
+-- ok
+guest happy: Oh good. Um. {request}
+guest thoughtful: Is that, um, a lot to ask?
+end
+
+== walkin_arrives_fussy
+* The {guest_ship} parks exactly in the middle of the bay, then shuffles a hand's width to the left.
+guest thoughtful: {guest}. I'll be brief, and I'll expect the same.
+guest: {request}
+guest grumpy: Do mind the trim. People never mind the trim.
+end
+
+== walkin_arrives_sentimental
+* The {guest_ship} limps into the bay. Its owner pats the hull as they climb down.
+guest happy: I'm {guest}. She's old, but she's family.
+guest thoughtful: {request}
+guest sad: Don't change her too much, will you? Just make her well.
+end
+
+== walkin_arrives_show_off
+* The {guest_ship} swoops into the bay with a flourish it can't quite afford, and clips a toolbox.
+guest laughing: {guest}! You'll have heard of me. Or you will.
+guest: {request}
+guest happy: Make her the talk of the dock. I'll handle the rest.
+end
+
+== walkin_arrives_secretive
+* The {guest_ship} slips into the bay with its running lights off.
+guest thoughtful: Call me {guest}. Just {guest}.
+guest: {request}
+guest grumpy: And don't go poking about in the hold. There's nothing in it. Nothing interesting.
+end
+
+== walkin_delighted
+* {guest} walks around the {guest_ship} twice, slowly.
+guest surprised: Oh. Oh, she's wonderful.
+guest happy: I'll be telling everyone where I had her done. Here, take a little extra.
+end
+
+== walkin_pleased
+guest happy: That's lovely work. Thank you.
+guest: Here you are, as agreed.
+end
+
+== walkin_lukewarm
+guest thoughtful: Well. She flies.
+guest: Here's what we agreed.
+end
+
+== walkin_chatty_delighted
+guest laughing: Look at her! Look at HER! I'm going to tell absolutely everyone. I'm going to tell people I don't know.
+guest happy: Take a tip. Take two. No, one, I'm being silly. Thank you!
+end
+
+== walkin_haggler_lukewarm
+guest grumpy: Not quite what I'd call value for money.
+guest: But a deal's a deal. Here.
+end
+
+== walkin_haggler_delighted
+guest surprised: Hm. Hm! That's... actually worth every peb.
+guest thoughtful: Don't tell anyone I said so. Here, with a little on top.
+end
+
+== walkin_nervous_delighted
+guest surprised: She's... she's perfect. I don't know what to say.
+guest happy: Thank you. Really. I'll come back. If that's all right.
+end
+
+== walkin_sentimental_delighted
+guest sad: She's just like she was. Better, even.
+guest happy: Sorry. Something in my eye. Thank you, truly.
+end
+
+== walkin_sentimental_lukewarm
+guest sad: She feels different. I suppose things do change.
+guest: Here. Thank you for trying.
+end
+
+== walkin_show_off_delighted
+guest laughing: Now THAT'S a ship people will talk about! Mostly about me, but also her.
+end
+
+== walkin_fussy_pleased
+guest thoughtful: Acceptable. The trim's a touch uneven at the stern, but acceptable.
+end
+
+== walkin_secretive_delighted
+guest happy: Good work. Quiet work. I like that.
+guest thoughtful: If anyone comes asking about the {guest_ship}, you've never seen her.
+end

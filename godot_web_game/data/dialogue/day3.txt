@@ -73,5 +73,5 @@ end
 
 == day4_morning
 * Morning on Quietwater, and the dock has settled into its rhythm with you in it.
-* That's everything written so far. You can keep tinkering, trading, taking tea and racing, and more pilots are on their way.
+* Word of the new tinkerer has got around. There are requests pinned to the job board, from folk you've never met.
 end

@@ -45,6 +45,19 @@ static func apply(name: String) -> void:
 				if name == "midway":
 					f.step = 1
 					f.scores = [0.8]
+		"board", "walkin":
+			# Day four: the cast's first jobs are done and walk-ins have started.
+			for f in ["seen_intro", "seen_odessa_arrives", "odessa_1_done", "seen_racers_visit", "race_open",
+					"seen_day2_morning", "seen_brindle_arrives", "brindle_1_done", "seen_day3_morning",
+					"seen_crake_arrives", "crake_1_done", "seen_day4_morning", "knows_pearl"]:
+				GameState.flags[f] = true
+			GameState.day = 4
+			GameState.run_seed = 1234
+			if name == "walkin":
+				GameState.job_board()
+				GameState.accept_offer(0)
+				for f in _job_faults():
+					f.found = true
 		"levelup":
 			GameState.flags.seen_intro = true
 			GameState.phase = "evening"
@@ -74,4 +87,4 @@ static func apply(name: String) -> void:
 
 
 static func _job_faults() -> Array:
-	return GameState.ships[Content.world.jobs[GameState.job.id].ship].faults
+	return GameState.ships[GameState.job_spec(GameState.job.id).ship].faults

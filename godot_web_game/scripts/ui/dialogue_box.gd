@@ -7,7 +7,9 @@ signal finished
 const CHARS_PER_SEC := 55.0
 
 var _runner: Dialogue.Runner
-var _portrait: TextureRect
+var _portrait: Portrait
+## The generated customer this conversation is with: the "guest" speaker and {guest} tokens.
+var _guest := ""
 var _name_plate: PanelContainer
 var _name: Label
 var _text: RichTextLabel
@@ -28,11 +30,8 @@ func _ready() -> void:
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(shade)
 
-	_portrait = TextureRect.new()
-	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_portrait = Portrait.new()
 	UI.place(_portrait, Control.PRESET_BOTTOM_LEFT, Vector2(20, -540), Vector2(432, 540))
-	_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_portrait)
 
 	var box := PanelContainer.new()
@@ -68,8 +67,9 @@ func _ready() -> void:
 	add_child(_choices)
 
 
-func play(scene_id: String) -> void:
+func play(scene_id: String, guest := "") -> void:
 	assert(Content.dialogue.has(scene_id), "no dialogue scene " + scene_id)
+	_guest = guest
 	_runner = Dialogue.Runner.new(Content.dialogue[scene_id], GameState.run_command,
 		func(f): return GameState.flags.has(f))
 	visible = true
@@ -117,22 +117,32 @@ func _show_line(s: Dictionary) -> void:
 	for c in _choices.get_children():
 		c.queue_free()
 	_waiting_choice = false
-	var text := GameState.fill(s.text)
+	var text := _fill(s.text)
+	_portrait.visible = s.who not in ["", "you"]
 	if s.who == "":
 		_name_plate.visible = false
-		_portrait.texture = null
 		_text.text = "[i]%s[/i]" % text
 	else:
 		_name_plate.visible = true
 		if s.who == "you":
 			_name.text = GameState.player.name
-			_portrait.texture = null
 		else:
-			_name.text = Content.world.pilots[s.who].short
-			_portrait.texture = Content.portrait(s.who, s.expr)
+			var pilot := GameState.pilot(_guest if s.who == "guest" else s.who)
+			_name.text = pilot.short
+			_portrait.show_pilot(pilot, s.expr)
 		_text.text = text
 	_hint.visible = true
 	_type_out()
+
+
+## Fills the player's name and pronouns, and for a guest their name, ship and request.
+func _fill(text: String) -> String:
+	if _guest:
+		var pilot := GameState.pilot(_guest)
+		text = text.replace("{guest}", pilot.short).replace("{guest_ship}", GameState.ships[pilot.ship].name)
+		if not GameState.job.is_empty():
+			text = text.replace("{request}", GameState.job_spec(GameState.job.id).request)
+	return GameState.fill(text)
 
 
 func _type_out() -> void:
@@ -147,7 +157,7 @@ func _show_choice(s: Dictionary) -> void:
 	_waiting_choice = true
 	_hint.visible = false
 	for i in s.options.size():
-		var b := UI.button(GameState.fill(s.options[i].text), _on_choice.bind(i), 22)
+		var b := UI.button(_fill(s.options[i].text), _on_choice.bind(i), 22)
 		b.custom_minimum_size.x = 500
 		_choices.add_child(b)
 

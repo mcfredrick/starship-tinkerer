@@ -36,7 +36,7 @@ var _splash_in := 0.0
 
 
 func setup(params: Dictionary) -> void:
-	var job_ship: String = Content.world.jobs[GameState.job.id].ship if not GameState.job.is_empty() else "kettle"
+	var job_ship: String = GameState.job_spec(GameState.job.id).ship if not GameState.job.is_empty() else "kettle"
 	ship_id = params.get("ship", job_ship)
 	_open_repair = int(params.get("repair", "-1"))
 	_open_tab = params.get("tab", "")
@@ -55,7 +55,7 @@ func _ready() -> void:
 	stage.camera.yaw = 0.9
 	stage.camera.refresh()
 	build = GameState.ships[ship_id]
-	commission = not GameState.job.is_empty() and Content.world.jobs[GameState.job.id].ship == ship_id
+	commission = not GameState.job.is_empty() and GameState.job_spec(GameState.job.id).ship == ship_id
 	model = show_ship(ship_id)
 
 	_overlay = UI.full(Control.new())
@@ -83,9 +83,9 @@ func _ready() -> void:
 	stats_panel = StatsPanel.new()
 	stats_panel.baseline = ShipStats.compute(GameState.job.before if commission else build, Content.parts)
 	if commission:
-		var job: Dictionary = Content.world.jobs[GameState.job.id]
+		var job: Dictionary = GameState.job_spec(GameState.job.id)
 		stats_panel.wants = job.wants
-		stats_panel.pilot = Content.world.pilots[job.pilot]
+		stats_panel.pilot = GameState.pilot(job.pilot)
 	UI.place(stats_panel, Control.PRESET_TOP_RIGHT, Vector2(-346, 84), Vector2(330, 0))
 	UI.fit(stats_panel, 84, 86)
 	ui.add_child(stats_panel)
@@ -166,7 +166,7 @@ func _say(text: String, size := 19, color := UI.INK) -> Label:
 # ---------------------------------------------------------------- scan
 
 func _scan_tab() -> void:
-	var job: Dictionary = Content.world.jobs[GameState.job.id]
+	var job: Dictionary = GameState.job_spec(GameState.job.id)
 	_say("\"%s\"" % job.request, 17, UI.MUTED)
 	_say("Sweep the scanner slowly over the hull. Faults glow warm as you get close. Drag empty space to turn the view.")
 	var found := _faults().filter(func(f): return f.found).size()

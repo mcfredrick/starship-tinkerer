@@ -18,7 +18,12 @@ func _ready() -> void:
 	if "tablet" in args:
 		Tablet.open()
 	if "talk" in args:
-		Router.talk(args.talk)
+		# A generated customer on the bench is the scene's guest.
+		var guest := ""
+		if not GameState.job.is_empty():
+			var pilot_id: String = GameState.job_spec(GameState.job.id).pilot
+			guest = pilot_id if GameState.pilot(pilot_id).get("generated", false) else ""
+		Router.talk(args.talk, guest)
 	if "shot" in args:
 		await get_tree().create_timer(float(args.get("wait", "1.5"))).timeout
 		get_viewport().get_texture().get_image().save_png(args.shot)

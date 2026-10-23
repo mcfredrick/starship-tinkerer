@@ -62,6 +62,8 @@ static func grade(job: Dictionary, pilot: Dictionary, before: Dictionary, after:
 static func want_met(want: Dictionary, stats: Dictionary, build: Dictionary, pilot: Dictionary) -> bool:
 	if want.get("taste", false):
 		return build.paint in pilot.taste
+	if want.get("clean", false):
+		return build.get("grime", 0.0) <= 0.0
 	if want.has("finish"):
 		return build.get("finish", "gloss") == want.finish
 	var v: float = stats[want.stat]

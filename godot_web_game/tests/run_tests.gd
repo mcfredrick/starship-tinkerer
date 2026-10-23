@@ -230,6 +230,53 @@ func test_every_shown_character_has_a_glyph() -> void:
 	check(missing.is_empty(), "every shown character has a glyph: missing %s" % [missing.keys()])
 
 
+func _walkin(seed: int, level: int) -> Dictionary:
+	var w: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/walkins.json"))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed
+	var pilot := Walkins.customer(rng, "w%d" % seed, w, parts_data.palette.keys())
+	var made := Walkins.job(rng, pilot, "w%d_ship" % seed, level, w, parts_data, world.market)
+	made["pilot"] = pilot
+	return made
+
+
+func test_walkin_jobs_are_seeded_varied_and_winnable() -> void:
+	check(JSON.stringify(_walkin(7, 2)) == JSON.stringify(_walkin(7, 2)), "the same seed makes the same walk-in")
+	var species := {}
+	var hulls := {}
+	for seed in 60:
+		var made := _walkin(seed, seed % 8)
+		var job: Dictionary = made.job
+		species[made.pilot.species] = true
+		hulls[made.ship.hull] = true
+		var stock: Dictionary = made.ship.duplicate(true)
+		stock.erase("faults")
+		var dream_stats := ShipStats.compute(made.dream, parts_data)
+		var stock_stats := ShipStats.compute(stock, parts_data)
+		var stat_wants: Array = job.wants.filter(func(w): return w.has("stat"))
+		check(not stat_wants.is_empty(), "walk-in %d wants something of the ship" % seed)
+		for w in stat_wants:
+			check(Grading.want_met(w, dream_stats, made.dream, made.pilot), "walk-in %d: the dream build meets %s" % [seed, w])
+			check(not Grading.want_met(w, stock_stats, stock, made.pilot), "walk-in %d: %s asks for a change" % [seed, w])
+		var spots := {}
+		for f in job.faults:
+			spots[f.spot] = true
+		check(spots.size() == job.faults.size(), "walk-in %d's faults sit on different spots" % seed)
+		check(job.budget >= 60 and job.request.length() > 20, "walk-in %d has a budget and a request" % seed)
+	check(species.size() >= 5 and hulls.size() >= 6, "sixty walk-ins vary: %d species, %d hulls" % [species.size(), hulls.size()])
+
+
+func test_every_walkin_look_has_its_doll_layers() -> void:
+	var missing := {}
+	for seed in 80:
+		var look: Dictionary = _walkin(seed, 0).pilot.look
+		for expr in ["neutral", "happy", "laughing", "thoughtful", "surprised", "sad", "grumpy"]:
+			for l in Walkins.doll_layers(look, expr):
+				if not FileAccess.file_exists("res://assets/dolls/%s.png" % l[0]):
+					missing[l[0]] = true
+	check(missing.is_empty(), "doll layers exist for every look: missing %s" % [missing.keys()])
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1

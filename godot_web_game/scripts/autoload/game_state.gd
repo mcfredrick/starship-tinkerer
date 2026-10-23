@@ -6,6 +6,7 @@ signal changed
 ## Screenshot runs point this elsewhere so they never touch a real save.
 var save_path := "user://save.json"
 const MAX_SPARK := 4
+const BOARD_SIZE := 3
 
 var player := {"name": "Tinkerer", "pronouns": "they"}
 var day := 1
@@ -27,6 +28,15 @@ var reputation := 0
 var job := {}
 ## What happened today, for the night summary: {xp: {skill: n}, pebs: n, notes: [...]}.
 var today := {}
+## The run's seed: it decides who walks in and what they fly, so each playthrough differs.
+var run_seed := 0
+## Generated customers by id, and the jobs made for them (authored ones live in Content).
+var cast := {}
+var jobs := {}
+## Today's job board: offers of {pilot, job, ship}, and the day they were drawn up for.
+var board: Array = []
+var board_day := 0
+var next_id := 1
 
 
 func new_game(name: String, pronouns: Variant) -> void:
@@ -48,6 +58,12 @@ func new_game(name: String, pronouns: Variant) -> void:
 	perks = []
 	reputation = 0
 	job = {}
+	run_seed = randi()
+	cast = {}
+	jobs = {}
+	board = []
+	board_day = 0
+	next_id = 1
 	_reset_today()
 	save()
 
@@ -70,7 +86,8 @@ func to_dict() -> Dictionary:
 	return {
 		"player": player, "day": day, "phase": phase, "spark": spark, "pebs": pebs, "parts": parts,
 		"items": items, "ships": ships, "skills": skills, "rapport": rapport, "flags": flags, "buff": buff,
-		"job": job, "today": today, "perks": perks, "reputation": reputation,
+		"job": job, "today": today, "perks": perks, "reputation": reputation, "seed": run_seed, "cast": cast,
+		"jobs": jobs, "board": board, "board_day": board_day, "next_id": next_id,
 	}
 
 
@@ -92,6 +109,13 @@ func from_dict(d: Dictionary) -> void:
 	# Saves from before perks and reputation existed load with neither.
 	perks = d.get("perks", [])
 	reputation = int(d.get("reputation", 0))
+	# Saves from before walk-ins pick a seed now and start with an empty cast.
+	run_seed = int(d.get("seed", randi()))
+	cast = d.get("cast", {})
+	jobs = d.get("jobs", {})
+	board = d.get("board", [])
+	board_day = int(d.get("board_day", 0))
+	next_id = int(d.get("next_id", 1))
 
 
 ## JSON numbers load as floats; counts should stay ints.
@@ -152,9 +176,53 @@ func max_spark() -> int:
 	return MAX_SPARK + int(perk("spark_max"))
 
 
+## A pilot by id: the authored cast first, then the generated one.
+func pilot(id: String) -> Dictionary:
+	return Content.world.pilots[id] if Content.world.pilots.has(id) else cast[id]
+
+
+func job_spec(id: String) -> Dictionary:
+	return Content.world.jobs[id] if Content.world.jobs.has(id) else jobs[id]
+
+
+## Today's walk-ins, drawn up once per day from the run seed so reloading doesn't reshuffle them.
+func job_board() -> Array:
+	if board_day != day:
+		board = []
+		board_day = day
+		var w: Dictionary = Content.walkins
+		for k in BOARD_SIZE:
+			var rng := RandomNumberGenerator.new()
+			rng.seed = hash([run_seed, day, k])
+			var id := "g%d" % (next_id + k)
+			var who := Walkins.customer(rng, id, w, Content.parts.palette.keys())
+			var made := Walkins.job(rng, who, id + "_ship", shop_level(), w, Content.parts, Content.world.market)
+			board.append({"pilot": who, "job": made.job, "ship": made.ship})
+		next_id += BOARD_SIZE
+		save()
+	return board
+
+
+## How far along the shop is, for how tough walk-in jobs get.
+func shop_level() -> int:
+	return maxi(day - 3, 0) / 2 + maxi(reputation, 0)
+
+
+## Takes board offer `index`: the customer joins the cast and their ship comes into the bay.
+func accept_offer(index: int) -> String:
+	var offer: Dictionary = board.pop_at(index)
+	var id: String = offer.pilot.id
+	cast[id] = offer.pilot
+	cast[id]["ship"] = offer.job.ship
+	ships[offer.job.ship] = offer.ship.duplicate(true)
+	jobs[id + "_job"] = offer.job
+	start_job(id + "_job")
+	return id
+
+
 ## The job spec with the agreed budget, which haggling in dialogue may have changed.
 func job_terms() -> Dictionary:
-	var spec: Dictionary = Content.world.jobs[job.id].duplicate()
+	var spec: Dictionary = job_spec(job.id).duplicate()
 	spec.budget = job.get("budget", spec.budget)
 	return spec
 
@@ -179,7 +247,7 @@ func run_command(cmd: String, args: Array) -> void:
 
 
 func start_job(id: String) -> void:
-	var spec: Dictionary = Content.world.jobs[id]
+	var spec: Dictionary = job_spec(id)
 	var faults: Array = []
 	for f in spec.faults:
 		faults.append({"type": f.type, "spot": f.spot, "found": false, "fixed": false, "score": 0.0})

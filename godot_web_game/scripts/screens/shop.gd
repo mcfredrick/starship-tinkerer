@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func _ship_on_cradle() -> String:
 	if not GameState.job.is_empty():
-		return Content.world.jobs[GameState.job.id].ship
+		return GameState.job_spec(GameState.job.id).ship
 	return "kettle"
 
 
@@ -56,15 +56,19 @@ func _refresh() -> void:
 		c.queue_free()
 	var job_open := not GameState.job.is_empty()
 	if job_open:
-		var pilot: String = Content.world.pilots[Content.world.jobs[GameState.job.id].pilot].short
+		var pilot: String = GameState.pilot(GameState.job_spec(GameState.job.id).pilot).short
 		_hint.text = "%s's ship is on the cradle, waiting for you." % pilot
 		_add("Workbench: %s" % pilot, func(): Router.go("workbench", {"ship": _ship_on_cradle()}))
 	elif GameState.phase == "evening" and GameState.flags.has("race_open") and not GameState.flags.has("raced_today"):
 		_hint.text = "The club race starts at last bell. The Kettle's in the back bay."
 	elif GameState.phase == "evening":
 		_hint.text = "The dock lights are dimming. A good time for tea, or bed."
+	elif GameState.phase == "morning":
+		_hint.text = "Walk-ins have pinned requests to the job board."
 	else:
 		_hint.text = "A quiet spell. Tinker, trade, or put the kettle on."
+	if GameState.phase == "morning" and not job_open:
+		_add("Job board", func(): Router.go("board"))
 	_add("Tea nook", func(): Router.go("tea"))
 	_add("Garage: the Kettle", func(): Router.go("workbench", {"ship": "kettle"}))
 	_add("Parts market", func(): Router.go("market"))

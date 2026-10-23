@@ -72,9 +72,10 @@ func go(name: String, params := {}) -> void:
 	t2.tween_property(_fade, "modulate:a", 0.0, FADE_TIME)
 
 
-## Plays a dialogue scene; resolves when it ends.
-func talk(scene_id: String) -> void:
-	await dialogue.play(scene_id)
+## Plays a dialogue scene; resolves when it ends. `guest` is the generated customer the scene's
+## "guest" speaker and {guest} tokens stand for.
+func talk(scene_id: String, guest := "") -> void:
+	await dialogue.play(scene_id, guest)
 
 
 func toast(text: String, color := UI.TEAL) -> void:

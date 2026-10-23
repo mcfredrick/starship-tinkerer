@@ -13,7 +13,7 @@ func _ready() -> void:
 	super()
 	_job_id = GameState.job.id
 	_job = GameState.job_terms()
-	_pilot = Content.world.pilots[_job.pilot]
+	_pilot = GameState.pilot(_job.pilot)
 	var build: Dictionary = GameState.ships[_job.ship]
 	var repairs := {}
 	for i in build.faults.size():
@@ -55,11 +55,22 @@ func _report() -> void:
 
 func _play() -> void:
 	await get_tree().create_timer(0.8).timeout
-	await Router.talk("%s_%s" % [_job.dialogue, _grade.tier])
+	var guest: String = _job.pilot if _pilot.get("generated", false) else ""
+	await Router.talk(_scene(_grade.tier), guest)
 	if _grade.mischief != "":
-		var scene: String = "%s_%s" % [_job.dialogue, _grade.mischief]
-		await Router.talk(scene if Content.dialogue.has(scene) else "mischief_" + _grade.mischief)
+		await Router.talk(_scene(_grade.mischief, "mischief_" + _grade.mischief), guest)
 	_pay()
+
+
+## The most specific reaction scene there is: one for this pilot's trait, then for the job, then
+## `fallback`.
+func _scene(outcome: String, fallback := "") -> String:
+	for t in _pilot.get("traits", []):
+		var scene := "%s_%s_%s" % [_job.dialogue, t, outcome]
+		if Content.dialogue.has(scene):
+			return scene
+	var plain := "%s_%s" % [_job.dialogue, outcome]
+	return plain if Content.dialogue.has(plain) or not fallback else fallback
 
 
 func _pay() -> void:

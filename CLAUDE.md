@@ -38,17 +38,25 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Hull gallery (every hull, sample loadouts) | `godot --path . --resolution 640x400 res://tools/hull_gallery.tscn -- --out=<png> [--hull=id] [--yaw=rad]` |
 | Ship kit | `$B -b --python blender/export_ship_kit.py` (repo root); preview with `preview_kit.py -- out.png [--front]` |
 | Portraits | `$B -b --python blender/portraits.py -- [character ...]` |
+| Paper-doll layers (generated customers) | `$B -b --python blender/dolls.py -- [layer-prefix ...]` |
 | Prop icons | `$B -b --python blender/props.py` |
 | Web build | `./export_web.sh` (repo root; output in `godot_web_game/build/web/`) |
 | Sound effects | `uv run --with numpy python -I tools/sfx.py` (repo root) |
 | Check the live web build | `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --use-angle=swiftshader --enable-unsafe-swiftshader --window-size=1280,720 --timeout=40000 --user-data-dir=<tmp> --screenshot=out.png <url>` (add `--enable-logging=stderr --v=0` and grep `CONSOLE` for errors) |
 
 Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `evening`, `day2`, `brindle`,
-`crake`, `midway` (Crake's job with every fault one step in), `levelup`.
+`crake`, `midway` (Crake's job with every fault one step in), `board` (day 4, walk-ins on the board),
+`walkin` (a walk-in's job on the bench), `levelup`.
 
 ## Conventions
 
 - Content is data. Code reads `data/` and never hardcodes pilots, parts, jobs or text.
+- Pilots and jobs are authored (`world.json`) or generated (`GameState.cast`, `GameState.jobs`, from
+  `data/walkins.json` through `Walkins`). Always look them up with `GameState.pilot(id)` and
+  `GameState.job_spec(id)`. Generated customers speak as `guest` in dialogue, with `{guest}`,
+  `{guest_ship}` and `{request}` tokens; `Router.talk(scene, guest_id)` says who that is.
+- Portraits and doll layers import as lossy WebP (`compress/mode=1`, quality 0.85 in their `.import`
+  files), which halves the download. New PNGs there need the same setting.
 - Hulls need all six sockets and spots 1 to 6 (spots are numbered from 1); the kit test checks this.
 - Ship kit mesh names end in a material role (`_paint`, `_trim`, `_glass`, `_metal`, `_glow`,
   `_dark`). Sockets are `<hull>__socket_<slot>`, repair spots `<hull>__spot_<n>`. Ship nose is
