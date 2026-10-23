@@ -3,7 +3,8 @@ extends Node
 
 signal changed
 
-const SAVE_PATH := "user://save.json"
+## Screenshot runs point this elsewhere so they never touch a real save.
+var save_path := "user://save.json"
 const MAX_SPARK := 4
 
 var player := {"name": "Tinkerer", "pronouns": "they"}
@@ -47,17 +48,17 @@ func new_game(name: String, pronouns: Variant) -> void:
 
 
 func has_save() -> bool:
-	return FileAccess.file_exists(SAVE_PATH)
+	return FileAccess.file_exists(save_path)
 
 
 func save() -> void:
-	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var f := FileAccess.open(save_path, FileAccess.WRITE)
 	f.store_string(JSON.stringify(to_dict()))
 	changed.emit()
 
 
 func load_game() -> void:
-	from_dict(JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH)))
+	from_dict(JSON.parse_string(FileAccess.get_file_as_string(save_path)))
 
 
 func to_dict() -> Dictionary:
@@ -131,8 +132,24 @@ func buff_bonus(task: String) -> float:
 	return Content.comforts.buffs[Content.comforts.teas[buff].buff].get(task, 0.0)
 
 
-func ease(skill: String, task: String) -> float:
-	return Skills.ease(skills[skill], buff_bonus(task))
+func leniency(skill: String, task: String) -> float:
+	return Skills.leniency(skills[skill], buff_bonus(task))
+
+
+## Commands from dialogue scripts ("! set flag", "! job id", "! give item n", "! pebs n").
+func run_command(cmd: String, args: Array) -> void:
+	match cmd:
+		"set":
+			flags[args[0]] = true
+		"job":
+			start_job(args[0])
+		"give":
+			give(items, args[0], int(args[1]) if args.size() > 1 else 1)
+		"pebs":
+			add_pebs(int(args[0]), "")
+		_:
+			assert(false, "unknown dialogue command: " + cmd)
+	save()
 
 
 func start_job(id: String) -> void:

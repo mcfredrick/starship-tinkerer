@@ -16,13 +16,16 @@
   "pilots": {
     "odessa": {"name": "Odessa Vell", "short": "Odessa", "pronouns": "she", "ship": "pocket_moth",
       "taste": ["marigold", "terracotta", "sage", "cream", "rose"],
-      "blurb": "Retired long-haul courier. Grandchildren on three moons."},
+      "blurb": "Retired long-haul courier. Grandchildren on three moons.",
+      "taste_hint": "Odessa wears a marigold coat and talks about her rose garden."},
     "ilse": {"name": "Captain Ilse Marrow", "short": "Ilse", "pronouns": "she", "ship": "heron",
       "taste": ["scarlet", "cream", "slate"],
-      "blurb": "Reigning dock champion. Gruff, generous, secretly worried about getting slower."},
+      "blurb": "Reigning dock champion. Gruff, generous, secretly worried about getting slower.",
+      "taste_hint": "Ilse likes her ships scarlet and her trim spotless."},
     "brindle": {"name": "Brindle", "short": "Brindle", "pronouns": "it", "ship": "bucket",
       "taste": ["marigold", "mint", "teal"],
-      "blurb": "A maintenance robot who wants to know what racing feels like."}
+      "blurb": "A maintenance robot who wants to know what racing feels like.",
+      "taste_hint": "Brindle says yellow is \"the color of a good day.\""}
   },
   "jobs": {
     "odessa_1": {
@@ -40,7 +43,7 @@
   },
   "race": {
     "club": {"name": "Quietwater Club Race", "laps": 3, "rivals": ["ilse", "brindle"],
-      "prizes": [140, 80, 40], "pr_limit": 420}
+      "prizes": [140, 80, 40]}
   },
   "start": {
     "pebs": 150,

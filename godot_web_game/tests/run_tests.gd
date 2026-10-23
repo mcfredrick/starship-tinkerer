@@ -120,7 +120,7 @@ func test_odessa_job_grades() -> void:
 func test_skill_levels() -> void:
 	check(Skills.level(0) == 1 and Skills.level(59) == 1 and Skills.level(60) == 2, "level thresholds")
 	check(is_equal_approx(Skills.progress(105), 0.5), "progress within a level: %s" % Skills.progress(105))
-	check(Skills.ease(60, 0.35) > Skills.ease(0, 0.0), "skill and tea both ease minigames")
+	check(Skills.leniency(60, 0.35) > Skills.leniency(0, 0.0), "skill and tea both ease minigames")
 
 
 func test_content_matches_kit() -> void:

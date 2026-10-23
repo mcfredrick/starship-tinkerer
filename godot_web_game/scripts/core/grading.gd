@@ -17,7 +17,7 @@ static func grade(job: Dictionary, pilot: Dictionary, before: Dictionary, after:
 	var fit_total := 0.0
 	var fit_weight := 0.0
 	for w in job.wants:
-		var met := _met(w, stats, after, pilot)
+		var met := want_met(w, stats, after, pilot)
 		wants.append({"label": w.label, "met": met})
 		fit_weight += w.weight
 		fit_total += w.weight if met else 0.0
@@ -41,7 +41,7 @@ static func grade(job: Dictionary, pilot: Dictionary, before: Dictionary, after:
 	return result
 
 
-static func _met(want: Dictionary, stats: Dictionary, build: Dictionary, pilot: Dictionary) -> bool:
+static func want_met(want: Dictionary, stats: Dictionary, build: Dictionary, pilot: Dictionary) -> bool:
 	if want.get("taste", false):
 		return build.paint in pilot.taste
 	var v: float = stats[want.stat]

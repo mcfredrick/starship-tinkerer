@@ -29,5 +29,5 @@ static func progress(xp: int) -> float:
 
 
 ## How forgiving a minigame is: 1.0 at level 1 with no tea, growing with skill and buffs.
-static func ease(xp: int, buff_bonus: float) -> float:
+static func leniency(xp: int, buff_bonus: float) -> float:
 	return 1.0 + (level(xp) - 1) * 0.12 + buff_bonus
