@@ -20,7 +20,7 @@ ilse: That's what I'm hoping. A dozen things I can fix. The other thing I can't.
 => terms
 -- terms
 ilse: Three hundred and forty pebs. And a little more on the straights while you're in there.
-ilse grumpy: And not a word to Brindle. It'll want to measure my feelings.
+ilse grumpy: And not a word to Brindle. It'll want to time my feelings.
 ! job ilse_1
 end
 
@@ -80,12 +80,12 @@ odessa thoughtful: Well, we'll all fit. Just about. Cosy, we'll call it.
 odessa: Here's what we agreed. They'll love it anyway. Children love anything that flies.
 end
 
-# ---------------------------------------------------------------- Brindle: measuring joy
+# ---------------------------------------------------------------- Brindle: from racing to calling races
 
 == brindle_returns
 * The Bucket clanks into the bay with a fresh coat of happy yellow. Brindle hops out, antenna wobbling.
 brindle happy: {name}! I have news. I have entered the Drum Garden Dash.
-brindle thoughtful: It is the twistiest course on the dock. I have measured my joy in twists and it is very high. Higher than corners. Corners are just shy twists.
+brindle thoughtful: It is the twistiest course on the dock. My twist times are terrible. I want them to be less terrible. Corners are just shy twists.
 brindle: I would like the Bucket to stick, and to turn, and to have a gadget. A gadget is a friend you bring.
 > What sort of friend? => friend
 > I'll make her a twisting champion. => champ
@@ -99,7 +99,7 @@ end
 
 == brindle_2_delighted
 * Brindle drives the Bucket in a slow figure eight around the bay, then another, then a third, very slowly.
-brindle laughing: It twists! It twists like a happy thought that is also a ribbon!
+brindle laughing: It twists! Eight seconds through the figure eight! That is a personal best by four seconds!
 brindle happy: I am going to win. Or I am going to come second and be just as happy. I have checked, and I would be just as happy.
 end
 
@@ -165,7 +165,7 @@ end
 * Before you've even put the kettle on, there's a knock at the bay door. Odessa, Brindle, Ilse, and Crake are standing in a row, which is a strange sight.
 odessa happy: Come on, love! The shop can spare you for one night. You fixed half the ships going.
 ilse: Bring your own ship. Nobody watches a comet from someone else's.
-brindle laughing: I have brought snacks. I do not eat snacks. I brought them for joy.
+brindle laughing: I have brought snacks. I do not eat snacks. I will time how fast everyone eats them.
 * Sprocket walks past all of you and gets into your ship first.
 end
 
@@ -190,9 +190,9 @@ ilse sad: I'm racing the Garden Dash. Maybe my last. If it is me who's slowing d
 ilse thoughtful: Will you be on the grid?
 => brindle
 -- brindle
-brindle surprised: {name}. I have measured my joy.
-brindle thoughtful: It is the highest it has ever been. And I am not moving at all. I am sitting still and watching.
-brindle happy: I did not know joy could be sitting still. I will have to measure everything again.
+brindle surprised: {name}. I have stopped my stopwatch.
+brindle thoughtful: I wanted to time the comet. But some things should not have a time. They should just have a now.
+brindle happy: I would like to describe it to someone instead. Out loud. With a microphone, perhaps.
 ? crake_2_delighted => crake_kind
 ? crake_2_pleased => crake_kind
 * The Magnificence hangs a little apart from the rest. You can see an elderly lady at its window, pointing things out to her son.
@@ -222,8 +222,8 @@ end
 
 == brindle_commentator
 * The club race tonight has a new voice over the dock speakers.
-brindle laughing: Hello, Quietwater! This is Brindle, your commentator! I am measuring everyone's joy for you, live!
-brindle happy: I do not race now. I tried, and it was good, but watching is better. I have checked many times.
+brindle laughing: Hello, Quietwater! This is Brindle, your commentator! I will be timing everything for you, live, including the cocoa!
+brindle happy: I do not race now. I tried, and it was good, but telling everyone about it is better. I have checked many times.
 * Somewhere on the ring, Ilse can be heard laughing over her radio.
 end
 
@@ -268,10 +268,10 @@ end
 * Inside the Odd drum the orchards curve up and over your head, heavy with violet moon-plums. The sun-line has dimmed to a warm amber, and the misters are throwing rainbows everywhere.
 * Half the dock is here. Somebody is frying fritters. Somebody else is arguing about the fritters.
 odessa happy: {name}! Over here, love! Grab a basket. The low branches are on the ceiling this year.
-brindle laughing: {name}! The misters are making eleven rainbows at once! I have never measured eleven!
+brindle laughing: {name}! The misters are making eleven rainbows at once! I am timing how long each one lasts!
 ilse grumpy: Fritter contest at the bandstand. I've won it nine years running. Come and lose to me.
 > Pick moon-plums with Odessa. => plums
-> Measure rainbows with Brindle. => rainbows
+> Time rainbows with Brindle. => rainbows
 > Take on Ilse in the fritter contest. => fritters
 -- plums
 * Odessa shows you how to twist a moon-plum so it comes away clean. Half the ones you pick are on the far side of the drum, upside down, which takes some getting used to.

@@ -60,8 +60,8 @@ ilse grumpy: So you're the new tinkerer. Halloran's pick.
 ilse thoughtful: Hm. Your hands look like they know what they're doing. That's something.
 * A boxy yellow tug clanks in behind her. A small robot pops its head out of the hatch.
 brindle happy: Hello! I am Brindle. I am here to observe you. In a friendly way.
-ilse: Brindle follows me around. It's studying racing.
-brindle surprised: I am studying joy. Racing is where I keep finding it.
+ilse: Brindle follows me around. It times everything.
+brindle surprised: Not everything. Only things that happen. You said hello in 1.4 seconds. That is a very good hello.
 ilse: Club race tonight. Three laps round the ring. You've got that wreck in the back, haven't you? Halloran's Kettle.
 > She's not a wreck. She's a project. => proud
 > She's... very much a wreck. => honest
@@ -83,7 +83,7 @@ end
 == race_won
 ilse surprised: The Kettle! Beat the Heron! In a straight race!
 ilse laughing: Halloran is going to be insufferable when they hear about this.
-brindle laughing: That was the most joy I have ever measured. I need a bigger unit.
+brindle laughing: New lap record for a teakettle! It is also the first lap record for a teakettle. Both records are yours!
 end
 
 == race_podium

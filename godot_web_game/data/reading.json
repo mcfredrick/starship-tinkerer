@@ -12,7 +12,7 @@
       "title": "Quietwater Dock Bulletin",
       "from": "Dock office",
       "day": 1,
-      "body": "DRUM GARDEN NEWS\nThe moon-plums are early this cycle. The gardeners ask that you stop eating them off the vine. You know who you are.\n\nCLUB RACE TONIGHT\nThe weekly Quietwater Club Race runs three laps around the ring at last bell. Entry is free and so is the cocoa. Captain Marrow is defending her title for the forty-first week running and would like everyone to stop counting.\n\nLOST AND FOUND\nOne (1) hat, knitted, with ear holes. Not for a human. Ask at the office.\n\nGOSSIP CORNER\nA certain maintenance unit was seen watching race replays through the observation glass until third shift. When asked, it said it was \"studying joy.\" We have no further questions."
+      "body": "DRUM GARDEN NEWS\nThe moon-plums are early this cycle. The gardeners ask that you stop eating them off the vine. You know who you are.\n\nCLUB RACE TONIGHT\nThe weekly Quietwater Club Race runs three laps around the ring at last bell. Entry is free and so is the cocoa. Captain Marrow is defending her title for the forty-first week running and would like everyone to stop counting.\n\nLOST AND FOUND\nOne (1) hat, knitted, with ear holes. Not for a human. Ask at the office.\n\nGOSSIP CORNER\nA certain maintenance unit was seen watching race replays through the observation glass until third shift. When asked, it said the replays were \"very slow,\" and that it would like to \"fix that.\" We have no further questions."
     },
     "novel_1": {
       "kind": "story",
@@ -90,7 +90,7 @@
       "from": "Brindle",
       "day": 3,
       "requires": "brindle_1_done",
-      "body": "Dear {name},\n\nI have taken the Bucket around the ring forty-one times since yesterday. I have attached a chart of my joy in corners. It goes up.\n\n(There is no chart. Brindle has drawn a line going up, then a smiling face, then another line going up off the edge of the page.)\n\nI have told everybody on the dock about your shop. Some of them did not ask. I told them anyway.\n\nYour friend and rival,\nBrindle"
+      "body": "Dear {name},\n\nI have taken the Bucket around the ring forty-one times since yesterday. I have attached a chart of my corner times. They go down. Down is good.\n\n(There is no chart. Brindle has drawn a line going down, then a stopwatch with a smiling face, then another line going down off the bottom of the page.)\n\nI have told everybody on the dock about your shop. Some of them did not ask. I told them anyway.\n\nYour friend and rival,\nBrindle"
     },
     "halloran_2": {
       "kind": "letter",
@@ -179,13 +179,13 @@
       "requires": "odessa_roams",
       "body": "Dear {name},\n\nFour of us in the Moth, and you were right, there's room. The littlest one sleeps in the cargo net. The oldest one has taken over navigation and we have been somewhat lost since Tuesday, which is the best I've felt in years.\n\nWe'll bring her back through Quietwater at the end of the summer. Have the kettle on.\n\nLove from all four of us,\nOdessa (and Pell, and Juno, and little Sorrel, who says hello to the cat)"
     },
-    "brindle_joy_report": {
+    "brindle_lap_report": {
       "kind": "letter",
-      "title": "Joy report: final",
+      "title": "Lap report: final",
       "from": "Brindle",
       "day": 13,
       "requires": "seen_close_pass_call",
-      "body": "Dear {name},\n\nI have finished measuring joy.\n\nFindings:\n1. Corners: medium joy.\n2. Twists: high joy.\n3. Winning: high joy, but short.\n4. Watching friends go zoom: highest joy. Lasts a long time.\n5. Sitting still under a comet with everyone: off the scale. I had to invent a new scale. I have called it a {name}.\n\nConclusion: I will keep the Bucket, but I will mostly watch. The racing club has asked if I would like to talk over the speakers during races. I said yes before they finished asking.\n\nYour friend,\nBrindle"
+      "body": "Dear {name},\n\nI have finished my lap report.\n\nFindings:\n1. Corners: 11.2 seconds. Improved.\n2. Twists: 9.8 seconds. Much improved.\n3. Winning: very short. Over in no time.\n4. Telling everyone what happened: takes a long time, and is the best part.\n5. Sitting still under a comet with everyone: I did not time it. I have decided some things should not be timed.\n\nConclusion: I will keep the Bucket, but I will mostly talk. The racing club has asked if I would like to call the races over the dock speakers. I said yes in 0.3 seconds. A personal best.\n\nYour friend,\nBrindle"
     },
     "novel_4": {
       "kind": "story",
@@ -264,7 +264,7 @@
       "from": "Halloran's notes",
       "day": 2,
       "image": "guide_gardens",
-      "body": "The drum gardens are the three great cylinders that ride on top of Quietwater's spine. Each one turns slowly on its long axis, and the turning pushes everything inside gently out against the walls, so the gardens grow all the way round the inside of the drum: look up from any path and you'll see orchards and lawns curving overhead, upside down and perfectly happy about it.\n\nDown the middle of each drum runs the sun-line, a long glowing tube that dims to amber at last bell and brightens again at first. Misters along the walls water everything on the hour and make small rainbows, which Brindle has measured extensively.\n\nThe gardens feed the dock: moon-plums, ginger, tea, greens, and a stubborn lemon tree nobody admits to planting. They're also its park. People picnic, court, argue and nap there, and every autumn the whole dock turns out for the moon-plum harvest.\n\nA local note: the drums are named First, Middle and Odd. Nobody remembers why the third is Odd. It is the nicest."
+      "body": "The drum gardens are the three great cylinders that ride on top of Quietwater's spine. Each one turns slowly on its long axis, and the turning pushes everything inside gently out against the walls, so the gardens grow all the way round the inside of the drum: look up from any path and you'll see orchards and lawns curving overhead, upside down and perfectly happy about it.\n\nDown the middle of each drum runs the sun-line, a long glowing tube that dims to amber at last bell and brightens again at first. Misters along the walls water everything on the hour and make small rainbows, which Brindle has timed extensively.\n\nThe gardens feed the dock: moon-plums, ginger, tea, greens, and a stubborn lemon tree nobody admits to planting. They're also its park. People picnic, court, argue and nap there, and every autumn the whole dock turns out for the moon-plum harvest.\n\nA local note: the drums are named First, Middle and Odd. Nobody remembers why the third is Odd. It is the nicest."
     },
     "guide_bramble": {
       "kind": "guide",

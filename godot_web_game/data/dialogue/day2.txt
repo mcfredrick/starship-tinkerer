@@ -8,15 +8,15 @@ end
 == brindle_arrives
 * A boxy yellow tug bumps gently into the bay door, backs up, and tries again. On the second go it fits.
 brindle happy: Good morning, {name}! I have come as a customer. I have never been a customer before. I am very excited.
-brindle thoughtful: I have been studying the Bucket in races. In corners it feels like... like a shopping trolley with one bad wheel.
-brindle sad: I measured my joy in corners. It was low. Lower than in straight lines. Lower than in queues.
+brindle thoughtful: I have timed the Bucket in races. In corners it feels like... like a shopping trolley with one bad wheel.
+brindle sad: My corner times are my worst times. Worse than my straight-line times. Worse than my queueing times, and I am very good at queueing.
 > What would make it better? => better
 > Shopping trolleys can be fun. => trolley
 -- trolley
 brindle laughing: That is true! I once rode one down the cargo ramp. It was the second-best day of my life.
 => better
 -- better
-brindle: I would like the Bucket to turn like a happy thought, and stick to corners like a happy magnet.
+brindle: I would like the Bucket to turn like a spinning top, and stick to corners like a sticker on a lunchbox.
 brindle: I have ninety pebs. I also have a Hushdrive I found in a salvage bin. It is in excellent condition. It hums like a sleepy cat.
 brindle thoughtful: I do not need it. My Bucket is supposed to clank. Clanking is part of its personality.
 brindle happy: Also, I should tell you something. If you make the Bucket better, I will use it to beat you in races. In a friendly way.
@@ -30,12 +30,12 @@ end
 == brindle_1_delighted
 * Brindle climbs in, takes the Bucket once around the bay, and comes back very slowly, as if it doesn't want the turn to end.
 brindle laughing: {name}! The corners! They are fun now! I turned three times on purpose!
-brindle happy: My joy in corners has gone up by a measurement I do not have a unit for. I am going to invent one. I will call it a {name}.
+brindle happy: My corner time has gone down by an amount I do not have a unit for. I am going to invent one. I will call it a {name}.
 brindle: Here are your pebs, and the Hushdrive. Please give it a good home.
 end
 
 == brindle_1_pleased
-brindle happy: It turns better! Not quite like a happy thought. More like a pleasant thought. That is still very good.
+brindle happy: It turns better! Not quite like a spinning top. More like a spinning plate. That is still very good.
 brindle: Here are your pebs, and the Hushdrive, as promised.
 end
 

@@ -349,10 +349,10 @@ three moons. Her arc is about deciding whether to keep roaming or put down roots
 Pays in pebs and seed cakes. Doesn't race, until a late beat where she enters the Slow Sunday Cup
 for fun.
 
-**Brindle** (it/its). A maintenance robot that left its station crew to find out what racing feels
-like. It's earnest, literal and very curious about why people want the things they want. Pays in
-salvaged parts, which are often surprisingly good. Its arc follows it working out what it actually
-enjoys, which may turn out to be cheering from the stands.
+**Brindle** (it/its). A maintenance robot that left its station crew to go racing. It's earnest, literal and
+times everything: hellos, sandwiches, rainbows. Pays in salvaged parts, which are often surprisingly
+good. Its arc follows it from wanting to win to finding it loves telling everyone about races more
+than running them, ending as the club race's commentator.
 
 **Captain Ilse Marrow** (she/her). A sky-blue racer with an axolotl's wide grin, feathery gill
 fronds and goggles pushed up on her forehead. The dock's reigning racing champion, who flies the *Heron*. Gruff,

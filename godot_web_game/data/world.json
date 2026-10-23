@@ -88,11 +88,11 @@
     },
     "brindle_1": {
       "pilot": "brindle", "ship": "bucket", "budget": 90,
-      "request": "I would like the Bucket to turn like a happy thought and stick to corners like a happy magnet. I have measured my joy in corners and it is low.",
+      "request": "I would like the Bucket to turn like a spinning top and stick to corners like a sticker on a lunchbox. My corner times are my worst times.",
       "faults": [{"type": "rewire", "spot": 1}, {"type": "dent", "spot": 4}],
       "wants": [
-        {"stat": "handling", "min": 52, "label": "Turns like a happy thought", "weight": 1},
-        {"stat": "grip", "min": 66, "label": "Sticks like a happy magnet", "weight": 1},
+        {"stat": "handling", "min": 52, "label": "Turns like a spinning top", "weight": 1},
+        {"stat": "grip", "min": 66, "label": "Sticks like a sticker", "weight": 1},
         {"taste": true, "label": "The color of a good day", "weight": 1}
       ],
       "barter": {"engine_hush": 1},
@@ -146,7 +146,7 @@
       "faults": [{"type": "weld", "spot": 2}, {"type": "dent", "spot": 5}],
       "wants": [
         {"stat": "grip", "min": 70, "label": "Sticks in the twisty bits", "weight": 1},
-        {"stat": "handling", "min": 56, "label": "Turns like a happy thought", "weight": 1},
+        {"stat": "handling", "min": 56, "label": "Turns like a spinning top", "weight": 1},
         {"has_slot": "top", "label": "A gadget friend", "weight": 1}
       ],
       "barter": {"tea_drift_bloom": 2},
