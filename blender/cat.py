@@ -63,13 +63,28 @@ def sitting():
 
 
 def sleeping():
+    """Curled up asleep: a round loaf of a body, head tucked down on the front paws, tail wrapped
+    around the front, white paws and chest peeking out, collar and tag still on."""
     root = empty("cat_sleep")
-    ring = [(math.cos(a) * 0.38, math.sin(a) * 0.38, 0.22) for a in (math.radians(20 + i * 20) for i in range(16))]
-    mesh_obj("body_fur", tube_bm(ring, [0.24 + 0.04 * math.sin(math.pi * i / 15) for i in range(16)], 14), root)
-    mesh_obj("bib_cream", ellipsoid((0.18, 0.14, 0.12), (0.12, 0.3, 0.3)), root)
-    head(root, (0.25, 0.25, 0.32), sleepy=True)
-    tail = [(math.cos(a) * 0.55, math.sin(a) * 0.55, 0.1) for a in (math.radians(-60 + i * 12) for i in range(10))]
-    mesh_obj("tail_fur", tube_bm(tail, [0.08 - 0.004 * i for i in range(10)], 10), root)
+    mesh_obj("body_fur", ellipsoid((0.5, 0.46, 0.3), (0, -0.05, 0.28)), root)
+    mesh_obj("hip_fur", ellipsoid((0.3, 0.3, 0.26), (0.2, -0.22, 0.3)), root)
+    for side in (-1, 1):
+        mesh_obj(f"paw{side}_cream", ellipsoid((0.08, 0.13, 0.06), (side * 0.1, 0.42, 0.07)), root)
+    mesh_obj("chest_cream", ellipsoid((0.18, 0.08, 0.13), (0, 0.33, 0.2)), root)
+    h = head(root, (-0.02, 0.4, 0.4), sleepy=True)
+    h.rotation_euler = (math.radians(-18), 0, math.radians(12))
+    h.scale = (0.9, 0.9, 0.9)
+    collar = [(math.cos(a) * 0.24, 0.3 + math.sin(a) * 0.14, 0.27 + 0.05 * math.sin(a)) for a in (2 * math.pi * i / 20 for i in range(21))]
+    mesh_obj("collar_collar", tube_bm(collar, [0.035] * 21, 8, cap=False), root)
+    tag = lathe_bm([(0.02, 0.05), (-0.02, 0.05)])
+    mesh_obj("tag_tag", transform_bm(tag, lambda v: v + Vector((0.06, 0.45, 0.19))), root)
+    # The tail sweeps from the hip around the right side and across the front, over the paws.
+    tail = []
+    for i in range(16):
+        a = math.radians(-100 + i * 15)
+        r = 0.6 + 0.04 * math.sin(i / 3)
+        tail.append((math.cos(a) * r, math.sin(a) * r * 0.95, 0.13 + 0.04 * math.sin(math.pi * i / 15)))
+    mesh_obj("tail_fur", tube_bm(tail, [0.085 - 0.002 * i for i in range(16)], 10), root)
     return root
 
 
