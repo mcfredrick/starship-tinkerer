@@ -36,13 +36,14 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Logic tests | `godot --headless --script res://tests/run_tests.gd` (every `test_` method runs) |
 | Compile every script | `godot --headless res://tools/check_scripts.tscn` |
 | Race balance report | `godot --headless --script res://tools/race_report.gd` |
-| Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet] [--talk=scene]` plus screen params: workbench `--ship= --tab= --repair=N --focus=N` (lean in on a fault) `--fixfx=N` (play its fix) `--demo=paint\|part\|scrub\|<livery>`, race `--race=<id> --at=<meters> --paused`, title `--form=[custom]` |
+| Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet[=entry]] [--talk=scene]` plus screen params: workbench `--ship= --tab= --repair=N --focus=N` (lean in on a fault) `--fixfx=N` (play its fix) `--demo=paint\|part\|scrub\|<livery>`, race `--race=<id> --at=<meters> --paused`, title `--form=[custom]` |
 | Screenshot at phone size | add `--resolution 1170x540` before `--` and `--phone` after it (portrait: `--resolution 390x844`) |
 | Hull gallery (every hull, sample loadouts) | `godot --path . --resolution 640x400 res://tools/hull_gallery.tscn -- --out=<png> [--hull=id] [--yaw=rad]` |
 | Ship kit | `$B -b --python blender/export_ship_kit.py` (repo root); preview with `preview_kit.py -- out.png [--front]` |
 | Portraits | `$B -b --python blender/portraits.py -- [character ...]` |
 | Paper-doll layers (generated customers) | `$B -b --python blender/dolls.py -- [layer-prefix ...]` |
 | Grommet the cat (3D) | `$B -b --python blender/cat.py` (portrait sheet: `portraits.py -- grommet`) |
+| Field-guide illustrations | `$B -b --python blender/illustrations.py -- [name ...]` |
 | Prop icons | `$B -b --python blender/props.py` |
 | Web build | `./export_web.sh` (repo root; output in `godot_web_game/build/web/`) |
 | Sound effects | `uv run --with numpy python -I tools/sfx.py` (repo root) |

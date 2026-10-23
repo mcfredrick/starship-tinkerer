@@ -4,16 +4,21 @@ class_name Tablet
 extends Control
 
 const FROST := preload("res://shaders/frost.gdshader")
-const KINDS := {"letter": "Letter", "story": "Story", "bulletin": "Bulletin", "manual": "Manual"}
+const KINDS := {"letter": "Letter", "story": "Story", "bulletin": "Bulletin", "manual": "Manual", "guide": "Field guide"}
+## Illustrations (assets/illustrations, rendered by blender/illustrations.py) fill the reading column.
+const IMAGE_WIDTH := 600
 const SIZE := Vector2(1040, 600)
 
 var _list: VBoxContainer
 var _body: RichTextLabel
 var _title: Label
+var _first := ""
 
 
-static func open() -> void:
+## Opens the tablet, at entry `first` if given (screenshots use this).
+static func open(first := "") -> void:
 	var t := Tablet.new()
+	t._first = first
 	t.theme = Router.theme
 	Router.overlay.add_child(t)
 
@@ -81,6 +86,8 @@ func _ready() -> void:
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(UI.vbox([header, columns], 14))
 	_fill_list()
+	if _first:
+		_open(_first)
 
 
 func _vline() -> Control:
@@ -136,7 +143,10 @@ func _open_finds() -> void:
 func _open(id: String) -> void:
 	var e: Dictionary = Content.reading.entries[id]
 	_title.text = e.title
-	_body.text = GameState.fill(e.body)
+	var picture := ""
+	if e.has("image"):
+		picture = "[center][img width=%d]res://assets/illustrations/%s.png[/img][/center]\n\n" % [IMAGE_WIDTH, e.image]
+	_body.text = picture + GameState.fill(e.body)
 	_body.scroll_to_line(0)
 	if not GameState.flags.has("read_" + id):
 		GameState.flags["read_" + id] = true

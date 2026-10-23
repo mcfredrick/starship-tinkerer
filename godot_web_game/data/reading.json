@@ -249,6 +249,39 @@
       "day": 19,
       "requires": "yaneva_2_lukewarm",
       "body": "Dear {name},\n\nWe arrived as the last frond was folding closed. I saw the glow for perhaps a minute. It was the most beautiful minute of my life.\n\nI'm not sad. I know where they are now, and that they're not extinct, and a decade is nothing to a fern. I've planted a marker by the crater and I'll be back.\n\nThe Glasshouse and I will need some more speed by then. I'll bring her to you.\n\nPatiently,\nSol Yaneva"
+    },
+    "guide_dock": {
+      "kind": "guide",
+      "title": "Quietwater Dock",
+      "from": "Halloran's notes",
+      "day": 1,
+      "image": "guide_dock",
+      "body": "Quietwater is a working dock at the inner edge of Bramble's rings: one long spine of hangar bays, with three drum gardens riding on top and a steady drift of small ships coming and going.\n\nAbout four thousand people live here, most of them within shouting distance of a teapot. The bays along the spine are shops: tinkerers, chandlers, a sail-loft that hasn't seen a sail in a century, and the market at the hub end. Yours is the third bay from the hub, under the big crooked sign Halloran painted and never straightened.\n\nThe dock's day runs on bells. First bell opens the bays; last bell starts the club race; between them, the drum gardens' misters hiss on the hour, which is how most people know it's time for tea."
+    },
+    "guide_gardens": {
+      "kind": "guide",
+      "title": "The drum gardens",
+      "from": "Halloran's notes",
+      "day": 2,
+      "image": "guide_gardens",
+      "body": "The drum gardens are the three great cylinders that ride on top of Quietwater's spine. Each one turns slowly on its long axis, and the turning pushes everything inside gently out against the walls, so the gardens grow all the way round the inside of the drum: look up from any path and you'll see orchards and lawns curving overhead, upside down and perfectly happy about it.\n\nDown the middle of each drum runs the sun-line, a long glowing tube that dims to amber at last bell and brightens again at first. Misters along the walls water everything on the hour and make small rainbows, which Brindle has measured extensively.\n\nThe gardens feed the dock: moon-plums, ginger, tea, greens, and a stubborn lemon tree nobody admits to planting. They're also its park. People picnic, court, argue and nap there, and every autumn the whole dock turns out for the moon-plum harvest.\n\nA local note: the drums are named First, Middle and Odd. Nobody remembers why the third is Odd. It is the nicest."
+    },
+    "guide_bramble": {
+      "kind": "guide",
+      "title": "Bramble and the rings",
+      "from": "Halloran's notes",
+      "day": 3,
+      "image": "guide_bramble",
+      "body": "Bramble is the banded gas giant Quietwater orbits: teal, dusk-violet and cream, with storms the size of small moons drifting through its bands. You can see it from almost every window on the dock, and most people stop seeing it after a week, which is a shame.\n\nIts rings are ice and dust, wide enough to race on and thin enough to see stars through. The club race, the cups and the Night Run all fly circuits laid out across them, marked by buoys and glowing hoops.\n\nOut past the rings' far edge the maps get vague. That's where the comets come from, and where Halloran went."
+    },
+    "guide_lumen": {
+      "kind": "guide",
+      "title": "Lumen Reach",
+      "from": "Halloran's notes",
+      "day": 14,
+      "requires": "read_lumen_invite",
+      "image": "guide_lumen",
+      "body": "Lumen Reach is a field of drifting ice at the very edge of Bramble's rings, and in the middle of it stands the oldest lighthouse in the system, striped red and cream, its great lens turning out of habit more than need.\n\nNobody has needed it to find their way in ninety years. Its keeper says that isn't what it's for."
     }
   }
 }

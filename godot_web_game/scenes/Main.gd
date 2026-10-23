@@ -16,7 +16,7 @@ func _ready() -> void:
 		Fixtures.apply(args.fixture)
 	await Router.go(args.get("screen", "title"), args)
 	if "tablet" in args:
-		Tablet.open()
+		Tablet.open(args.tablet)
 	if "talk" in args:
 		# A generated customer on the bench is the scene's guest.
 		var guest := ""
