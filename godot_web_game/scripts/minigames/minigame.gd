@@ -9,6 +9,8 @@ const CARD := Vector2(820, 560)
 
 ## How forgiving this attempt is (1.0 = level-one tinkerer, no tea). Set before adding.
 var leniency := 1.0
+## Shown beside the title when this game is one step of a longer repair.
+var step_note := ""
 var area: Control
 var _status: Label
 var _done := false
@@ -24,7 +26,8 @@ func _ready() -> void:
 	area.draw.connect(_draw_area)
 	area.gui_input.connect(_area_input)
 	_status = UI.label("", 20, UI.MUTED)
-	var card := UI.panel(UI.vbox([UI.heading(title(), 30), UI.label(instructions(), 19, UI.INK, true), area,
+	var heading := UI.hbox([UI.heading(title(), 30), UI.spacer(), UI.label(step_note, 18, UI.TEAL)])
+	var card := UI.panel(UI.vbox([heading, UI.label(instructions(), 19, UI.INK, true), area,
 		_status], 10), UI.CREAM, 26)
 	UI.place(card, Control.PRESET_CENTER, -CARD / 2, CARD)
 	UI.fit(card)

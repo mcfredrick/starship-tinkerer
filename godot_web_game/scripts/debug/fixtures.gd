@@ -31,15 +31,20 @@ static func apply(name: String) -> void:
 			GameState.give(GameState.parts, moth.parts.engine)
 			moth.parts.engine = "engine_hush"
 			moth.paint = "marigold"
-		"brindle", "crake":
+		"brindle", "crake", "midway":
 			for f in ["seen_intro", "seen_odessa_arrives", "odessa_1_done", "seen_racers_visit", "race_open",
 					"seen_day2_morning", "knows_pearl"]:
 				GameState.flags[f] = true
-			GameState.day = 2 if name == "brindle" else 3
-			GameState.flags["seen_%s_arrives" % name] = true
-			GameState.start_job(name + "_1")
+			var who := "crake" if name == "midway" else name
+			GameState.day = 2 if who == "brindle" else 3
+			GameState.flags["seen_%s_arrives" % who] = true
+			GameState.start_job(who + "_1")
 			for f in _job_faults():
 				f.found = true
+				# Midway: every fault has its first step done, for the in-between hull states.
+				if name == "midway":
+					f.step = 1
+					f.scores = [0.8]
 		"levelup":
 			GameState.flags.seen_intro = true
 			GameState.phase = "evening"

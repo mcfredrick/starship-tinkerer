@@ -62,7 +62,7 @@
     "crake_1": {
       "pilot": "crake", "ship": "magnificence", "budget": 280,
       "request": "Make her the fastest yacht on the ring, and make her shine like money. Not that you'd know what that looks like. Do be quick.",
-      "faults": [{"type": "calibrate", "spot": 2}, {"type": "dent", "spot": 4}],
+      "faults": [{"type": "coupling", "spot": 1}, {"type": "breach", "spot": 4}],
       "wants": [
         {"stat": "top_speed", "min": 86, "label": "Fastest yacht on the ring", "weight": 2},
         {"finish": "pearl", "label": "Shines like money", "weight": 1},

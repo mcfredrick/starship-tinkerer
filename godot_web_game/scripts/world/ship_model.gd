@@ -130,11 +130,13 @@ func _show_faults(faults: Array) -> void:
 		var f: Dictionary = faults[i]
 		if i == _faults.size():
 			var fx := FaultFx.new()
-			fx.setup(Content.parts.faults[f.type].look, f.spot)
+			var spec: Dictionary = Content.parts.faults[f.type]
+			fx.setup(spec.look, f.spot, spec.steps[0].game == "bolts")
 			fx.transform = _spot_frame(f.spot).scaled_local(Vector3.ONE * FAULT_SCALE)
 			add_child(fx)
 			_faults.append(fx)
-		_faults[i].show_state("fixed" if f.get("fixed", false) else ("found" if f.get("found", false) else "hidden"))
+		_faults[i].show_state("fixed" if f.get("fixed", false) else ("found" if f.get("found", false) else "hidden"),
+			f.get("step", 0))
 
 
 func fault_fx(index: int) -> FaultFx:
@@ -257,7 +259,20 @@ func spot_position(index: int) -> Vector3:
 	return hull.transform * spot.position
 
 
-## Rough outward direction at a spot, for deciding whether it faces the camera.
+## The skin's outward direction at a spot: the normal of the hull's nearest vertex. Smooth-shaded
+## kit meshes make that a good stand-in for the surface normal there.
 func spot_normal(index: int) -> Vector3:
 	var p := spot_position(index)
-	return Vector3(p.x, p.y, p.z * 0.3).normalized()
+	var best := INF
+	var normal := Vector3.UP
+	for mi: MeshInstance3D in hull.get_children().filter(func(c): return c is MeshInstance3D):
+		var arrays := mi.mesh.surface_get_arrays(0)
+		var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var to_hull := mi.transform
+		for k in verts.size():
+			var d := p.distance_squared_to(to_hull * verts[k])
+			if d < best:
+				best = d
+				normal = (to_hull.basis * normals[k]).normalized()
+	return normal

@@ -29,6 +29,7 @@ var _fix_demo := -1
 var _demo := ""
 var _view: Array = []
 var _scrubbing := false
+var _repairing := false
 var _wash_bar: ProgressBar
 var _drone: WasherDrone
 var _splash_in := 0.0
@@ -283,33 +284,69 @@ func _repair_tab() -> void:
 		if not f.found:
 			continue
 		found += 1
-		var name: String = Content.parts.faults[f.type].name
+		var spec: Dictionary = Content.parts.faults[f.type]
 		if f.fixed:
-			_say("✓  %s  (quality %d%%)" % [name, roundi(f.score * 100)], 19, UI.GOOD)
-		else:
-			_content.add_child(UI.button("Repair: " + name, _repair.bind(i), 19))
+			_say("✓  %s  (quality %d%%)" % [spec.name, roundi(f.score * 100)], 19, UI.GOOD)
+			continue
+		var steps: int = spec.steps.size()
+		var done: int = f.get("step", 0)
+		var text: String = "Repair: " + spec.name
+		if done > 0:
+			text = "Carry on: %s  (step %d of %d)" % [spec.name, done + 1, steps]
+		elif steps > 1:
+			text += "  (%d steps)" % steps
+		_content.add_child(UI.button(text, _repair.bind(i), 19))
 	if found < _faults().size():
 		_say("The scan isn't finished. Something else may be off.", 18, UI.MUTED)
-	_say("Each repair takes a little spark.", 16, UI.MUTED)
+	_say("Starting a repair takes a little spark. Big faults take several steps.", 16, UI.MUTED)
 
 
+## Works through a fault's remaining steps, one minigame each, showing progress on the hull
+## between them. Spark is spent once, when the repair starts.
 func _repair(i: int) -> void:
 	var f: Dictionary = _faults()[i]
-	if f.fixed:
-		return
-	if GameState.spark <= 0:
-		Router.toast("You're out of spark. Time for tea and cake.", UI.BAD)
+	if f.fixed or _repairing:
 		return
 	var spec: Dictionary = Content.parts.faults[f.type]
-	GameState.spark -= 1
-	GameState.save()
+	var steps: Array = spec.steps
+	if f.get("step", 0) == 0:
+		if GameState.spark <= 0:
+			Router.toast("You're out of spark. Time for tea and cake.", UI.BAD)
+			return
+		GameState.spark -= 1
+		GameState.save()
+	_repairing = true
 	await _lean_in(i)
-	var game: Minigame = load("res://scripts/minigames/%s.gd" % spec.minigame).new()
-	game.setup(f.spot)
-	game.leniency = GameState.leniency(spec.skill, spec.minigame)
-	game.theme = Router.theme
-	game.finished.connect(_on_repaired.bind(i))
-	ui.add_child(game)
+	while f.get("step", 0) < steps.size():
+		var at: int = f.get("step", 0)
+		var task: Dictionary = steps[at]
+		var game: Minigame = load("res://scripts/minigames/%s.gd" % task.game).new()
+		game.setup(f.spot)
+		game.leniency = GameState.leniency(task.skill, task.game)
+		game.step_note = "Step %d of %d" % [at + 1, steps.size()] if steps.size() > 1 else ""
+		game.theme = Router.theme
+		ui.add_child(game)
+		var score: float = await game.finished
+		f["scores"] = f.get("scores", []) + [score]
+		f["step"] = at + 1
+		var xp := 6 + roundi(14 * score)
+		GameState.add_xp(task.skill, xp)
+		GameState.save()
+		if f.step < steps.size():
+			Router.toast("Step done.  %s +%d" % [Skills.LABELS[task.skill], xp])
+			await model.fault_fx(i).play_step(f.step)
+	var total := 0.0
+	for sc in f.scores:
+		total += sc
+	f.fixed = true
+	f.score = total / f.scores.size()
+	await model.fault_fx(i).play_fix()
+	Sfx.play("success")
+	GameState.save()
+	Router.toast("%s fixed.  Quality %d%%" % [spec.name, roundi(f.score * 100)])
+	await _lean_out()
+	_repairing = false
+	_rebuild()
 
 
 ## Swings the camera in to face a repair spot, remembering where it was.
@@ -331,21 +368,6 @@ func _demo_fix(i: int) -> void:
 func _lean_out() -> void:
 	await stage.camera.glide(_view[0], _view[1], _view[2], _view[3], 0.7)
 	stage.camera.interactive = true
-
-
-func _on_repaired(score: float, i: int) -> void:
-	var f: Dictionary = _faults()[i]
-	var spec: Dictionary = Content.parts.faults[f.type]
-	f.fixed = true
-	f.score = score
-	await model.fault_fx(i).play_fix()
-	Sfx.play("success")
-	var xp := 10 + roundi(20 * score)
-	GameState.add_xp(spec.skill, xp)
-	GameState.save()
-	Router.toast("%s fixed.  %s +%d" % [spec.name, Skills.LABELS[spec.skill], xp])
-	await _lean_out()
-	_rebuild()
 
 
 # ---------------------------------------------------------------- parts

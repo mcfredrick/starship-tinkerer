@@ -47,14 +47,22 @@
       "stats": {"mass": 3}}
   },
   "faults": {
-    "weld": {"name": "Cracked seam", "minigame": "weld", "look": "crack", "skill": "mechanics",
+    "weld": {"name": "Cracked seam", "look": "crack", "steps": [{"game": "weld", "skill": "mechanics"}],
       "stats": {"noise": 14, "comfort": -10}},
-    "calibrate": {"name": "Drifting drive timing", "minigame": "calibrate", "look": "flicker", "skill": "electronics",
+    "calibrate": {"name": "Drifting drive timing", "look": "flicker", "steps": [{"game": "calibrate", "skill": "electronics"}],
       "stats": {"thrust": -8, "noise": 8}},
-    "rewire": {"name": "Frayed wiring", "minigame": "rewire", "look": "wires", "skill": "electronics",
+    "rewire": {"name": "Frayed wiring", "look": "wires",
+      "steps": [{"game": "bolts", "skill": "mechanics"}, {"game": "rewire", "skill": "electronics"}],
       "stats": {"handling": -8, "boost": -6}},
-    "dent": {"name": "Dented panel", "minigame": "dent", "look": "dent", "skill": "mechanics",
-      "stats": {"grip": -8, "top_speed": -4, "noise": 6}}
+    "dent": {"name": "Dented panel", "look": "dent", "steps": [{"game": "dent", "skill": "mechanics"}],
+      "stats": {"grip": -8, "top_speed": -4, "noise": 6}},
+    "coupling": {"name": "Blown drive coupling", "look": "smoke",
+      "steps": [{"game": "bolts", "skill": "mechanics"}, {"game": "rewire", "skill": "electronics"},
+        {"game": "calibrate", "skill": "electronics"}],
+      "stats": {"thrust": -14, "boost": -8, "noise": 10}},
+    "breach": {"name": "Hull breach", "look": "breach",
+      "steps": [{"game": "dent", "skill": "mechanics"}, {"game": "weld", "skill": "mechanics"}],
+      "stats": {"comfort": -14, "noise": 12, "top_speed": -6}}
   },
   "grime": {"stats": {"comfort": -10, "handling": -4}},
   "tuning": {
