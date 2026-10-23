@@ -26,7 +26,7 @@ func _ready() -> void:
 	var box := UI.vbox([UI.heading("The tea nook", 32), UI.label("Pick a tea", 19, UI.MUTED), _teas,
 		UI.label("Have a cake", 19, UI.MUTED), _cakes, _note, buttons], 10)
 	var panel := UI.panel(box, Color(UI.CREAM, 0.95), 24)
-	UI.place(panel, Control.PRESET_CENTER_LEFT, Vector2(60, -250), Vector2(700, 0))
+	UI.place(panel, Control.PRESET_CENTER_LEFT, Vector2(60, -282), Vector2(700, 0))
 	ui.add_child(panel)
 	_fill()
 
@@ -50,11 +50,11 @@ func _fill() -> void:
 func _card(id: String, count: int, action: Callable) -> Control:
 	var info: Dictionary = Content.item(id)
 	var b := Button.new()
-	b.custom_minimum_size = Vector2(150, 190)
+	b.custom_minimum_size = Vector2(150, 168)
 	b.disabled = count <= 0
 	b.tooltip_text = info.desc
 	b.pressed.connect(action.bind(id))
-	var art := UI.icon(Content.prop(info.icon), 120)
+	var art := UI.icon(Content.prop(info.icon), 104)
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var name := UI.label("%s\n× %d" % [info.name, count], 15, UI.INK, true)
 	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -62,7 +62,7 @@ func _card(id: String, count: int, action: Callable) -> Control:
 	name.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var inner := UI.vbox([art, name], 2)
 	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	UI.place(inner, Control.PRESET_TOP_LEFT, Vector2(7, 6), Vector2(136, 180))
+	UI.place(inner, Control.PRESET_TOP_LEFT, Vector2(7, 4), Vector2(136, 160))
 	b.add_child(inner)
 	var plain := UI.box(Color(1, 1, 1, 0.5), 16, 0, false, UI.PAPER.darkened(0.15))
 	b.add_theme_stylebox_override("normal", plain)

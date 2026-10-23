@@ -75,7 +75,9 @@ func _ready() -> void:
 
 	var close := UI.button("Put it down", queue_free, 18)
 	var header := UI.hbox([UI.heading("Tablet", 26, Color("1d3a40")), UI.spacer(), close])
-	margin.add_child(UI.vbox([header, UI.hbox([list_scroll, _vline(), reader], 18)], 14))
+	var columns := UI.hbox([list_scroll, _vline(), reader], 18)
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_child(UI.vbox([header, columns], 14))
 	_fill_list()
 
 

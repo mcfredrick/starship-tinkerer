@@ -5,7 +5,6 @@
 * Workbenches. A tea nook with a dented kettle. Drawers labeled things like "BOLTS (MOSTLY)" and "DO NOT."
 * And in the back bay, under a tarp, something round and stubborn-looking.
 * Your tablet chimes. There's a letter from Halloran, and the dock bulletin.
-! set intro_seen
 end
 
 == odessa_arrives

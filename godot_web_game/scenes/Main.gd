@@ -15,6 +15,8 @@ func _ready() -> void:
 	if "fixture" in args:
 		Fixtures.apply(args.fixture)
 	await Router.go(args.get("screen", "title"), args)
+	if "tablet" in args:
+		Tablet.open()
 	if "talk" in args:
 		Router.talk(args.talk)
 	if "shot" in args:

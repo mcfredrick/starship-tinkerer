@@ -16,6 +16,7 @@ func _init() -> void:
 	test_odessa_job_grades()
 	test_skill_levels()
 	test_content_matches_kit()
+	test_club_race_finishes_cleanly_and_upgrades_pay_off()
 	print("FAILED: %d" % _failures if _failures else "all tests passed")
 	quit(1 if _failures else 0)
 
@@ -140,3 +141,34 @@ func test_content_matches_kit() -> void:
 		for f in job.faults:
 			check(hull.has_node("%s__spot_%d" % [hull.name, f.spot]), "job %s spot %d exists" % [id, f.spot])
 	kit.free()
+
+
+func _club_race(kettle: Dictionary) -> Dictionary:
+	var race: Dictionary = world.race.club
+	var sim := RaceSim.new(Track.quietwater(), race.laps)
+	var entries := [["kettle", kettle, 0.92]]
+	for pilot in race.rivals:
+		entries.append([pilot, world.ships[world.pilots[pilot].ship], race.rivals[pilot]])
+	for e in entries:
+		sim.add_racer(e[0], ShipStats.compute(e[1], parts_data), ShipStats.gadget(e[1], parts_data), true, e[2])
+	var walls := 0
+	while not sim.finished() and sim.time < 400:
+		sim.step(1.0 / 60.0, {})
+		walls += sim.events.filter(func(ev): return ev.type == "wall").size()
+	var times := {}
+	for r in sim.racers:
+		times[r.id] = r.finish
+	return {"times": times, "walls": walls, "finished": sim.finished()}
+
+
+func test_club_race_finishes_cleanly_and_upgrades_pay_off() -> void:
+	var stock: Dictionary = world.ships.kettle
+	var tuned := stock.duplicate(true)
+	tuned.parts.merge({"engine": "engine_sprint", "fins": "fin_wing", "cockpit": "cockpit_visor"}, true)
+	var a := _club_race(stock)
+	var b := _club_race(tuned)
+	check(a.finished and b.finished, "every racer finishes the club race")
+	check(a.walls == 0 and b.walls == 0, "AI drivers stay off the walls: %d, %d" % [a.walls, b.walls])
+	check(b.times.kettle < a.times.kettle - 5.0, "upgrades make the Kettle faster: %.1f vs %.1f" % [b.times.kettle,
+		a.times.kettle])
+	check(b.times.kettle < b.times.brindle, "a racing build beats Brindle's tug")
