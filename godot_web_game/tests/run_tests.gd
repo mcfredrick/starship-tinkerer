@@ -332,7 +332,7 @@ func test_a_loved_cat_helps_more_and_meddles_less() -> void:
 		counts[affection] = tally
 	check(counts[10].sweet > counts[0].sweet * 1.5, "affection brings more helpful days: %s" % [counts])
 	check(counts[10].grumpy < counts[0].grumpy, "and fewer mischievous ones: %s" % [counts])
-	check(counts[0].sleepy > 0 and counts[10].sleepy > 0, "and Grommet still naps some days")
+	check(counts[0].sleepy > 0 and counts[10].sleepy > 0, "and Sprocket still naps some days")
 
 
 func test_market_drifts_and_events_move_one_kind_of_part() -> void:

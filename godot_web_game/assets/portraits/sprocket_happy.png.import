@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cptcl6cq0uo54"
-path="res://.godot/imported/grommet_surprised.png-752811fb367a82db43792720c7d30e58.ctex"
+uid="uid://dypa0em1rl58i"
+path="res://.godot/imported/sprocket_happy.png-a434c2ac55736d707e2d42d9faa269a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/grommet_surprised.png"
-dest_files=["res://.godot/imported/grommet_surprised.png-752811fb367a82db43792720c7d30e58.ctex"]
+source_file="res://assets/portraits/sprocket_happy.png"
+dest_files=["res://.godot/imported/sprocket_happy.png-a434c2ac55736d707e2d42d9faa269a2.ctex"]
 
 [params]
 

@@ -1,7 +1,7 @@
 ## The hangar hub: story beats play here, and every activity starts from here.
 extends Screen
 
-## Grommet's spot on the deck, by the cradle.
+## Sprocket's spot on the deck, by the cradle.
 const CAT_SPOT := Vector3(-3.9, 0.0, 3.6)
 
 var _cat_override := ""
@@ -35,7 +35,7 @@ func _ready() -> void:
 	_play_beats.call_deferred()
 
 
-## Screen params: `cat=<mood>` shows Grommet in that mood (for screenshots).
+## Screen params: `cat=<mood>` shows Sprocket in that mood (for screenshots).
 func setup(params: Dictionary) -> void:
 	_cat_override = params.get("cat", "")
 
@@ -132,7 +132,7 @@ func _enter(race_id: String) -> void:
 	Router.go("race", {"race": race_id})
 
 
-## Clicking Grommet pets them, mood permitting.
+## Clicking Sprocket pets them, mood permitting.
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
 		return
@@ -143,14 +143,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		"purr":
 			_cat.purr()
 			Sfx.play("purr")
-			Router.toast("Grommet leans into your hand, purring.")
+			Router.toast("Sprocket leans into your hand, purring.")
 		"content":
 			_cat.purr()
 			Sfx.play("mrrp")
 		"swat":
 			_cat.swat()
 			Sfx.play("mrrp", 0.7)
-			Router.toast("Grommet swats your hand away. Not today.", UI.BAD)
+			Router.toast("Sprocket swats your hand away. Not today.", UI.BAD)
 	get_viewport().set_input_as_handled()
 
 

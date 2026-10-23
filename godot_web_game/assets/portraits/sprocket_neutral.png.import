@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ikru60ssqcbl"
-path="res://.godot/imported/grommet_neutral.png-3b0215d97bdb3a9f3652965170ebf4de.ctex"
+uid="uid://bok0tmqvyeo2c"
+path="res://.godot/imported/sprocket_neutral.png-91def8871fa08df2fcc9495a1c88cc01.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/grommet_neutral.png"
-dest_files=["res://.godot/imported/grommet_neutral.png-3b0215d97bdb3a9f3652965170ebf4de.ctex"]
+source_file="res://assets/portraits/sprocket_neutral.png"
+dest_files=["res://.godot/imported/sprocket_neutral.png-91def8871fa08df2fcc9495a1c88cc01.ctex"]
 
 [params]
 

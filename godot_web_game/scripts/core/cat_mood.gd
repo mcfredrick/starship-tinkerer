@@ -1,5 +1,5 @@
-## Grommet the shop cat's mood each morning. Affection (from petting and shared treats) makes
-## helpful days likelier and mischief rarer; plenty of days Grommet just naps.
+## Sprocket the shop cat's mood each morning. Affection (from petting and shared treats) makes
+## helpful days likelier and mischief rarer; plenty of days Sprocket just naps.
 class_name CatMood
 extends RefCounted
 

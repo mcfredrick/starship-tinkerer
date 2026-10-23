@@ -49,7 +49,7 @@ var board_day := 0
 var next_id := 1
 ## Storylets running with generated customers, by pilot id (see Storylets).
 var stories := {}
-## Grommet the shop cat: affection, today's mood and event, and a part they've hidden away.
+## Sprocket the shop cat: affection, today's mood and event, and a part they've hidden away.
 var cat := {}
 
 
@@ -195,7 +195,7 @@ func buff_bonus(task: String) -> float:
 
 
 func leniency(skill: String, task: String) -> float:
-	# Grommet sitting on the bench makes the day's repairs a little fiddlier.
+	# Sprocket sitting on the bench makes the day's repairs a little fiddlier.
 	var cat_in_the_way := -0.15 if int(cat.get("bench", 0)) == day else 0.0
 	return Skills.leniency(skills[skill], buff_bonus(task) + perk(task + "_leniency") + cat_in_the_way)
 
@@ -277,7 +277,7 @@ static func _new_cat() -> Dictionary:
 		"cuddle": 0}
 
 
-## Grommet's scene for this morning, once per day ("" on a nap day). A hidden part always comes
+## Sprocket's scene for this morning, once per day ("" on a nap day). A hidden part always comes
 ## back the next morning.
 func cat_morning() -> String:
 	if int(cat.day) == day:
@@ -297,7 +297,7 @@ func cat_morning() -> String:
 	return "cat_" + cat.event if cat.event else ""
 
 
-## Petting Grommet: "purr" (and a little affection, once a day), "content" if already petted
+## Petting Sprocket: "purr" (and a little affection, once a day), "content" if already petted
 ## today, or "swat" on a grumpy day.
 func pet_cat() -> String:
 	if cat.mood == "grumpy":
@@ -329,7 +329,7 @@ func _cat_effect(effect: String) -> void:
 		"gift":
 			var gift: String = Content.cat.gifts[randi() % Content.cat.gifts.size()]
 			give(parts, gift)
-			Router.toast("Grommet's gift: %s, on your shelf." % Content.part(gift).name)
+			Router.toast("Sprocket's gift: %s, on your shelf." % Content.part(gift).name)
 		"cuddle":
 			cat.cuddle = day
 		"hide_part":

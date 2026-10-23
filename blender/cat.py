@@ -1,4 +1,4 @@
-"""Grommet the shop cat (a tuxedo with a green collar and gold tag), in two poses, exported for Godot.
+"""Sprocket the shop cat (a tuxedo with a green collar and gold tag), in two poses, exported for Godot.
 
 Run: Blender -b --python blender/cat.py
 Writes godot_web_game/assets/props/cat.glb with two roots, cat_sit and cat_sleep.

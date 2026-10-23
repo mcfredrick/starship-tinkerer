@@ -70,7 +70,7 @@
       "blurb": "A Burble hawker. Fair prices, good stock, and they pay well for what they're after.", "taste_hint": "",
       "look": {"head": "wide", "eyes": 2, "extras": ["gills"], "outfit": "robe", "skin": "5ec8f2",
         "outfit_color": "7b2cbf", "accent": "ffd27a"}},
-    "grommet": {"name": "Grommet", "short": "Grommet", "pronouns": "they", "taste": [],
+    "sprocket": {"name": "Sprocket", "short": "Sprocket", "pronouns": "they", "taste": [],
       "blurb": "The shop cat. Came with the hangar. Will not be leaving.", "taste_hint": ""}
   },
   "jobs": {
@@ -251,7 +251,7 @@
   },
   "beats": [
     {"scene": "intro"},
-    {"scene": "grommet_intro"},
+    {"scene": "sprocket_intro"},
     {"scene": "odessa_arrives", "day": 1, "phase": "morning", "idle": true},
     {"scene": "racers_visit", "phase": "evening", "requires": "odessa_1_done"},
     {"scene": "day2_morning", "day": 2},

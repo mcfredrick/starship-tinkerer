@@ -22,7 +22,7 @@ func _ready() -> void:
 	_cakes = UI.hbox([], 14)
 	_note = UI.label("", 19, UI.MUTED, true)
 	_note.custom_minimum_size.x = 640
-	_treat = UI.button("Share a cake with Grommet", _share, 20)
+	_treat = UI.button("Share a cake with Sprocket", _share, 20)
 	var buttons := UI.hbox([UI.button("Read on the tablet", Tablet.open, 20), _treat, UI.spacer(),
 		UI.button("Back to work", func(): Router.go("shop"), 20)])
 	var box := UI.vbox([UI.heading("The tea nook", 32), UI.label("Pick a tea", 19, UI.MUTED), _teas,
@@ -31,13 +31,13 @@ func _ready() -> void:
 	UI.place(panel, Control.PRESET_CENTER_LEFT, Vector2(60, -282), Vector2(700, 0))
 	UI.fit(panel, 76)
 	ui.add_child(panel)
-	# On a cuddly day Grommet curls up in your lap, once, and it's worth a spark.
+	# On a cuddly day Sprocket curls up in your lap, once, and it's worth a spark.
 	if int(GameState.cat.cuddle) == GameState.day:
 		GameState.cat.cuddle = 0
 		GameState.spark = mini(GameState.spark + 1, GameState.max_spark())
 		GameState.save()
 		Sfx.play("purr")
-		_note.text = "Grommet climbs into your lap and settles, purring like a small engine. Spark +1."
+		_note.text = "Sprocket climbs into your lap and settles, purring like a small engine. Spark +1."
 	_fill()
 
 
@@ -97,7 +97,7 @@ func _share() -> void:
 	var cake: String = Content.comforts.cakes.keys().filter(func(id): return GameState.items.get(id, 0) > 0)[0]
 	GameState.treat_cat(cake)
 	Sfx.play("purr")
-	_note.text = "You break off a corner of %s for Grommet, who eats it with great dignity and then headbutts your hand." % \
+	_note.text = "You break off a corner of %s for Sprocket, who eats it with great dignity and then headbutts your hand." % \
 		Content.comforts.cakes[cake].name
 	_fill()
 

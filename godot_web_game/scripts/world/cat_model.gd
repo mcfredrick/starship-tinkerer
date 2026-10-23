@@ -1,4 +1,4 @@
-## Grommet in 3D: sitting (tail swishing, head turning) or curled up asleep, colored by the role
+## Sprocket in 3D: sitting (tail swishing, head turning) or curled up asleep, colored by the role
 ## suffix on each mesh name (see blender/cat.py).
 class_name CatModel
 extends Node3D

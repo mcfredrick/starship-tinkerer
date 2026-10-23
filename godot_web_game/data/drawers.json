@@ -16,9 +16,9 @@
   "do_not": {"label": "DO NOT", "needs": {"skill": "mechanics", "level": 3},
     "hint": "Bolted shut, from the inside somehow. A practiced mechanic could manage it.",
     "gives": {"part": "engine_ring"}, "text": "A Halo drive, still in its wrapping, with a tag: 'For the Kettle, when they're ready.'"},
-  "grommet": {"label": "GROMMET'S", "needs": {"cat_affection": 6},
-    "hint": "Grommet sits on this one whenever you go near it.",
-    "gives": {"trinket": "lucky_washer"}, "text": "Grommet's hoard: three bottle caps, a sock, and a washer engraved with a tiny horseshoe. Grommet lets you take the washer."},
+  "sprocket": {"label": "SPROCKET'S", "needs": {"cat_affection": 6},
+    "hint": "Sprocket sits on this one whenever you go near it.",
+    "gives": {"trinket": "lucky_washer"}, "text": "Sprocket's hoard: three bottle caps, a sock, and a washer engraved with a tiny horseshoe. Sprocket lets you take the washer."},
   "for_later": {"label": "FOR LATER", "needs": {"day": 7},
     "hint": "The label says FOR LATER. It isn't later yet.",
     "gives": {"flag": "halloran_drawer_letter"}, "text": "A single envelope, addressed to you in Halloran's handwriting. It's on your tablet now."}

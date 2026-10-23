@@ -28,7 +28,7 @@ structured play-test of what only a person can judge (feel, fun, pacing, clarity
 - **Racing rules hold.** Empty boost can't be held on; the tow magnet pulls, the foghorn startles
   and bubbles block it; AI racers lap every track without touching a wall.
 - **Long play is stable.** Over 40 days and three seeds: pebs never go negative, stacks never go
-  empty or negative, spark and Grommet's affection stay in range, every save loads back unchanged,
+  empty or negative, spark and Sprocket's affection stay in range, every save loads back unchanged,
   and bought cart offers stay sold after a reload (a real bug the soak test found).
 
 ### What it can't judge (that's the play-test)
@@ -48,7 +48,7 @@ in `scripts/core/walkins.gd` to tune.
 Play on desktop first, then a phone. For each item note: works / confusing / not fun / bug.
 
 **Days 1 to 3 (the authored start)**
-- [ ] New game form, pronouns, intro, meeting Grommet
+- [ ] New game form, pronouns, intro, meeting Sprocket
 - [ ] Odessa's job: scan, weld and calibrate, parts, paint, handoff, payment
 - [ ] Brindle's job: the two-step wiring repair, washing with the drone, tuning
 - [ ] Crake's job: haggling, the three-step coupling, the breach, pearl finish, mischief
@@ -64,7 +64,7 @@ Play on desktop first, then a phone. For each item note: works / confusing / not
 
 **The evergreen game**
 - [ ] Job board: varied, readable, fairly priced walk-ins? A storylet's three beats over two days?
-- [ ] A regular returning; Grommet's helpful and mischief days, petting, sharing cake
+- [ ] A regular returning; Sprocket's helpful and mischief days, petting, sharing cake
 - [ ] Market news and drifting prices; restoring a worn part; a hawker's cart and a mystery crate
 - [ ] Salvage yard: buy a junker, fix it, sell it; race a fixed project
 - [ ] Halloran's drawers as skills grow; the "For later" letter on day 7; your finds on the tablet

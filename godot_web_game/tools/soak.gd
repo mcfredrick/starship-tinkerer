@@ -142,7 +142,7 @@ func _invariants() -> void:
 		for id in bag:
 			check(int(bag[id]) > 0, "no empty or negative stacks (%s)" % id)
 	check(int(GameState.cat.affection) >= 0 and int(GameState.cat.affection) <= int(Content.cat.max_affection),
-		"Grommet's affection stays in range")
+		"Sprocket's affection stays in range")
 	check(GameState.spark >= 0 and GameState.spark <= GameState.max_spark(), "spark stays in range")
 	# Saving and loading gives back the same game (compared as JSON values: numbers come back as
 	# floats, which is fine wherever the game doesn't test membership with `in`).

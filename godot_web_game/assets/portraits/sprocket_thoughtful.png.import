@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://t5jrq4wtp6b4"
-path="res://.godot/imported/grommet_laughing.png-834ceefd4df73b46a0ea9f626349626d.ctex"
+uid="uid://7phxy76t7fvi"
+path="res://.godot/imported/sprocket_thoughtful.png-02660125f07c6b2ae3003a802a23082d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/grommet_laughing.png"
-dest_files=["res://.godot/imported/grommet_laughing.png-834ceefd4df73b46a0ea9f626349626d.ctex"]
+source_file="res://assets/portraits/sprocket_thoughtful.png"
+dest_files=["res://.godot/imported/sprocket_thoughtful.png-02660125f07c6b2ae3003a802a23082d.ctex"]
 
 [params]
 

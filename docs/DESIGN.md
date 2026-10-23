@@ -252,14 +252,14 @@ Events are data like everything else: a date (or condition), a scene to load, wh
 dialogue that plays. Playthroughs vary which minor events happen in which season, while the story
 events stay fixed.
 
-## Grommet the shop cat
+## Sprocket the shop cat
 
 Halloran's cat came with the hangar and will not be leaving: a moody tuxedo with green eyes, a
-green collar and a gold tag. Each morning Grommet's mood decides the day. On a sweet day Grommet
+green collar and a gold tag. Each morning Sprocket's mood decides the day. On a sweet day Sprocket
 sniffs out a hidden fault, brings you a found part, or curls up in your lap at tea for an extra
-spark. On a grumpy day a part goes missing (it turns up on the shelf tomorrow), Grommet lies across
+spark. On a grumpy day a part goes missing (it turns up on the shelf tomorrow), Sprocket lies across
 the workbench and makes repairs fiddlier, or a tin of tea ends up on the floor. Plenty of days
-Grommet just naps. Petting (when offered) and sharing a cake build affection, and a loved cat helps
+Sprocket just naps. Petting (when offered) and sharing a cake build affection, and a loved cat helps
 more and meddles less.
 
 ## Tea breaks and the tablet
@@ -445,7 +445,7 @@ really left.
    drone. Alongside it: the alien cast in comic ink, five more hulls, phone support, and the space
    course with pause and touch fixes for racing.
 5. **Evergreen foundation.** Done. The run seed, generated walk-ins with paper-doll portraits, the
-   job board, regulars, the storylet engine with its first four storylets, and Grommet the shop cat.
+   job board, regulars, the storylet engine with its first four storylets, and Sprocket the shop cat.
 6. **Trading.** Done. Drifting prices and market events, hawkers and their carts, worn parts to
    restore, the salvage yard with junkers to flip or race, trinkets hidden in ships, and Halloran's
    drawers.

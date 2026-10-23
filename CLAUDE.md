@@ -42,7 +42,7 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Ship kit | `$B -b --python blender/export_ship_kit.py` (repo root); preview with `preview_kit.py -- out.png [--front]` |
 | Portraits | `$B -b --python blender/portraits.py -- [character ...]` |
 | Paper-doll layers (generated customers) | `$B -b --python blender/dolls.py -- [layer-prefix ...]` |
-| Grommet the cat (3D) | `$B -b --python blender/cat.py` (portrait sheet: `portraits.py -- grommet`) |
+| Sprocket the cat (3D) | `$B -b --python blender/cat.py` (portrait sheet: `portraits.py -- sprocket`) |
 | Field-guide illustrations | `$B -b --python blender/illustrations.py -- [name ...]` |
 | Prop icons | `$B -b --python blender/props.py` |
 | Web build | `./export_web.sh` (repo root; output in `godot_web_game/build/web/`) |

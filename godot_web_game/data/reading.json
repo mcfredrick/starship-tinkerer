@@ -5,7 +5,7 @@
       "title": "Welcome to the shop",
       "from": "Halloran",
       "day": 1,
-      "body": "Dear {name},\n\nIf you're reading this, the dock office found you, and the hangar is yours. I'm sorry about the state of it. Every drawer has a story and most of them end in \"I'll finish that later.\"\n\nA few things you should know. The kettle in the tea nook is temperamental, so tap it twice. The Kettle under the tarp in the back bay is a different kettle, and it's yours too. She was going to be my last project. She's slow, she's loud and I love her. Make her fly.\n\nPilots will come. They always do. Listen to what they ask for, then listen again for what they mean. The ship always tells you the rest.\n\nI'm out past the comet line now, watching ice turn into fireworks. The tea here is terrible. I've never been happier.\n\nWith grease under every fingernail,\nHalloran\n\nP.S. Odessa Vell will stop by soon. Be kind to her Moth. That ship has carried more birthday presents than any freighter in the system.\n\nP.P.S. Grommet comes with the shop. Pet when offered, never when not. If something goes missing, check the top of the drawers. If something turns up that you never owned, say thank you."
+      "body": "Dear {name},\n\nIf you're reading this, the dock office found you, and the hangar is yours. I'm sorry about the state of it. Every drawer has a story and most of them end in \"I'll finish that later.\"\n\nA few things you should know. The kettle in the tea nook is temperamental, so tap it twice. The Kettle under the tarp in the back bay is a different kettle, and it's yours too. She was going to be my last project. She's slow, she's loud and I love her. Make her fly.\n\nPilots will come. They always do. Listen to what they ask for, then listen again for what they mean. The ship always tells you the rest.\n\nI'm out past the comet line now, watching ice turn into fireworks. The tea here is terrible. I've never been happier.\n\nWith grease under every fingernail,\nHalloran\n\nP.S. Odessa Vell will stop by soon. Be kind to her Moth. That ship has carried more birthday presents than any freighter in the system.\n\nP.P.S. Sprocket comes with the shop. Pet when offered, never when not. If something goes missing, check the top of the drawers. If something turns up that you never owned, say thank you."
     },
     "bulletin_1": {
       "kind": "bulletin",
@@ -130,7 +130,7 @@
       "from": "Halloran",
       "day": 1,
       "requires": "halloran_drawer_letter",
-      "body": "Dear {name},\n\nIf you've opened this drawer, it's later. Good. I hoped it would be.\n\nI didn't leave because I was tired of the shop. I left because I'd stopped hearing the ships. You'll know what I mean soon if you don't already: the way a seam sings when it's about to go, the way an engine sighs when it's been treated kindly. I'd started fixing things by the manual instead of by ear, and that's no way to treat a ship, or a dock.\n\nOut here past the comet line I'm learning to listen again. The comet bloom is coming, by the way. Odessa will want to see it. Everyone will. Go, if you can. Close the shop for a night.\n\nGrommet knows where the good drawer is. Bribe accordingly.\n\nWith grease under every fingernail,\nHalloran"
+      "body": "Dear {name},\n\nIf you've opened this drawer, it's later. Good. I hoped it would be.\n\nI didn't leave because I was tired of the shop. I left because I'd stopped hearing the ships. You'll know what I mean soon if you don't already: the way a seam sings when it's about to go, the way an engine sighs when it's been treated kindly. I'd started fixing things by the manual instead of by ear, and that's no way to treat a ship, or a dock.\n\nOut here past the comet line I'm learning to listen again. The comet bloom is coming, by the way. Odessa will want to see it. Everyone will. Go, if you can. Close the shop for a night.\n\nSprocket knows where the good drawer is. Bribe accordingly.\n\nWith grease under every fingernail,\nHalloran"
     },
     "race_calendar": {
       "kind": "bulletin",
@@ -161,7 +161,7 @@
       "from": "Halloran",
       "day": 11,
       "requires": "event_close_pass",
-      "body": "Dear {name},\n\nI watched the Close Pass from out past the comet line, and I swear I could see the dock's ships from here, a little ring of lights in the dark, all huddled together like they were sharing a blanket.\n\nThat's the shop, you know. Not the hangar, not the tools. The ring of lights.\n\nI think I can hear the ships again. Out here it's quiet enough. I'll come back one day to visit, if you'll have me. Grommet will pretend not to know me. Grommet will be lying.\n\nWith grease under every fingernail,\nHalloran"
+      "body": "Dear {name},\n\nI watched the Close Pass from out past the comet line, and I swear I could see the dock's ships from here, a little ring of lights in the dark, all huddled together like they were sharing a blanket.\n\nThat's the shop, you know. Not the hangar, not the tools. The ring of lights.\n\nI think I can hear the ships again. Out here it's quiet enough. I'll come back one day to visit, if you'll have me. Sprocket will pretend not to know me. Sprocket will be lying.\n\nWith grease under every fingernail,\nHalloran"
     },
     "odessa_letter_roots": {
       "kind": "letter",

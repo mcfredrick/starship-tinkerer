@@ -78,8 +78,8 @@ CHARACTERS = {
                "trim": hexc("e48aa0"), "iris": hexc("3a2410"), "head": (0.78, 0.8, 1.2), "taper": 0.12,
                "eyes": {"count": 2, "r": 0.12, "spacing": 0.28, "z": 0.2}, "mouth_z": -0.45,
                "extras": ["leaves", "spectacles"]},
-    # Grommet, the shop cat Halloran left behind: a moody tuxedo with a green collar and a gold tag.
-    "grommet": {"build": "cat", "skin": hexc("3b3742"), "jacket": hexc("2f9e5b"), "stache": hexc("e8b931"),
+    # Sprocket, the shop cat Halloran left behind: a moody tuxedo with a green collar and a gold tag.
+    "sprocket": {"build": "cat", "skin": hexc("3b3742"), "jacket": hexc("2f9e5b"), "stache": hexc("e8b931"),
                 "accent": hexc("f4f1ea"), "trim": hexc("f4a6b8"), "iris": hexc("b7e24a"), "head": (1.08, 0.86, 0.84)},
 }
 
