@@ -324,12 +324,12 @@ really left.
 
 ## Milestones
 
-1. **Scaffold and design.** This document, the template scaffold, and a working web export.
-2. **Vertical slice: one day.** Odessa's first commission (diagnose, two repair minigames, one part
+1. **Scaffold and design.** Done. This document, the template scaffold, and a working web export.
+2. **Vertical slice: one day.** Done. Odessa's first commission (diagnose, two repair minigames, one part
    swap, paint), a tea break with one book, one upgrade on the *Kettle*, and one race against
    Brindle and Ilse on one track. Blender kit with one hull and a handful of parts, plus Odessa's
    portrait sheet.
-3. **Workbench depth.** All repair minigames, tuning, the paint shop, skills and perks.
+3. **Workbench depth.** Done, with Brindle's and Crake's commissions to exercise it. All repair minigames, tuning, the paint shop, skills and perks.
    Mischief options on the bench.
 4. **Trading.** The market board, hawkers, upcycling, junker ships to flip, and the first easter
    eggs hidden in ships and the hangar.
