@@ -55,8 +55,8 @@ func _ready() -> void:
 		var ship: Dictionary = GameState.ships[Content.world.pilots[pilot].ship]
 		sim.add_racer(pilot, ShipStats.compute(ship, Content.parts), ShipStats.gadget(ship, Content.parts), true,
 			race.rivals[pilot])
-	var kettle: Dictionary = GameState.ships.kettle
-	player = sim.add_racer("player", ShipStats.compute(kettle, Content.parts), ShipStats.gadget(kettle, Content.parts),
+	var mine: Dictionary = GameState.ships[GameState.race_ship]
+	player = sim.add_racer("player", ShipStats.compute(mine, Content.parts), ShipStats.gadget(mine, Content.parts),
 		false, 1.0, Perks.effects(GameState.perks, Content.perks))
 	for r in sim.racers:
 		r.s += _start_at
@@ -95,7 +95,7 @@ func _build_world() -> void:
 		scenery.hoop(float(s))
 
 	for r in sim.racers:
-		var ship_id: String = "kettle" if r.id == "player" else Content.world.pilots[r.id].ship
+		var ship_id: String = GameState.race_ship if r.id == "player" else Content.world.pilots[r.id].ship
 		var model := ShipModel.new()
 		world.add_child(model)
 		model.build(GameState.ships[ship_id])
@@ -447,7 +447,7 @@ func _draw_trails() -> void:
 			pts.pop_back()
 		if pts.size() < 2:
 			continue
-		var ship_id: String = "kettle" if r.id == "player" else Content.world.pilots[r.id].ship
+		var ship_id: String = GameState.race_ship if r.id == "player" else Content.world.pilots[r.id].ship
 		var color := Content.color(GameState.ships[ship_id].trim).lightened(0.3)
 		var side := model.global_basis.x * 0.35
 		im.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)

@@ -102,6 +102,9 @@ func _ready() -> void:
 
 	var names := ["Scan", "Repair", "Wash", "Parts", "Paint", "Tune", "Mischief"] if commission else [
 		"Wash", "Parts", "Paint", "Tune"]
+	# Your own fixer-uppers have faults to find too.
+	if not commission and _faults().any(func(f): return not f.fixed):
+		names = ["Scan", "Repair"] + names
 	for n in names:
 		var b := UI.button(n, _select.bind(n), 17)
 		b.toggle_mode = true
@@ -166,8 +169,8 @@ func _say(text: String, size := 19, color := UI.INK) -> Label:
 # ---------------------------------------------------------------- scan
 
 func _scan_tab() -> void:
-	var job: Dictionary = GameState.job_spec(GameState.job.id)
-	_say("\"%s\"" % job.request, 17, UI.MUTED)
+	if commission:
+		_say("\"%s\"" % GameState.job_spec(GameState.job.id).request, 17, UI.MUTED)
 	_say("Sweep the scanner slowly over the hull. Faults glow warm as you get close. Drag empty space to turn the view.")
 	var found := _faults().filter(func(f): return f.found).size()
 	_say("Faults found: %d" % found, 22, UI.TEAL)

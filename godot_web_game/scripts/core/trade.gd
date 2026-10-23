@@ -85,3 +85,38 @@ static func cart(run_seed: int, day: int, style: String, data: Dictionary, parts
 
 static func _any(rng: RandomNumberGenerator, from: Array) -> Variant:
 	return from[rng.randi_range(0, from.size() - 1)]
+
+
+## The salvage yard's stock changes every few days.
+const YARD_DAYS := 3
+## What buyers pay for a ship that still has faults in it, as a share of its value to them.
+const UNFIXED_OFFER := 0.55
+
+
+## Junker `index` in the yard this period: a battered ship (heavy grime, two or three faults, one
+## of them usually serious) and its asking price, well under what it's worth fixed.
+static func junker(run_seed: int, day: int, index: int, w: Dictionary, parts: Dictionary) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([run_seed, day / YARD_DAYS, index, "junker"])
+	var ship := Walkins._ship(rng, w, parts)
+	ship.livery = "solid"
+	ship.finish = "matte"
+	ship.grime = snappedf(rng.randf_range(0.7, 0.95), 0.05)
+	var faults: Array = Walkins._faults(rng, w, 5)
+	for f in faults:
+		f.merge({"found": false, "fixed": false, "score": 0.0})
+	ship.faults = faults
+	var fixed := ship.duplicate(true)
+	for f in fixed.faults:
+		f.fixed = true
+	fixed.grime = 0.0
+	var price := maxi(roundi(ship_value(ship, parts, []) * 0.85 / 5.0) * 5, 60)
+	return {"ship": ship, "price": price, "potential": ship_value(fixed, parts, [])}
+
+
+## A buyer's offer for `build` today: someone with their own taste, paying around what it's worth
+## to them. Buyers want ships that fly, so anything with a fault still in it goes for a song.
+static func offer(rng: RandomNumberGenerator, build: Dictionary, buyer: Dictionary, parts: Dictionary) -> int:
+	var flies: bool = build.get("faults", []).all(func(f): return f.get("fixed", false))
+	var f := rng.randf_range(0.9, 1.1) * (1.0 if flies else UNFIXED_OFFER)
+	return roundi(ship_value(build, parts, buyer.taste) * f / 5.0) * 5

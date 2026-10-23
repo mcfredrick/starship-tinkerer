@@ -30,7 +30,8 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | --- | --- |
 | Run the game | `godot --path .` |
 | Reimport (after assets or new `class_name`s) | `godot --headless --import` |
-| Logic tests | `godot --headless --script res://tests/run_tests.gd` |
+| All automated checks (use this) | `./test.sh` (repo root): compiles every script, runs the logic tests, fails on any script error |
+| Logic tests | `godot --headless --script res://tests/run_tests.gd` (every `test_` method runs) |
 | Compile every script | `godot --headless res://tools/check_scripts.tscn` |
 | Race balance report | `godot --headless --script res://tools/race_report.gd` |
 | Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet] [--talk=scene]` plus screen params: workbench `--ship= --tab= --repair=N --focus=N` (lean in on a fault) `--fixfx=N` (play its fix) `--demo=paint\|part\|scrub\|<livery>`, race `--at=<meters> --paused`, title `--form=[custom]` |
@@ -47,7 +48,8 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 
 Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `evening`, `day2`, `brindle`,
 `crake`, `midway` (Crake's job with every fault one step in), `board` (day 4, walk-ins on the board),
-`walkin` (a walk-in's job on the bench), `levelup`. The shop also takes `--cat=sweet|grumpy|sleepy`.
+`walkin` (a walk-in's job on the bench), `hawker` (Fennimore's cart, a worn part on the shelf), `yard`
+(day 5 with a junker bought), `levelup`. The shop also takes `--cat=sweet|grumpy|sleepy`.
 
 ## Conventions
 

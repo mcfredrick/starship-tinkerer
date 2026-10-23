@@ -8,6 +8,7 @@ var save_path := "user://save.json"
 const MAX_SPARK := 4
 const BOARD_SIZE := 3
 const RETURN_CHANCE := 0.5
+const YARD_SIZE := 2
 
 var player := {"name": "Tinkerer", "pronouns": "they"}
 var day := 1
@@ -22,6 +23,8 @@ var worn := {}
 var finds := {}
 ## Today's hawker visit: {day, id, cart, bought: [offer indices]}.
 var hawker := {}
+## The ship you race: the Kettle, or any project ship you've fixed up.
+var race_ship := "kettle"
 var items := {}
 var ships := {}
 var skills := {}
@@ -61,6 +64,7 @@ func new_game(name: String, pronouns: Variant) -> void:
 	worn = {}
 	finds = {}
 	hawker = {}
+	race_ship = "kettle"
 	items = start.items.duplicate()
 	ships = Content.world.ships.duplicate(true)
 	skills = {}
@@ -104,7 +108,7 @@ func to_dict() -> Dictionary:
 		"items": items, "ships": ships, "skills": skills, "rapport": rapport, "flags": flags, "buff": buff,
 		"job": job, "today": today, "perks": perks, "reputation": reputation, "seed": run_seed, "cast": cast,
 		"jobs": jobs, "board": board, "board_day": board_day, "next_id": next_id,
-		"stories": stories, "cat": cat, "worn": worn, "finds": finds, "hawker": hawker,
+		"stories": stories, "cat": cat, "worn": worn, "finds": finds, "hawker": hawker, "race_ship": race_ship,
 	}
 
 
@@ -138,6 +142,7 @@ func from_dict(d: Dictionary) -> void:
 	worn = _ints(d.get("worn", {}))
 	finds = d.get("finds", {})
 	hawker = d.get("hawker", {})
+	race_ship = d.get("race_ship", "kettle")
 
 
 ## JSON numbers load as floats; counts should stay ints.
@@ -350,6 +355,54 @@ func _first_hidden_fault() -> Dictionary:
 		if not f.found:
 			return f
 	return {}
+
+
+## The salvage yard's junkers this period: [{ship, price, potential}], minus any you've bought.
+func yard() -> Array:
+	var out: Array = []
+	for i in YARD_SIZE:
+		var key := "yard_%d_%d" % [day / Trade.YARD_DAYS, i]
+		if not flags.has("bought_" + key):
+			var junk := Trade.junker(run_seed, day, i, Content.walkins, Content.parts)
+			junk["key"] = key
+			out.append(junk)
+	return out
+
+
+func buy_junker(junk: Dictionary) -> String:
+	var id: String = junk.key
+	flags["bought_" + id] = true
+	var ship: Dictionary = junk.ship.duplicate(true)
+	ship["project"] = true
+	ships[id] = ship
+	add_pebs(-int(junk.price), "Bought the %s from the salvage yard" % ship.name)
+	save()
+	return id
+
+
+## Your fixer-upper ships, by id.
+func projects() -> Array:
+	return ships.keys().filter(func(id): return ships[id].get("project", false))
+
+
+## Today's buyers for project `ship_id`: two strangers with their own taste and an offer each.
+func buyers(ship_id: String) -> Array:
+	var out: Array = []
+	for k in 2:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = hash([run_seed, day, ship_id, k])
+		var who := Walkins.customer(rng, "buyer", Content.walkins, Content.parts.palette.keys())
+		out.append({"pilot": who, "price": Trade.offer(rng, ships[ship_id], who, Content.parts)})
+	return out
+
+
+func sell_ship(ship_id: String, price: int, buyer: String) -> void:
+	add_pebs(price, "Sold the %s to %s for %s" % [ships[ship_id].name, buyer, UI.pebs(price)])
+	ships.erase(ship_id)
+	if race_ship == ship_id:
+		race_ship = "kettle"
+	add_xp("craft", 20)
+	save()
 
 
 ## Today's hawker visit, or {} if nobody's parked outside.

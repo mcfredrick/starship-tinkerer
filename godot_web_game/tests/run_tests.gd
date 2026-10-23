@@ -382,6 +382,30 @@ func test_hawkers_visit_later_with_carts_in_their_style() -> void:
 	check(Trade.cart(9, 5, "fair", trade, parts_data).wanted != "", "a fair hawker always wants something")
 
 
+func test_junkers_are_cheap_now_and_worth_more_fixed() -> void:
+	var w: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/walkins.json"))
+	for i in 20:
+		var junk := Trade.junker(i, 4, 0, w, parts_data)
+		check(junk.price < junk.potential, "junker %d costs less than she's worth fixed: %d < %d" % [i, junk.price, junk.potential])
+		check(junk.ship.faults.size() >= 2 and junk.ship.grime >= 0.7, "junker %d is properly battered" % i)
+	check(JSON.stringify(Trade.junker(3, 4, 0, w, parts_data)) == JSON.stringify(Trade.junker(3, 5, 0, w, parts_data)),
+		"the yard's stock holds for a few days")
+	# Flipping only pays if you do the work: even a buyer who loves the paint won't pay the asking
+	# price for a junker as it stands, but will pay well over it once it's fixed and clean.
+	var rng := RandomNumberGenerator.new()
+	for i in 20:
+		var junk := Trade.junker(i, 4, 0, w, parts_data)
+		var fan := {"taste": [junk.ship.paint]}
+		rng.seed = i
+		check(Trade.offer(rng, junk.ship, fan, parts_data) < junk.price, "junker %d won't flip untouched" % i)
+		var done: Dictionary = junk.ship.duplicate(true)
+		for f in done.faults:
+			f.fixed = true
+		done.grime = 0.0
+		rng.seed = i
+		check(Trade.offer(rng, done, {"taste": []}, parts_data) > junk.price * 1.3, "junker %d flips well fixed" % i)
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1

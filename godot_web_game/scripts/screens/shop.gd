@@ -101,6 +101,10 @@ func _refresh() -> void:
 		_add("%s's cart" % GameState.pilot(visit.id).short, func(): Router.go("hawker"))
 	_add("Tea nook", func(): Router.go("tea"))
 	_add("Garage: the Kettle", func(): Router.go("workbench", {"ship": "kettle"}))
+	for id in GameState.projects():
+		_add("Garage: the %s" % GameState.ships[id].name, func(): Router.go("workbench", {"ship": id}))
+	if GameState.day >= 2 and GameState.phase != "evening":
+		_add("Salvage yard", func(): Router.go("yard"))
 	_add("Parts market", func(): Router.go("market"))
 	if GameState.flags.has("race_open") and GameState.phase == "evening" and not job_open:
 		var b := _add("Club race", func(): Router.go("race"))

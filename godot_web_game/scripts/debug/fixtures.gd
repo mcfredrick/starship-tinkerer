@@ -71,6 +71,14 @@ static func apply(name: String) -> void:
 			GameState.worn = {"fin_swept": 1}
 			GameState.hawker = {"day": 5, "id": "fennimore", "bought": [],
 				"cart": Trade.cart(GameState.run_seed, 5, "mystery", Content.trade, Content.parts)}
+		"yard":
+			# Day five with money to spend and one junker already bought.
+			for f in ["seen_intro", "seen_grommet_intro", "seen_day4_morning"]:
+				GameState.flags[f] = true
+			GameState.day = 5
+			GameState.pebs = 900
+			GameState.run_seed = 77
+			GameState.buy_junker(GameState.yard()[0])
 		"levelup":
 			GameState.flags.seen_intro = true
 			GameState.flags.seen_grommet_intro = true
