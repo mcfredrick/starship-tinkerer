@@ -231,6 +231,27 @@ part of and how it turns out.
   the character's palette, so shading and linework survive any color. Eyes, brows and mouths are
   their own layers for each expression, so every generated alien has the full set of seven.
 
+## Special events and places
+
+Like the festivals in Harvest Moon, some days aren't shop days. The calendar marks them ahead (on
+the bulletin, in letters, in gossip), and on the day the game leaves the hangar for a scene of its
+own somewhere the tablet has been talking about. Big story beats unfold there, with the cast
+gathered in one place.
+
+- **The Comet Bloom.** The comet Odessa keeps mentioning. The whole dock flies out to watch it
+  bloom, and the ships you've worked on are all there, parked in a ring. Odessa's arc lands here,
+  with her grandkids, in the ship you made quiet enough to hear them.
+- **The Lighthouse of Lumen Reach.** The setting of the serialized novel on the tablet turns out to
+  be a real place at the edge of the rings. A pilgrimage there could close the novel's story and
+  open a secret or two of Halloran's.
+- **Race days** on the seasonal calendar: the Slow Sunday Cup, the Bramble Grand Prix, a night race
+  through the ring shadow.
+- **Dock festivals**: a lantern night, the drum gardens' harvest, a swap meet where hawkers gather.
+
+Events are data like everything else: a date (or condition), a scene to load, who attends, and the
+dialogue that plays. Playthroughs vary which minor events happen in which season, while the story
+events stay fixed.
+
 ## Tea breaks and the tablet
 
 The tea nook is a sunny corner of the hangar with a window onto Bramble's bands.

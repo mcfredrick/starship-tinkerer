@@ -11,18 +11,10 @@ func _init() -> void:
 	parts_data = JSON.parse_string(FileAccess.get_file_as_string("res://data/parts.json"))
 	world = JSON.parse_string(FileAccess.get_file_as_string("res://data/world.json"))
 	perks_data = JSON.parse_string(FileAccess.get_file_as_string("res://data/perks.json"))
-	test_pronoun_tokens()
-	test_dialogue_runner_follows_choices_flags_and_commands()
-	test_shipped_dialogue_parses()
-	test_faults_and_gear_change_stats()
-	test_odessa_job_grades()
-	test_skill_levels()
-	test_content_matches_kit()
-	test_club_race_finishes_cleanly_and_upgrades_pay_off()
-	test_new_jobs_reward_tuning_and_finishes()
-	test_mischief_costs_rapport_and_sabotage_costs_the_tip()
-	test_perks_become_pending_and_add_up()
-	test_beats_and_jobs_point_at_real_dialogue()
+	# Every test_ method runs, so a new test can't be written and then forgotten here.
+	for m in get_method_list():
+		if m.name.begins_with("test_"):
+			call(m.name)
 	print("FAILED: %d" % _failures if _failures else "all tests passed")
 	quit(1 if _failures else 0)
 
@@ -209,6 +201,33 @@ func test_empty_boost_stays_off_until_it_refills() -> void:
 		sim.step(1.0 / 60.0, held)
 		relit += int(r.boosting)
 	check(relit == 0, "holding boost on an empty tank doesn't boost: %d frames" % relit)
+
+
+## Web builds have no system fonts, so a glyph missing from the bundled fonts draws as a box there
+## while looking fine on desktop. Every character the game can show must be covered.
+func test_every_shown_character_has_a_glyph() -> void:
+	var faces := [Fonts.make(Fonts.HEADING, 600), Fonts.make(Fonts.BODY, 600), Fonts.make(Fonts.ITALIC, 600)]
+	var strings := RegEx.create_from_string("\"(?:[^\"\\\\]|\\\\.)*\"")
+	var text := ""
+	for dir in ["res://data", "res://data/dialogue"]:
+		for f in DirAccess.get_files_at(dir):
+			if f.ends_with(".json") or f.ends_with(".txt"):
+				text += FileAccess.get_file_as_string(dir + "/" + f)
+	for dir in ["res://scripts/screens", "res://scripts/ui", "res://scripts/world", "res://scripts/minigames",
+			"res://scripts/core", "res://scripts/race", "res://scripts/autoload"]:
+		for f in DirAccess.get_files_at(dir):
+			if f.ends_with(".gd"):
+				for m in strings.search_all(FileAccess.get_file_as_string(dir + "/" + f)):
+					text += m.get_string()
+	var missing := {}
+	for c in text:
+		var code := c.unicode_at(0)
+		if code < 32 or code in [127]:
+			continue
+		for font in faces:
+			if not Fonts.covers(font, code):
+				missing[c] = true
+	check(missing.is_empty(), "every shown character has a glyph: missing %s" % [missing.keys()])
 
 
 func test_new_jobs_reward_tuning_and_finishes() -> void:

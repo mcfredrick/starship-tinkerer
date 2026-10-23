@@ -26,9 +26,9 @@ static var bold_font: FontVariation
 
 
 static func build_theme() -> Theme:
-	heading_font = _font("res://assets/fonts/Fredoka.ttf", 600)
-	body_font = _font("res://assets/fonts/Nunito.ttf", 600)
-	bold_font = _font("res://assets/fonts/Nunito.ttf", 800)
+	heading_font = Fonts.make(Fonts.HEADING, 600)
+	body_font = Fonts.make(Fonts.BODY, 600)
+	bold_font = Fonts.make(Fonts.BODY, 800)
 	var t := Theme.new()
 	t.default_font = body_font
 	t.default_font_size = 20
@@ -36,7 +36,7 @@ static func build_theme() -> Theme:
 		t.set_color("font_color", type, INK)
 	t.set_color("default_color", "RichTextLabel", INK)
 	t.set_font("bold_font", "RichTextLabel", bold_font)
-	t.set_font("italics_font", "RichTextLabel", _font("res://assets/fonts/NunitoItalic.ttf", 600))
+	t.set_font("italics_font", "RichTextLabel", Fonts.make(Fonts.ITALIC, 600))
 
 	t.set_stylebox("panel", "PanelContainer", box(CREAM, 18, 16, true))
 	t.set_stylebox("panel", "Panel", box(CREAM, 18, 16, true))
@@ -88,13 +88,6 @@ static func detect_device(window: Window, args: PackedStringArray) -> void:
 ## Scale for touch hit areas: fingers are blunter than cursors.
 static func reach() -> float:
 	return 1.6 if touch else 1.0
-
-
-static func _font(path: String, weight: int) -> FontVariation:
-	var f := FontVariation.new()
-	f.base_font = load(path)
-	f.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("weight"): weight}
-	return f
 
 
 static func box(color: Color, radius: int, pad: int, shadow := false, border := Color(0, 0, 0, 0)) -> StyleBoxFlat:
