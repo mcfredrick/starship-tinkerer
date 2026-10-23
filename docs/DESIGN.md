@@ -430,14 +430,18 @@ really left.
    portrait sheet.
 3. **Workbench depth.** Done, with Brindle's and Crake's commissions to exercise it. All repair minigames, tuning, the paint shop, skills and perks.
    Mischief options on the bench.
-4. **Repairs you can see.** Faults on the hull, camera moves, fix effects, lasting repair marks, parts
-   dropping onto sockets, paint sweeps, grime and scrubbing.
+4. **Repairs you can see.** Done. Faults on the hull, camera moves, fix effects, lasting repair marks,
+   multi-step repairs, parts dropping onto sockets, paint sweeps and liveries, grime and the washer
+   drone. Alongside it: the alien cast in comic ink, five more hulls, phone support, and the space
+   course with pause and touch fixes for racing.
 5. **Evergreen foundation.** The run seed, generated walk-ins with paper-doll portraits, the
    commission board, regulars, and the storylet engine with its first handful of storylets.
 6. **Trading.** The market board, hawkers, upcycling, junker ships to flip, market events, and the
    first easter eggs hidden in ships and the hangar.
 7. **Racing.** Physics tuning so stats drive handling, build gadgets, three tracks, class ratings,
-   the club race and the seasonal calendar.
+   the club race and the seasonal calendar. (The club race, its space course, pause and touch
+   controls are in.)
 8. **The cast.** All the pilots with their full arcs, letters, reading content and after-arc
    storylets.
+   Special events at the places the story talks about, starting with the Comet Bloom.
 9. **Polish and launch** on starship-tinkerer.crap.games.
