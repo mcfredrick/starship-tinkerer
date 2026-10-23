@@ -80,14 +80,17 @@ func _continue() -> void:
 func _show_setup() -> void:
 	_menu.visible = false
 	_setup.visible = true
-	_name.grab_focus()
+	# On phones focus would do nothing useful; the field is tapped to open the prompt.
+	if not UI.touch:
+		_name.grab_focus()
 
 
 func _build_setup() -> void:
 	_name = LineEdit.new()
-	_name.placeholder_text = "Your name"
+	_name.placeholder_text = "Tap to enter your name" if UI.touch else "Your name"
 	_name.max_length = 18
 	_name.custom_minimum_size.x = 380
+	UI.touch_text(_name, "Your name (what the dock will call you)")
 
 	var choices := UI.hbox([], 8)
 	var group := ButtonGroup.new()
@@ -105,6 +108,7 @@ func _build_setup() -> void:
 		e.placeholder_text = f
 		e.custom_minimum_size.x = 110
 		e.add_theme_font_size_override("font_size", 18)
+		UI.touch_text(e, "Pronoun: %s" % f)
 		_custom_fields[f] = e
 		_custom.add_child(e)
 	_plural = CheckBox.new()

@@ -85,6 +85,30 @@ static func detect_device(window: Window, args: PackedStringArray) -> void:
 		window.content_scale_size = COMPACT_SIZE
 
 
+## On touch web builds, tapping `edit` opens the page's touchPrompt (js/touch-feature.js): a labelled
+## box above the phone keyboard, since Godot's own field can't summon the keyboard reliably and the
+## keyboard would cover it. Elsewhere the field works as normal.
+static func touch_text(edit: LineEdit, label: String) -> void:
+	if not (touch and OS.has_feature("web")):
+		return
+	edit.editable = false
+	edit.mouse_default_cursor_shape = Control.CURSOR_IBEAM
+	edit.gui_input.connect(func(event: InputEvent):
+		var tapped: bool = (event is InputEventMouseButton and event.pressed) or (event is InputEventScreenTouch and event.pressed)
+		if not tapped:
+			return
+		edit.accept_event()
+		var done := JavaScriptBridge.create_callback(func(args: Array):
+			edit.text = str(args[0]).left(edit.max_length if edit.max_length > 0 else 9999)
+			edit.text_changed.emit(edit.text))
+		# The callback must outlive this function, or JS calls into a freed object.
+		_prompt_callbacks.append(done)
+		JavaScriptBridge.get_interface("window").touchPrompt(label, edit.text, edit.max_length, done))
+
+
+static var _prompt_callbacks: Array = []
+
+
 ## Scale for touch hit areas: fingers are blunter than cursors.
 static func reach() -> float:
 	return 1.6 if touch else 1.0

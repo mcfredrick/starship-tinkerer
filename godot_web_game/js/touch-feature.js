@@ -46,9 +46,42 @@ function initKeyboardSettle() {
             pending = setTimeout(settle, 100);
         });
     }
-    window.addEventListener('focusout', () => setTimeout(settle, 150));
-    window.addEventListener('orientationchange', () => setTimeout(settle, 300));
+    // iOS reports the restored size late after the keyboard closes, so settle a few times.
+    const settleSoon = () => [150, 450, 900, 1500].forEach((ms) => setTimeout(settle, ms));
+    window.addEventListener('focusout', settleSoon);
+    window.addEventListener('orientationchange', settleSoon);
+    window.settleLayout = settleSoon;
 }
+
+// Text entry on touch screens. A game's own text field can't summon the keyboard reliably, and
+// once the keyboard is up it covers the field. Games call touchPrompt(label, value, maxLength, done)
+// instead: a labelled box pinned to the top of the screen, above the keyboard, with a Done button.
+// done(text) gets the result (or the old value if dismissed).
+window.touchPrompt = function (label, value, maxLength, done) {
+    const shade = document.createElement('div');
+    shade.id = 'touch-prompt';
+    shade.innerHTML = '<div class="tp-card"><label class="tp-label"></label>' +
+        '<input class="tp-input" type="text" autocomplete="off" autocapitalize="words" enterkeyhint="done">' +
+        '<button class="tp-done">Done</button></div>';
+    shade.querySelector('.tp-label').textContent = label;
+    const input = shade.querySelector('.tp-input');
+    input.value = value || '';
+    if (maxLength > 0) input.maxLength = maxLength;
+    let finished = false;
+    const finish = () => {
+        if (finished) return;
+        finished = true;
+        input.blur();
+        shade.remove();
+        done(input.value);
+        if (window.settleLayout) window.settleLayout();
+    };
+    shade.querySelector('.tp-done').addEventListener('click', finish);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') finish(); });
+    shade.addEventListener('click', (e) => { if (e.target === shade) finish(); });
+    document.body.appendChild(shade);
+    input.focus();
+};
 
 // Full screen hides the browser's address bar. Android browsers and iPadOS allow it from a tap;
 // iPhone Safari doesn't let pages do it at all, so there the button explains the home screen route.

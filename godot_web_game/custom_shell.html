@@ -270,6 +270,55 @@
             }
         }
 
+        /* touchPrompt (js/touch-feature.js): a text box pinned above the mobile keyboard. */
+        #touch-prompt {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 6, 20, 0.55);
+            z-index: 3000;
+        }
+        #touch-prompt .tp-card {
+            position: absolute;
+            top: calc(env(safe-area-inset-top, 0px) + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(92vw, 520px);
+            box-sizing: border-box;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #fbf3e4;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            font-family: sans-serif;
+        }
+        #touch-prompt .tp-label {
+            width: 100%;
+            color: #4a3428;
+            font-weight: bold;
+            font-size: 17px;
+        }
+        #touch-prompt .tp-input {
+            flex: 1;
+            min-width: 0;
+            font-size: 20px;
+            padding: 8px 10px;
+            border: 2px solid #3f8f8f;
+            border-radius: 10px;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        #touch-prompt .tp-done {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 10px;
+            background: #e8a33d;
+            color: #4a3428;
+        }
+
         /* URL overlay for screenshots */
         #url-overlay {
             position: fixed;
