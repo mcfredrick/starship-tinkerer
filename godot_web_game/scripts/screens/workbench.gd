@@ -30,6 +30,8 @@ var _demo := ""
 var _view: Array = []
 var _scrubbing := false
 var _wash_bar: ProgressBar
+var _drone: WasherDrone
+var _splash_in := 0.0
 
 
 func setup(params: Dictionary) -> void:
@@ -172,6 +174,13 @@ func _process(delta: float) -> void:
 	_position_markers()
 	if _tab == "Scan":
 		_update_scan(delta)
+	if _drone:
+		if _tab == "Wash" and build.get("grime", 0.0) > 0:
+			if _demo != "scrub":
+				_wash_at(ui.get_local_mouse_position(), delta)
+		else:
+			_drone.queue_free()
+			_drone = null
 	_overlay.queue_redraw()
 
 
@@ -215,10 +224,11 @@ func _draw_overlay() -> void:
 			_overlay.draw_circle(spot, 3.5, Color(UI.CREAM, 0.9))
 	if _tab == "Wash" and build.get("grime", 0.0) > 0:
 		var at := ui.get_local_mouse_position()
-		_overlay.draw_arc(at, 30, 0, TAU, 32, Color(1, 1, 1, 0.8 if _scrubbing else 0.5), 3.0)
-		for k in 6:
-			var a := TAU * k / 6 + Time.get_ticks_msec() / 400.0
-			_overlay.draw_circle(at + Vector2(cos(a), sin(a)) * 30, 4, Color(1, 1, 1, 0.6))
+		var ring := Color(0.8, 0.95, 1.0, 0.9 if _scrubbing else 0.5)
+		_overlay.draw_arc(at, 16, 0, TAU, 24, ring, 2.0)
+		for k in 4:
+			var d := Vector2.from_angle(TAU * k / 4)
+			_overlay.draw_line(at + d * 10, at + d * 22, ring, 2.0)
 	if _tab != "Scan":
 		return
 	var mouse := ui.get_local_mouse_position()
@@ -491,7 +501,12 @@ func _wash_tab() -> void:
 		_say("Spotless. You can see your face in it.", 19, UI.GOOD)
 		return
 	model.make_scrubbable()
-	_say("Drag over the hull to scrub it down. Drag empty space to turn the view. Scrubbing costs no spark.")
+	if not _drone:
+		_drone = WasherDrone.new()
+		stage.add_child(_drone)
+		_drone.global_position = stage.camera.global_position.lerp(model.global_position, 0.6)
+	_say("Hold on the hull to blast the grime off with the washer drone. Drag empty space to turn the view. "
+		+ "Washing costs no spark.")
 	_wash_bar = ProgressBar.new()
 	_wash_bar.max_value = 1.0
 	_wash_bar.show_percentage = false
@@ -501,16 +516,15 @@ func _wash_tab() -> void:
 	_say("A grimy ship rides rougher and handles heavier.", 16, UI.MUTED)
 
 
-func _hull_point(screen: Vector2) -> Variant:
+func _hull_hit(screen: Vector2) -> Dictionary:
 	var cam := stage.camera
 	var query := PhysicsRayQueryParameters3D.create(cam.project_ray_origin(screen),
 		cam.project_ray_origin(screen) + cam.project_ray_normal(screen) * 50.0)
-	var hit := stage.get_world_3d().direct_space_state.intersect_ray(query)
-	return hit.position if hit else null
+	return stage.get_world_3d().direct_space_state.intersect_ray(query)
 
 
 func _on_hull(screen: Vector2) -> bool:
-	return _hull_point(screen) != null
+	return not _hull_hit(screen).is_empty()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -520,35 +534,42 @@ func _unhandled_input(event: InputEvent) -> void:
 		_scrubbing = event.pressed and _on_hull(event.position)
 		if not event.pressed:
 			GameState.save()
-	elif event is InputEventMouseMotion and _scrubbing:
-		var at: Variant = _hull_point(event.position)
-		if at != null and model.scrub(model.to_local(at)):
-			Fx.burst(model, at, stage.camera.global_position - at, Color(1, 1, 1, 0.9), 10, 1.2, 0.08, -2.0, 0.6)
-			if randf() < 0.3:
-				Sfx.play("tick", randf_range(1.8, 2.2))
-			var coverage := model.scrub_coverage()
-			_wash_bar.value = coverage / WASH_DONE
-			if coverage >= WASH_DONE or model.scrub_full():
-				_finish_wash()
+
+
+## Points the drone at the hull under `screen` and, while spraying, blasts that patch clean.
+func _wash_at(screen: Vector2, delta: float) -> void:
+	var hit := _hull_hit(screen)
+	if hit.is_empty():
+		_drone.idle()
+		return
+	_drone.aim(hit.position, hit.normal, _scrubbing)
+	if not _scrubbing:
+		return
+	_splash_in -= delta
+	if _splash_in <= 0:
+		_splash_in = 0.06
+		Fx.burst(model, hit.position, hit.normal, Color(0.85, 0.95, 1.0, 0.9), 8, 2.0, 0.06, -5.0, 0.5)
+	if model.scrub(model.to_local(hit.position)):
+		Fx.burst(model, hit.position, hit.normal, Color(0.45, 0.37, 0.28, 0.9), 10, 2.5, 0.06, -6.0, 0.7)
+		var coverage := model.scrub_coverage()
+		_wash_bar.value = coverage / WASH_DONE
+		if coverage >= WASH_DONE or model.scrub_full():
+			_finish_wash()
 
 
 func _demo_scrub() -> void:
 	await get_tree().create_timer(0.3).timeout
+	_scrubbing = true
 	for y in [330.0, 380.0, 430.0]:
 		for x in range(480, 900, 12):
-			var press := InputEventMouseButton.new()
-			press.button_index = MOUSE_BUTTON_LEFT
-			press.pressed = true
-			press.position = Vector2(x, y)
-			_unhandled_input(press)
-			var move := InputEventMouseMotion.new()
-			move.position = Vector2(x, y)
-			_unhandled_input(move)
+			_wash_at(Vector2(x, y), 0.1)
+	_wash_at(Vector2(640, 380), 0.1)
 	print("coverage ", model.scrub_coverage())
 
 
 func _finish_wash() -> void:
 	_scrubbing = false
+	_drone.idle()
 	build.grime = 0.0
 	build.erase("clean")
 	GameState.add_xp("craft", 8)

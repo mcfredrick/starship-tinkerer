@@ -106,6 +106,10 @@ def main():
     # Countdown beeps.
     save("beep", tone(880, 0.2, 0.12, (1.0, 0.1)), 0.4)
     save("go", tone(1320, 0.45, 0.25, (1.0, 0.2)), 0.45)
+    # Pressure-washer jet loop: bright hiss (noise minus its low end) with a slight flutter.
+    hiss = noise(1.0)
+    x = t(1.0)
+    save("spray", (hiss - lowpass(hiss, 0.08)) * (0.85 + 0.15 * np.sin(2 * np.pi * 23 * x)), 0.3)
 
 
 if __name__ == "__main__":
