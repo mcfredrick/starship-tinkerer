@@ -405,6 +405,52 @@ func sell_ship(ship_id: String, price: int, buyer: String) -> void:
 	save()
 
 
+## Whether drawer `id` in Halloran's chest will open for you yet.
+func drawer_ready(id: String) -> bool:
+	var needs: Dictionary = Content.drawers[id].needs
+	if needs.has("skill") and Skills.level(skills[needs.skill]) < int(needs.level):
+		return false
+	if needs.has("day") and day < int(needs.day):
+		return false
+	return not needs.has("cat_affection") or int(cat.affection) >= int(needs.cat_affection)
+
+
+## Opens drawer `id`: gives what's inside and returns its description.
+func open_drawer(id: String) -> String:
+	var spec: Dictionary = Content.drawers[id]
+	flags["drawer_" + id] = true
+	var gives: Dictionary = spec.gives
+	if gives.has("trinket"):
+		finds[gives.trinket] = true
+	if gives.has("part"):
+		give(parts, gives.part)
+	if gives.has("pebs"):
+		add_pebs(int(gives.pebs), "Found %s in Halloran's drawers" % UI.pebs(int(gives.pebs)))
+	if gives.has("flag"):
+		flags[gives.flag] = true
+	save()
+	return spec.text
+
+
+## Once a ship's faults are all found, it may turn out to hide a trinket: often in a junker,
+## sometimes in a walk-in's ship, never in the cast's. Rolled once per ship. Returns the find or "".
+func roll_find(ship_id: String) -> String:
+	var ship: Dictionary = ships[ship_id]
+	if ship.get("find_rolled", false):
+		return ""
+	ship["find_rolled"] = true
+	var chance := 0.4 if ship.get("project", false) else (0.15 if not Content.world.ships.has(ship_id) else 0.0)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([run_seed, ship_id, "find"])
+	var missing: Array = Content.trade.trinkets.keys().filter(func(t): return not finds.has(t))
+	if missing.is_empty() or rng.randf() >= chance:
+		return ""
+	var found: String = missing[rng.randi_range(0, missing.size() - 1)]
+	finds[found] = true
+	save()
+	return found
+
+
 ## Today's hawker visit, or {} if nobody's parked outside.
 func hawker_today() -> Dictionary:
 	if int(hawker.get("day", 0)) != day:

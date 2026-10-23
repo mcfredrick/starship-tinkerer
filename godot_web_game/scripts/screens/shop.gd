@@ -106,6 +106,7 @@ func _refresh() -> void:
 	if GameState.day >= 2 and GameState.phase != "evening":
 		_add("Salvage yard", func(): Router.go("yard"))
 	_add("Parts market", func(): Router.go("market"))
+	_add("Halloran's drawers", func(): Router.go("drawers"))
 	if GameState.flags.has("race_open") and GameState.phase == "evening" and not job_open:
 		var b := _add("Club race", func(): Router.go("race"))
 		b.disabled = GameState.flags.has("raced_today")

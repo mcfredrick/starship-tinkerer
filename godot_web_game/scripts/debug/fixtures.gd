@@ -79,6 +79,15 @@ static func apply(name: String) -> void:
 			GameState.pebs = 900
 			GameState.run_seed = 77
 			GameState.buy_junker(GameState.yard()[0])
+		"drawers":
+			# A seasoned tinkerer: most drawers will open.
+			for f in ["seen_intro", "seen_grommet_intro", "seen_day4_morning"]:
+				GameState.flags[f] = true
+			GameState.day = 8
+			for s in Skills.NAMES:
+				GameState.skills[s] = 130
+			GameState.finds = {"brass_compass": true, "snow_globe": true}
+			GameState.flags.drawer_bolts = true
 		"levelup":
 			GameState.flags.seen_intro = true
 			GameState.flags.seen_grommet_intro = true

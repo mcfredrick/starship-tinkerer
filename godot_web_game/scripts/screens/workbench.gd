@@ -218,6 +218,11 @@ func _update_scan(delta: float) -> void:
 				GameState.add_xp("diagnostics", xp)
 				GameState.save()
 				Router.toast("Found it: %s.  Diagnostics +%d" % [Content.parts.faults[f.type].name, xp])
+				if _faults().all(func(x): return x.found):
+					var find := GameState.roll_find(ship_id)
+					if find:
+						Sfx.play("found", 1.3)
+						Router.toast("Tucked behind a panel: %s! It's yours now." % Content.trade.trinkets[find].name)
 				_select(_tab)
 
 

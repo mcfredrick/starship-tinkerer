@@ -123,6 +123,14 @@
       "day": 4,
       "requires": "crake_1_sabotage",
       "body": "To the proprietor,\n\nWe write on behalf of our client, Mr. Thaddeus Crake, regarding an incident involving his yacht, the Magnificence, a regatta, and approximately forty cubic meters of packing foam (or smoke rings, or a hairpin; our client's account varies).\n\nOur client demands the vessel be restored at your expense when next he docks.\n\nYours, with some reluctance, as Mr. Crake is not an easy client either,\nCrake, Crake & Thistlewood"
+    },
+    "halloran_drawer": {
+      "kind": "letter",
+      "title": "For later",
+      "from": "Halloran",
+      "day": 1,
+      "requires": "halloran_drawer_letter",
+      "body": "Dear {name},\n\nIf you've opened this drawer, it's later. Good. I hoped it would be.\n\nI didn't leave because I was tired of the shop. I left because I'd stopped hearing the ships. You'll know what I mean soon if you don't already: the way a seam sings when it's about to go, the way an engine sighs when it's been treated kindly. I'd started fixing things by the manual instead of by ear, and that's no way to treat a ship, or a dock.\n\nOut here past the comet line I'm learning to listen again. The comet bloom is coming, by the way. Odessa will want to see it. Everyone will. Go, if you can. Close the shop for a night.\n\nGrommet knows where the good drawer is. Bribe accordingly.\n\nWith grease under every fingernail,\nHalloran"
     }
   }
 }

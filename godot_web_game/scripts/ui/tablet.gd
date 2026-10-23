@@ -95,6 +95,10 @@ func _fill_list() -> void:
 		c.queue_free()
 	var ids := available()
 	ids.reverse()
+	if not GameState.finds.is_empty():
+		var finds := UI.button("Your finds  (%d of %d)" % [GameState.finds.size(), Content.trade.trinkets.size()],
+			_open_finds, 17)
+		_list.add_child(finds)
 	for id in ids:
 		var e: Dictionary = Content.reading.entries[id]
 		var unread_mark := "" if GameState.flags.has("read_" + id) else "● "
@@ -113,6 +117,20 @@ func _fill_list() -> void:
 		_list.add_child(b)
 	if ids.size() > 0 and _title.text == "":
 		_open(ids[0])
+
+
+## The trinkets you've found, with the rest left as question marks to hunt for.
+func _open_finds() -> void:
+	_title.text = "Your finds"
+	var lines: Array = []
+	for id in Content.trade.trinkets:
+		var t: Dictionary = Content.trade.trinkets[id]
+		if GameState.finds.has(id):
+			lines.append("[b]%s[/b]\n%s" % [t.name, t.desc])
+		else:
+			lines.append("[b]???[/b]\nStill out there somewhere. Hawkers, junkers and old drawers turn things up.")
+	_body.text = "\n\n".join(lines)
+	_body.scroll_to_line(0)
 
 
 func _open(id: String) -> void:

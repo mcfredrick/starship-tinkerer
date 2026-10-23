@@ -446,8 +446,9 @@ really left.
    course with pause and touch fixes for racing.
 5. **Evergreen foundation.** Done. The run seed, generated walk-ins with paper-doll portraits, the
    job board, regulars, the storylet engine with its first four storylets, and Grommet the shop cat.
-6. **Trading.** The market board, hawkers, upcycling, junker ships to flip, market events, and the
-   first easter eggs hidden in ships and the hangar.
+6. **Trading.** Done. Drifting prices and market events, hawkers and their carts, worn parts to
+   restore, the salvage yard with junkers to flip or race, trinkets hidden in ships, and Halloran's
+   drawers.
 7. **Racing.** Physics tuning so stats drive handling, build gadgets, three tracks, class ratings,
    the club race and the seasonal calendar. (The club race, its space course, pause and touch
    controls are in.)

@@ -406,6 +406,27 @@ func test_junkers_are_cheap_now_and_worth_more_fixed() -> void:
 		check(Trade.offer(rng, done, {"taste": []}, parts_data) > junk.price * 1.3, "junker %d flips well fixed" % i)
 
 
+func test_drawers_and_finds_point_at_real_things() -> void:
+	var drawers: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/drawers.json"))
+	var trade: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/trade.json"))
+	var reading: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/reading.json"))
+	var unlocks := {}
+	for e in reading.entries.values():
+		if e.has("requires"):
+			unlocks[e.requires] = true
+	for id in drawers:
+		var gives: Dictionary = drawers[id].gives
+		if gives.has("trinket"):
+			check(trade.trinkets.has(gives.trinket), "drawer %s holds a real trinket" % id)
+		if gives.has("part"):
+			check(parts_data.parts.has(gives.part), "drawer %s holds a real part" % id)
+		if gives.has("flag"):
+			check(unlocks.has(gives.flag), "drawer %s unlocks something on the tablet" % id)
+		if drawers[id].needs.has("skill"):
+			check(drawers[id].needs.skill in Skills.NAMES, "drawer %s needs a real skill" % id)
+		check(drawers[id].needs.is_empty() or drawers[id].hint != "", "a stuck drawer %s hints at why" % id)
+
+
 func test_new_jobs_reward_tuning_and_finishes() -> void:
 	var repairs := {0: 0.85, 1: 0.85}
 	var bj: Dictionary = world.jobs.brindle_1
