@@ -182,14 +182,16 @@
             display: none;
         }
 
-        /* On touch screens they share a pill on the right edge that tucks away to a grip tab. */
+        /* On touch screens they share a pill on the right edge that tucks away to a grip tab. It sits
+           above the middle of the edge, since a phone's notch or Dynamic Island takes the middle of
+           that edge in landscape, and it tucks past the safe-area margin to the screen's edge. */
         @media (pointer: coarse) {
             #game-chrome {
                 display: flex;
                 flex-direction: column;
                 gap: 6px;
                 position: fixed;
-                top: 50%;
+                top: 28%;
                 right: env(safe-area-inset-right, 0px);
                 transform: translateY(-50%);
                 padding: 8px 6px 8px 10px;
@@ -217,7 +219,7 @@
             #fullscreen-tip.shown {
                 display: block;
                 position: fixed;
-                top: 50%;
+                top: 28%;
                 right: calc(env(safe-area-inset-right, 0px) + 72px);
                 transform: translateY(-50%);
                 max-width: 230px;
@@ -255,7 +257,7 @@
             }
 
             #game-chrome.tucked {
-                transform: translate(calc(100% - 14px), -50%);
+                transform: translate(calc(100% - 14px + env(safe-area-inset-right, 0px)), -50%);
             }
 
             #game-chrome.tucked::before {
