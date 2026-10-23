@@ -118,6 +118,26 @@ it.
 Teas and skills make minigames gentler without removing them. A fully skilled tinkerer still does
 the welds, but the bead forgives more.
 
+### Repairs you can see
+
+The work happens on the ship itself, so a finished job looks finished.
+
+- **Faults show on the hull once found.** A cracked seam glows hot along a jagged line, frayed wires
+  spill out of an open hatch and spit sparks, a miscalibrated light stutters, a dent is a dark
+  crumple. Before the scan they only give themselves away now and then, with a wisp of smoke or a
+  rattle.
+- **The camera moves in.** Starting a repair swings the view to the spot and leans close, so the
+  minigame feels like working on that panel. When it ends, the fix plays out on the ship: a shower of
+  sparks and a cooling bead, wires drawn back in and a hatch snapping shut, a dent popping out with a
+  clunk. Then the view eases back.
+- **Your work leaves marks.** Fresh weld beads and new hatch plates stay on the hull, so the handoff
+  turntable shows exactly what you did.
+- **Parts arrive physically.** A swapped part drops onto its socket with a bounce and a puff, and the
+  old one lifts away.
+- **Paint sweeps on** in a mist from nose to tail.
+- **Grime and wear.** Ships come in dusty and scuffed. Scrubbing them down by dragging over the hull
+  is its own small, satisfying job, and a clean ship fits most pilots' taste a little better.
+
 ## Payment and barter
 
 - **Pebs** buy parts, tools, teas, cakes and books.
@@ -163,6 +183,53 @@ The dock rewards poking around.
 - Some gadgets and parts are secrets themselves: a horn that plays a tune from the serialized novel,
   a paint finish that only appears in Bramble's shadow, a thruster that sneezes.
 - Callbacks reward attention, like a trinket from one pilot's story turning up in another's ship.
+
+## Evergreen play
+
+The main cast's arcs are written by hand and they end. The shop doesn't. Each playthrough draws on a
+seed, and the days after (and between) the big arcs are filled by procedurally cast stories. The
+rule is **authored stories, procedural casting**. Every line of prose is written by a person.
+Generation decides who walks in, what they fly, what's wrong with it, which small story they're
+part of and how it turns out.
+
+- **The run seed** decides which side characters turn up and when, the market's starting prices and
+  how they drift, which hawkers visit, what's in the salvage yard, where easter eggs are hidden, and
+  the race calendar's rule twists. Two playthroughs share the cast and the big arcs but rarely a
+  week.
+- **Walk-in customers** are generated aliens. A species sets their silhouette (head shape, one to
+  three eyes, antennae, frills, crests, gills) and a naming style. Each walk-in also gets a palette,
+  two personality traits (fussy, generous, chatty, haggler, nervous, show-off, sentimental,
+  secretive...), a want (quiet, speed, comfort, looks, cargo, grip), a budget and a way of paying.
+  Their ship is a kit hull with its own parts, wear and faults, and their wants become a checklist
+  the same way the cast's do.
+- **Storylets** are small authored arcs of two to five beats with open roles. Each beat has
+  conditions (day, reputation, flags, a trait on the cast member) and its dialogue is written with
+  slots and trait variants, so a haggler and a sentimental customer play the same story
+  differently. Some examples:
+  - *The heirloom*: a scan finds something tucked behind a panel. Return it and its owner comes back
+    with the story behind it, and maybe a gift. Sell it and someone else turns up looking for it.
+  - *The rival shop*: a walk-in compares your quote with a slick shop across the ring, and a later
+    beat shows who was right.
+  - *Courting*: a nervous pilot wants their ship to impress someone. The date's verdict arrives as a
+    letter.
+  - *The stowaway*: a space-moth is nesting in a cabin vent, and the choice of what to do with it
+    echoes for days.
+  - *The bet*: two regulars bet on whose ship you can make faster, and both bring them in.
+  - *Lost in transit*: a courier's cargo bay hides a parcel addressed to someone on the dock.
+- **Regulars.** Walk-ins you do good work for come back. They keep their name, face and ship, and
+  remember how you treated them, so a generated customer can grow into a regular with a storylet arc
+  of their own. Mischief is remembered too.
+- **After the arcs.** The main cast don't vanish when their stories end. They send letters, drop in
+  for tea, enter races and appear in storylets as themselves.
+- **Things that keep turning over**: the commission board, a seasonal race calendar with rotating cup
+  rules, market events (a fin shortage, a paint fad), hawkers, junkers to flip, and collections to
+  fill (a codex of species you've met, trinkets, paint swatches, the serialized novel). Shop
+  reputation tiers bring bigger and stranger ships.
+- **Faces for everyone.** Generated customers get portraits in the same comic ink, assembled at
+  runtime from a paper-doll library rendered in Blender. Each head, appendage, body and outfit layer
+  is rendered in white with its ink, halftone and hatching, and tinted in the game by multiplying in
+  the character's palette, so shading and linework survive any color. Eyes, brows and mouths are
+  their own layers for each expression, so every generated alien has the full set of seven.
 
 ## Tea breaks and the tablet
 
@@ -342,9 +409,14 @@ really left.
    portrait sheet.
 3. **Workbench depth.** Done, with Brindle's and Crake's commissions to exercise it. All repair minigames, tuning, the paint shop, skills and perks.
    Mischief options on the bench.
-4. **Trading.** The market board, hawkers, upcycling, junker ships to flip, and the first easter
-   eggs hidden in ships and the hangar.
-5. **Racing.** Physics tuning so stats drive handling, build gadgets, three tracks, class ratings,
-   the club race.
-6. **The cast.** All six pilots with their full arcs, letters and reading content.
-7. **Polish and launch** on starship-tinkerer.crap.games.
+4. **Repairs you can see.** Faults on the hull, camera moves, fix effects, lasting repair marks, parts
+   dropping onto sockets, paint sweeps, grime and scrubbing.
+5. **Evergreen foundation.** The run seed, generated walk-ins with paper-doll portraits, the
+   commission board, regulars, and the storylet engine with its first handful of storylets.
+6. **Trading.** The market board, hawkers, upcycling, junker ships to flip, market events, and the
+   first easter eggs hidden in ships and the hangar.
+7. **Racing.** Physics tuning so stats drive handling, build gadgets, three tracks, class ratings,
+   the club race and the seasonal calendar.
+8. **The cast.** All the pilots with their full arcs, letters, reading content and after-arc
+   storylets.
+9. **Polish and launch** on starship-tinkerer.crap.games.
