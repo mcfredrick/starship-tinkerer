@@ -19,3 +19,4 @@ jobs:
       export_preset: "Web"
       godot_version: "4.5.1"
       build_dir: "godot_web_game/build/web"
+      test_command: "./test.sh"
