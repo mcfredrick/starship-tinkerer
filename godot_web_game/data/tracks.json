@@ -1,0 +1,30 @@
+{
+  "quietwater": {
+    "name": "Quietwater Ring", "width": 11,
+    "about": "The home circuit: a long dock straight, a climb into the sweeping bend, the sun-hairpin at the crest, and an S back up to the line.",
+    "points": [[0, 0, 0], [220, 4, 0], [360, 16, 30], [420, 28, 130], [370, 34, 230], [260, 26, 250], [200, 14, 320],
+      [250, 2, 400], [210, -10, 470], [110, -16, 450], [0, -8, 400], [-90, 6, 330], [-60, 18, 230], [-150, 14, 160],
+      [-190, 6, 70], [-120, 2, 10]],
+    "theme": {}
+  },
+  "shadow": {
+    "name": "Ring Shadow Run", "width": 12,
+    "about": "A fast night course through Bramble's shadow: long straights, sweeping bends, and the rings glowing overhead.",
+    "points": [[0, 0, 0], [300, 6, -10], [520, 14, 30], [620, 24, 170], [580, 30, 330], [430, 22, 420], [220, 8, 430],
+      [40, -6, 380], [-120, -16, 280], [-200, -18, 140], [-160, -10, 30]],
+    "theme": {"deep": "01010a", "sky": ["1b3a6b", "4a2a7a", "9fd4ff"], "fog": "0a0f24", "fog_density": 0.0016,
+      "planet": [-300, 260, 700, 640], "rings_at": [-300, 120, 700], "jellies": 24, "whales": 2, "terrariums": 4,
+      "asteroids": 90, "lanterns": ["8fd4ff", "c39bff"], "deck": "0c0a1e", "edge": "8fd4ff", "chevron": "c39bff",
+      "ambient": "2a2f5a"}
+  },
+  "gardens": {
+    "name": "Drum Garden Twist", "width": 11,
+    "about": "A technical course that weaves between the floating terrariums of the drum gardens. Grip and handling win here.",
+    "points": [[0, 0, 0], [160, 4, -10], [260, 10, 50], [260, 16, 150], [180, 20, 200], [140, 14, 290], [210, 6, 360],
+      [320, 0, 390], [370, -8, 480], [290, -12, 560], [150, -6, 560], [60, 4, 480], [0, 10, 380], [-90, 8, 300],
+      [-110, 4, 170], [-80, 0, 60]],
+    "theme": {"sky": ["2f8f6a", "c96fa8", "ffd27a"], "fog": "1f3a2e", "fog_density": 0.0014, "jellies": 10,
+      "whales": 1, "terrariums": 26, "asteroids": 40, "lanterns": ["ffd27a", "9fffd0"], "deck": "142a22",
+      "edge": "ffd27a", "chevron": "9fffd0", "ambient": "3d5a48"}
+  }
+}

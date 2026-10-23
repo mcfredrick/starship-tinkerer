@@ -34,23 +34,28 @@ var _fingers := {}
 var _paused := false
 var _start_paused := false
 var _start_at := 0.0
+var _race_id := "club"
+var _theme: Dictionary
 var _pause_panel: PanelContainer
 var _done := false
 var _engine: AudioStreamPlayer
 var _count := 4
 
 
-## Screen params (for screenshots): `paused` opens the pause menu once the race is built, and
-## `at=<meters>` moves the whole field that far around the course.
+## Screen params: `race=<id>` (world.json races, default the club race); for screenshots, `paused`
+## opens the pause menu once the race is built and `at=<meters>` moves the field around the course.
 func setup(params: Dictionary) -> void:
+	_race_id = params.get("race", "club")
 	_start_paused = params.has("paused")
 	_start_at = float(params.get("at", "0"))
 
 
 func _ready() -> void:
 	super()
-	race = Content.world.race.club
-	sim = RaceSim.new(Track.quietwater(), race.laps)
+	race = Content.world.races[_race_id]
+	var spec: Dictionary = Content.tracks[race.track]
+	_theme = spec.theme
+	sim = RaceSim.new(Track.from_spec(spec), race.laps)
 	for pilot in race.rivals:
 		var ship: Dictionary = GameState.ships[Content.world.pilots[pilot].ship]
 		sim.add_racer(pilot, ShipStats.compute(ship, Content.parts), ShipStats.gadget(ship, Content.parts), true,
@@ -78,7 +83,7 @@ func _build_world() -> void:
 	move_child(world, 0)
 	var scenery := SpaceScenery.new()
 	world.add_child(scenery)
-	scenery.build(sim.track)
+	scenery.build(sim.track, _theme)
 	var sun := DirectionalLight3D.new()
 	sun.light_color = Color("ffe2b8")
 	sun.rotation_degrees = Vector3(-55, 30, 0)
@@ -146,6 +151,9 @@ func _track_mesh() -> MeshInstance3D:
 		st.add_index(a + 2)
 	var mat := ShaderMaterial.new()
 	mat.shader = TRACK_SHADER
+	for key in ["deck", "edge", "chevron"]:
+		if _theme.has(key):
+			mat.set_shader_parameter(key, Color(_theme[key]))
 	var mi := MeshInstance3D.new()
 	mi.mesh = st.commit()
 	mi.material_override = mat
@@ -353,7 +361,7 @@ func _toggle_pause() -> void:
 	_touch.clear()
 	_fingers.clear()
 	var box := UI.vbox([UI.heading("Paused", 34), UI.button("Keep racing", _toggle_pause, 22),
-		UI.button("Restart the race", func(): Router.go("race"), 20),
+		UI.button("Restart the race", func(): Router.go("race", {"race": _race_id}), 20),
 		UI.button("Quit to the shop", func(): Router.go("shop"), 20),
 		UI.label("Quitting forfeits the prize, but costs nothing.", 16, UI.MUTED)], 10)
 	_pause_panel = UI.panel(box, UI.CREAM, 26)
@@ -369,6 +377,9 @@ func _physics_process(delta: float) -> void:
 		return
 	sim.step(delta, _input_state())
 	for e in sim.events:
+		if e.type == "startled" and e.id == "player":
+			_flash_text("Whoa!")
+			Sfx.play("honk", 0.85)
 		if e.id != "player":
 			continue
 		match e.type:
@@ -378,7 +389,9 @@ func _physics_process(delta: float) -> void:
 				Sfx.play("whoosh")
 				_flash_text("Whoosh!")
 			"gadget":
-				_flash_text("Ribbon out!" if e.gadget == "ribbon" else "Pop!")
+				_flash_text({"ribbon": "Ribbon out!", "bubble": "Pop!", "magnet": "Clunk! Towing!", "horn": "HOOONK!"}[e.gadget])
+				if e.gadget == "horn":
+					Sfx.play("honk")
 			"finish":
 				_on_finish()
 
@@ -520,12 +533,14 @@ func _on_finish() -> void:
 	var xp := 20 + (3 - place) * 10
 	GameState.add_xp("piloting", xp)
 	if prize > 0:
-		GameState.add_pebs(prize, "Club race, %s place: %s" % [PLACES[place - 1], UI.pebs(prize)])
+		GameState.add_pebs(prize, "%s, %s place: %s" % [race.name, PLACES[place - 1], UI.pebs(prize)])
+	if place == 1:
+		GameState.flags["won_" + _race_id] = true
 	GameState.flags.raced_today = true
 	GameState.spark = maxi(GameState.spark - 1, 0)
 	GameState.save()
 
-	var rows := UI.vbox([UI.heading("Quietwater Club Race", 28)], 6)
+	var rows := UI.vbox([UI.heading(race.name, 28)], 6)
 	for i in sim.standings().size():
 		var r: Dictionary = sim.standings()[i]
 		var name: String = GameState.player.name if r.id == "player" else Content.world.pilots[r.id].short

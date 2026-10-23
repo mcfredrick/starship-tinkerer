@@ -87,7 +87,9 @@ func _refresh() -> void:
 		_hint.text = "%s's ship is on the cradle, waiting for you." % pilot
 		_add("Workbench: %s" % pilot, func(): Router.go("workbench", {"ship": _ship_on_cradle()}))
 	elif GameState.phase == "evening" and GameState.flags.has("race_open") and not GameState.flags.has("raced_today"):
-		_hint.text = "The club race starts at last bell. The Kettle's in the back bay."
+		var cup := GameState.cup_today()
+		_hint.text = ("Tonight's the %s! Or the club race, as ever." % Content.world.races[cup].name) if cup else \
+			"The club race starts at last bell. Your ship's in the back bay."
 	elif GameState.phase == "evening":
 		_hint.text = "The dock lights are dimming. A good time for tea, or bed."
 	elif GameState.phase == "morning":
@@ -108,10 +110,23 @@ func _refresh() -> void:
 	_add("Parts market", func(): Router.go("market"))
 	_add("Halloran's drawers", func(): Router.go("drawers"))
 	if GameState.flags.has("race_open") and GameState.phase == "evening" and not job_open:
-		var b := _add("Club race", func(): Router.go("race"))
-		b.disabled = GameState.flags.has("raced_today")
+		for race_id in ["club", GameState.cup_today()]:
+			if race_id == "":
+				continue
+			var spec: Dictionary = Content.world.races[race_id]
+			var b := _add(spec.name, _enter.bind(race_id))
+			b.disabled = GameState.flags.has("raced_today")
+			b.tooltip_text = spec.about
 	if GameState.phase == "evening" or GameState.day >= 2:
 		_add("Sleep", func(): Router.go("night"))
+
+
+func _enter(race_id: String) -> void:
+	var block := GameState.race_block(race_id)
+	if block:
+		Router.toast(block, UI.BAD)
+		return
+	Router.go("race", {"race": race_id})
 
 
 ## Clicking Grommet pets them, mood permitting.

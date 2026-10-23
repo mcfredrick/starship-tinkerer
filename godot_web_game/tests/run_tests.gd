@@ -148,9 +148,14 @@ func test_content_matches_kit() -> void:
 	kit.free()
 
 
+func _track(id: String) -> Track:
+	var tracks: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/tracks.json"))
+	return Track.from_spec(tracks[id])
+
+
 func _club_race(kettle: Dictionary) -> Dictionary:
-	var race: Dictionary = world.race.club
-	var sim := RaceSim.new(Track.quietwater(), race.laps)
+	var race: Dictionary = world.races.club
+	var sim := RaceSim.new(_track("quietwater"), race.laps)
 	var entries := [["kettle", kettle, 0.92]]
 	for pilot in race.rivals:
 		entries.append([pilot, world.ships[world.pilots[pilot].ship], race.rivals[pilot]])
@@ -189,7 +194,7 @@ func _fixed(ship_id: String, job: Dictionary) -> Array:
 
 
 func test_empty_boost_stays_off_until_it_refills() -> void:
-	var sim := RaceSim.new(Track.quietwater(), 2)
+	var sim := RaceSim.new(_track("quietwater"), 2)
 	var r := sim.add_racer("p", ShipStats.compute(world.ships.kettle, parts_data), "", false)
 	var held := {"throttle": true, "boost": true, "steer": 0.0}
 	while sim.time < 0:
@@ -425,6 +430,66 @@ func test_drawers_and_finds_point_at_real_things() -> void:
 		if drawers[id].needs.has("skill"):
 			check(drawers[id].needs.skill in Skills.NAMES, "drawer %s needs a real skill" % id)
 		check(drawers[id].needs.is_empty() or drawers[id].hint != "", "a stuck drawer %s hints at why" % id)
+
+
+func _duel(gadget: String) -> Dictionary:
+	var sim := RaceSim.new(_track("quietwater"), 1)
+	var stats := ShipStats.compute(world.ships.kettle, parts_data)
+	var me := sim.add_racer("me", stats, gadget, false)
+	var them := sim.add_racer("them", stats, "", false)
+	me.s = 0.0
+	them.s = 20.0
+	return {"sim": sim, "me": me, "them": them}
+
+
+func test_tow_magnet_and_foghorn_do_their_jobs() -> void:
+	var go := {"throttle": true, "steer": 0.0}
+	var plain := _duel("")
+	var towed := _duel("magnet")
+	for d in [plain, towed]:
+		while d.sim.time < 0:
+			d.sim.step(1.0 / 60.0, {})
+	towed.me.cooldown = 0.0
+	towed.sim.step(1.0 / 60.0, {"throttle": true, "gadget": true})
+	for i in 120:
+		plain.sim.step(1.0 / 60.0, go)
+		towed.sim.step(1.0 / 60.0, go)
+	check(towed.me.s > plain.me.s + 3.0, "the tow magnet pulls you along: %.1f vs %.1f" % [towed.me.s, plain.me.s])
+	var horn := _duel("horn")
+	while horn.sim.time < 0:
+		horn.sim.step(1.0 / 60.0, {})
+	horn.me.cooldown = 0.0
+	horn.sim.step(1.0 / 60.0, {"throttle": true, "gadget": true})
+	check(horn.them.startled > 0, "the foghorn startles the ship just ahead")
+	var shielded := _duel("horn")
+	while shielded.sim.time < 0:
+		shielded.sim.step(1.0 / 60.0, {})
+	shielded.them.shield = 5.0
+	shielded.me.cooldown = 0.0
+	shielded.sim.step(1.0 / 60.0, {"throttle": true, "gadget": true})
+	check(shielded.them.startled <= 0, "a bubble shrugs off the foghorn")
+
+
+func test_every_race_has_a_real_track_and_rivals() -> void:
+	var tracks: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/tracks.json"))
+	var weekdays := {}
+	for id in world.races:
+		var race: Dictionary = world.races[id]
+		check(tracks.has(race.track), "race %s runs on a real track" % id)
+		for pilot in race.rivals:
+			check(world.pilots.has(pilot) and world.ships.has(world.pilots[pilot].get("ship", "")), "race %s rival %s has a ship" % [id, pilot])
+		if race.has("weekday"):
+			check(not weekdays.has(race.weekday), "race %s has its own weekday" % id)
+			weekdays[race.weekday] = true
+	for id in tracks:
+		var sim := RaceSim.new(Track.from_spec(tracks[id]), 1)
+		for pilot in ["ilse", "brindle", "crake"]:
+			sim.add_racer(pilot, ShipStats.compute(world.ships[world.pilots[pilot].ship], parts_data), "", true, 0.8)
+		var walls := 0
+		while not sim.finished() and sim.time < 300:
+			sim.step(1.0 / 60.0, {})
+			walls += sim.events.filter(func(e): return e.type == "wall").size()
+		check(sim.finished() and walls == 0, "AI laps %s cleanly: finished %s, %d walls" % [id, sim.finished(), walls])
 
 
 func test_new_jobs_reward_tuning_and_finishes() -> void:

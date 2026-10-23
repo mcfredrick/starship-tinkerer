@@ -1,7 +1,8 @@
 ## Everything around a race track that isn't the track: Bramble and its rings under the course,
 ## tumbling asteroids with glowing crystals, lantern buoys along the edges, hoops to fly through,
 ## glass terrarium bubbles, drifting moon-jellies, a pod of star whales and the odd comet.
-## Placement is seeded, so a track always looks the same.
+## Placement is seeded, so a track always looks the same. A track's `theme` (data/tracks.json)
+## recolors the sky, fog and lanterns, moves the planet and sets how much of each thing there is.
 class_name SpaceScenery
 extends Node3D
 
@@ -12,14 +13,16 @@ const SKY_SHADER := preload("res://shaders/nebula_sky.gdshader")
 const JELLY_COLORS := [Color("ff8ad8"), Color("7ff0ff"), Color("c39bff"), Color("ffd27a")]
 
 var track: Track
+var _theme := {}
 var _rng := RandomNumberGenerator.new()
 var _jellies: Array = []
 var _whales: Array = []
 var _comet_in := 3.0
 
 
-func build(t: Track) -> void:
+func build(t: Track, theme := {}) -> void:
 	track = t
+	_theme = theme
 	_rng.seed = 2024
 	add_child(_environment())
 	_bramble()
@@ -53,21 +56,31 @@ func _process(delta: float) -> void:
 		_comet()
 
 
+## A theme value, or `fallback` when the track doesn't set it.
+func _t(key: String, fallback: Variant) -> Variant:
+	return _theme.get(key, fallback)
+
+
 func _environment() -> WorldEnvironment:
 	var sky_mat := ShaderMaterial.new()
 	sky_mat.shader = SKY_SHADER
+	if _theme.has("sky"):
+		for i in 3:
+			sky_mat.set_shader_parameter(["cloud_a", "cloud_b", "cloud_c"][i], Color(_theme.sky[i]))
+	if _theme.has("deep"):
+		sky_mat.set_shader_parameter("deep", Color(_theme.deep))
 	var sky := Sky.new()
 	sky.sky_material = sky_mat
 	var env := Environment.new()
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("4a3d6a")
+	env.ambient_light_color = Color(_t("ambient", "4a3d6a"))
 	env.ambient_light_energy = 0.7
 	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	env.fog_enabled = true
-	env.fog_light_color = Color("3a2a5a")
-	env.fog_density = 0.0012
+	env.fog_light_color = Color(_t("fog", "3a2a5a"))
+	env.fog_density = float(_t("fog_density", 0.0012))
 	env.fog_sky_affect = 0.0
 	var we := WorldEnvironment.new()
 	we.environment = env
@@ -76,13 +89,15 @@ func _environment() -> WorldEnvironment:
 
 ## Bramble hangs off to one side and below, with its rings sweeping under the whole course.
 func _bramble() -> void:
-	var planet := Stage.bramble(Vector3(1100, -420, 250), 520.0)
+	var p: Array = _t("planet", [1100, -420, 250, 520])
+	var planet := Stage.bramble(Vector3(p[0], p[1], p[2]), float(p[3]))
 	add_child(planet)
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(3200, 3200)
 	var mat := ShaderMaterial.new()
 	mat.shader = RING_SHADER
-	var rings := Stage.mesh(plane, mat, Vector3(1100, -120, 250))
+	var r: Array = _t("rings_at", [1100, -120, 250])
+	var rings := Stage.mesh(plane, mat, Vector3(r[0], r[1], r[2]))
 	rings.rotation_degrees = Vector3(4, 0, -6)
 	add_child(rings)
 
@@ -122,7 +137,7 @@ func _asteroids() -> void:
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.use_custom_data = true
 	mm.mesh = _rock_mesh(1.0)
-	mm.instance_count = 140
+	mm.instance_count = int(_t("asteroids", 140))
 	for i in mm.instance_count:
 		var at := _beside(25, 320, Vector2(-60, 90))
 		var size := _rng.randf_range(1.5, 9.0) if i % 9 else _rng.randf_range(14.0, 26.0)
@@ -157,7 +172,8 @@ func _buoys() -> void:
 				+ Vector3.UP * (2.2 + sin(s * 0.3) * 0.6)))
 		var mi := MultiMeshInstance3D.new()
 		mi.multimesh = mm
-		mi.material_override = Stage.glow(Color("ffc46b") if side > 0 else Color("7ff0e0"))
+		var lanterns: Array = _t("lanterns", ["ffc46b", "7ff0e0"])
+		mi.material_override = Stage.glow(Color(lanterns[0] if side > 0 else lanterns[1]))
 		add_child(mi)
 
 
@@ -180,7 +196,7 @@ func hoop(s: float) -> Node3D:
 ## Glass bubbles with a little green island, a tree and a cottage inside: the drum gardens,
 ## floating free.
 func _terrariums() -> void:
-	for i in 11:
+	for i in int(_t("terrariums", 11)):
 		var r := _rng.randf_range(9.0, 18.0)
 		var at := _beside(r + 15.0, 160.0, Vector2(-20, 45))
 		var bubble := Node3D.new()
@@ -218,7 +234,7 @@ func _terrariums() -> void:
 
 
 func _jelly_school() -> void:
-	for i in 16:
+	for i in int(_t("jellies", 16)):
 		var color: Color = JELLY_COLORS[i % JELLY_COLORS.size()]
 		var node := Node3D.new()
 		var home := _beside(8, 90, Vector2(6, 40))
@@ -259,7 +275,7 @@ func _jelly_school() -> void:
 ## Star whales: great blue swimmers with glowing spots, circling far out from the course.
 func _whale_pod() -> void:
 	var center := Vector3(120, 0, 230)
-	for i in 3:
+	for i in int(_t("whales", 3)):
 		var whale := Node3D.new()
 		add_child(whale)
 		var scale := _rng.randf_range(7.0, 11.0)

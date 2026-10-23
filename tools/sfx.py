@@ -119,6 +119,10 @@ def main():
     f = 520 + 380 * np.sin(np.pi * x / 0.28)
     chirp = np.sin(2 * np.pi * np.cumsum(f) / RATE) * env(len(x), attack=0.03, release=0.3)
     save("mrrp", chirp + 0.3 * np.sin(2 * np.pi * 2 * np.cumsum(f) / RATE) * env(len(x), attack=0.03, release=0.3), 0.35)
+    # Foghorn: a low, wobbly two-tone honk.
+    x = t(0.7)
+    horn = tone(140, 0.7, 0.2, (1.0, 0.7, 0.5, 0.3)) * (1 + 0.15 * np.sin(2 * np.pi * 7 * x))
+    save("honk", horn + 0.6 * tone(175, 0.7, 0.2, (1.0, 0.5, 0.3)), 0.5)
 
 
 if __name__ == "__main__":

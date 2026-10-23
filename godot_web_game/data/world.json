@@ -97,14 +97,23 @@
     {"scene": "crake_arrives", "day": 3, "phase": "morning", "idle": true},
     {"scene": "day4_morning", "min_day": 4}
   ],
-  "race": {
-    "club": {"name": "Quietwater Club Race", "laps": 2, "rivals": {"ilse": 0.55, "brindle": 0.8},
-      "prizes": [140, 80, 40]}
+  "races": {
+    "club": {"name": "Quietwater Club Race", "track": "quietwater", "laps": 2, "rivals": {"ilse": 0.55, "brindle": 0.8},
+      "prizes": [140, 80, 40], "about": "Every evening at last bell. Entry's free and so is the cocoa."},
+    "slow_sunday": {"name": "Slow Sunday Cup", "track": "quietwater", "laps": 2, "cap": 175, "weekday": 0,
+      "rivals": {"brindle": 0.85, "odessa": 0.7}, "prizes": [220, 120, 60],
+      "about": "A gentle cup for gentle ships. Nothing rated over 175 may enter."},
+    "shadow_run": {"name": "Ring Shadow Night Run", "track": "shadow", "laps": 2, "cap": 245, "weekday": 3,
+      "rivals": {"ilse": 0.7, "crake": 0.75}, "prizes": [300, 160, 80],
+      "about": "Through Bramble's shadow after dark. Class B: ships rated 245 or under."},
+    "garden_dash": {"name": "Drum Garden Dash", "track": "gardens", "laps": 3, "weekday": 5,
+      "rivals": {"ilse": 0.85, "brindle": 0.85, "crake": 0.8}, "prizes": [420, 220, 110],
+      "about": "The dock's big open race, twisting through the drum gardens. Anything goes."}
   },
   "start": {
     "pebs": 150,
     "parts": {"engine_hush": 1, "fin_swept": 1, "lights_bar": 1, "gadget_ribbon": 1},
     "items": {"tea_steady_leaf": 3, "tea_bright_ember": 2, "tea_drift_bloom": 1, "cake_moon_plum": 1, "cake_nebula_roll": 1}
   },
-  "market": ["engine_hush", "engine_sprint", "fin_stub", "fin_swept", "fin_wing", "cockpit_bubble", "cockpit_visor", "cockpit_bay", "lights_round", "lights_bar", "gadget_ribbon", "gadget_bubble", "engine_ring", "fin_feather", "cockpit_eye", "lights_stalks"]
+  "market": ["engine_hush", "engine_sprint", "fin_stub", "fin_swept", "fin_wing", "cockpit_bubble", "cockpit_visor", "cockpit_bay", "lights_round", "lights_bar", "gadget_ribbon", "gadget_bubble", "engine_ring", "fin_feather", "cockpit_eye", "lights_stalks", "gadget_magnet", "gadget_horn"]
 }

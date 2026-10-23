@@ -10,7 +10,7 @@ Left fins extend toward -X; Godot mirrors them for the right side.
 
 import math
 
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 from kit_common import (box_bm, empty, lathe_bm, mesh_obj, slab_bm, sphere_bm, transform_bm,
                         tube_bm)
@@ -508,12 +508,43 @@ def part_lights_stalks():
     return p
 
 
+def part_gadget_magnet():
+    """Tow magnet: a big red horseshoe magnet on a swivel, pointing forward."""
+    p = empty("part_gadget_magnet")
+    mesh_obj("post_metal", tube_bm([(0, 0, 0), (0, 0, 0.25)], [0.07, 0.07], 8), p)
+    shoe = [(0.22 * math.cos(a), 0.05, 0.42 + 0.22 * math.sin(a)) for a in (math.pi + math.pi * i / 12 for i in range(13))]
+    shoe = [(x, -0.1, z) for x, _, z in shoe]
+    arm = [(0.22, -0.1, 0.42), (0.22, 0.25, 0.42)]
+    mesh_obj("shoe_trim", tube_bm(shoe, [0.08] * 13, 10), p)
+    for side in (-1, 1):
+        mesh_obj(f"arm{side}_trim", tube_bm([(side * 0.22, -0.1, 0.42), (side * 0.22, 0.22, 0.42)], [0.08, 0.08], 10), p)
+        mesh_obj(f"tip{side}_metal", tube_bm([(side * 0.22, 0.22, 0.42), (side * 0.22, 0.32, 0.42)], [0.085, 0.085], 10), p)
+    return grow(p, 1.7)
+
+
+def part_gadget_horn():
+    """Foghorn: a brass trumpet bell on a stalk, aimed forward."""
+    p = empty("part_gadget_horn")
+    mesh_obj("stem_metal", tube_bm([(0, 0, 0), (0, 0, 0.3)], [0.06, 0.06], 8), p)
+    bell = lathe_bm([(-0.25, 0.05), (0.0, 0.06), (0.2, 0.1), (0.32, 0.2), (0.38, 0.3)])
+    mesh_obj("bell_trim", transform_bm(bell, lambda v: v + Vector((0, 0, 0.36))), p)
+    mesh_obj("mouth_dark", transform_bm(lathe_bm([(0.37, 0.27), (0.36, 0.001)]), lambda v: v + Vector((0, 0, 0.36))), p)
+    return grow(p, 1.8)
+
+
+def grow(part, factor):
+    """Scale a part's meshes about its socket, for gadgets that need to read from the chase camera."""
+    for child in part.children:
+        child.data.transform(Matrix.Scale(factor, 4))
+    return part
+
+
 HULLS = (hull_moth, hull_kettle, hull_heron, hull_bucket, hull_saucer, hull_manta, hull_barge, hull_snail,
          hull_ringdart)
 PARTS = (part_engine_rattler, part_engine_hush, part_engine_sprint, part_fin_stub, part_fin_swept,
          part_fin_wing, part_cockpit_bubble, part_cockpit_visor, part_cockpit_bay, part_lights_round,
          part_lights_bar, part_gadget_ribbon, part_gadget_bubble, part_engine_ring, part_fin_feather,
-         part_cockpit_eye, part_lights_stalks)
+         part_cockpit_eye, part_lights_stalks, part_gadget_magnet, part_gadget_horn)
 
 
 def build_kit():

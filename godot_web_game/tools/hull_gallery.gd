@@ -4,8 +4,8 @@
 extends Node
 
 const LOADOUTS := [
-	{"engine": "engine_ring", "fins": "fin_feather", "cockpit": "cockpit_eye", "lights": "lights_stalks"},
-	{"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_visor", "lights": "lights_bar"},
+	{"engine": "engine_ring", "fins": "fin_feather", "cockpit": "cockpit_eye", "lights": "lights_stalks", "top": "gadget_magnet"},
+	{"engine": "engine_sprint", "fins": "fin_swept", "cockpit": "cockpit_visor", "lights": "lights_bar", "top": "gadget_horn"},
 	{"engine": "engine_hush", "fins": "fin_wing", "cockpit": "cockpit_bay", "lights": "lights_round"},
 ]
 const PAINTS := [["teal", "marigold", "stripe"], ["rose", "cream", "dots"], ["dusk", "mint", "two_tone"],

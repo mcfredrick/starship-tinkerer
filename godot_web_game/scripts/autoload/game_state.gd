@@ -451,6 +451,34 @@ func roll_find(ship_id: String) -> String:
 	return found
 
 
+## The cup running today (a race id with a `weekday`), or "". Cups start once the club race has.
+func cup_today() -> String:
+	for id in Content.world.races:
+		var r: Dictionary = Content.world.races[id]
+		if r.has("weekday") and day % 7 == int(r.weekday) and day >= 3:
+			return id
+	return ""
+
+
+## Days until the next cup, and which: {id, in}. For the bulletin and the shop's hint.
+func next_cup() -> Dictionary:
+	for ahead in range(1, 8):
+		for id in Content.world.races:
+			var r: Dictionary = Content.world.races[id]
+			if r.has("weekday") and (day + ahead) % 7 == int(r.weekday) and day + ahead >= 3:
+				return {"id": id, "in": ahead}
+	return {}
+
+
+## Why your race ship can't enter `race_id`, or "" if it can.
+func race_block(race_id: String) -> String:
+	var r: Dictionary = Content.world.races[race_id]
+	var rating := ShipStats.rating(ShipStats.compute(ships[race_ship], Content.parts))
+	if r.has("cap") and rating > int(r.cap):
+		return "The %s is rated %d; the %s caps entries at %d." % [ships[race_ship].name, rating, r.name, int(r.cap)]
+	return ""
+
+
 ## Today's hawker visit, or {} if nobody's parked outside.
 func hawker_today() -> Dictionary:
 	if int(hawker.get("day", 0)) != day:

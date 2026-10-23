@@ -59,6 +59,12 @@
     "gadget_ribbon": {"name": "Ribbon launcher", "slot": "top", "price": 180, "model": "part_gadget_ribbon", "gadget": "ribbon",
       "desc": "Race gadget. Unspools a shimmering slipstream ribbon ahead of you to ride.",
       "stats": {"mass": 3}},
+    "gadget_magnet": {"name": "Tow magnet", "slot": "top", "price": 200, "model": "part_gadget_magnet", "gadget": "magnet",
+      "desc": "Race gadget. Latches onto the ship ahead and lets it pull you along for a few seconds.",
+      "stats": {"mass": 5}},
+    "gadget_horn": {"name": "Foghorn", "slot": "top", "price": 140, "model": "part_gadget_horn", "gadget": "horn",
+      "desc": "Race gadget. A blast so startling that ships just ahead wobble and slow. Bubbles shrug it off.",
+      "stats": {"mass": 3, "noise": 6}},
     "gadget_bubble": {"name": "Bubble emitter", "slot": "top", "price": 160, "model": "part_gadget_bubble", "gadget": "bubble",
       "desc": "Race gadget. Pops a shield bubble that shrugs off bumps.",
       "stats": {"mass": 3}}

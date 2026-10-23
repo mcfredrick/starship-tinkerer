@@ -34,7 +34,7 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Logic tests | `godot --headless --script res://tests/run_tests.gd` (every `test_` method runs) |
 | Compile every script | `godot --headless res://tools/check_scripts.tscn` |
 | Race balance report | `godot --headless --script res://tools/race_report.gd` |
-| Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet] [--talk=scene]` plus screen params: workbench `--ship= --tab= --repair=N --focus=N` (lean in on a fault) `--fixfx=N` (play its fix) `--demo=paint\|part\|scrub\|<livery>`, race `--at=<meters> --paused`, title `--form=[custom]` |
+| Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet] [--talk=scene]` plus screen params: workbench `--ship= --tab= --repair=N --focus=N` (lean in on a fault) `--fixfx=N` (play its fix) `--demo=paint\|part\|scrub\|<livery>`, race `--race=<id> --at=<meters> --paused`, title `--form=[custom]` |
 | Screenshot at phone size | add `--resolution 1170x540` before `--` and `--phone` after it (portrait: `--resolution 390x844`) |
 | Hull gallery (every hull, sample loadouts) | `godot --path . --resolution 640x400 res://tools/hull_gallery.tscn -- --out=<png> [--hull=id] [--yaw=rad]` |
 | Ship kit | `$B -b --python blender/export_ship_kit.py` (repo root); preview with `preview_kit.py -- out.png [--front]` |
@@ -63,6 +63,8 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
   Their scenes set story-local flags with `! story <flag>`; the handoff sets `tier_<tier>`.
 - Portraits and doll layers import as lossy WebP (`compress/mode=1`, quality 0.85 in their `.import`
   files), which halves the download. New PNGs there need the same setting.
+- Tracks are data (`data/tracks.json`: control points, width, a scenery `theme`); races in
+  `world.json` `races` name a track, laps, rivals, prizes and optionally a `weekday` and rating `cap`.
 - Hulls need all six sockets and spots 1 to 6 (spots are numbered from 1); the kit test checks this.
 - Ship kit mesh names end in a material role (`_paint`, `_trim`, `_glass`, `_metal`, `_glow`,
   `_dark`). Sockets are `<hull>__socket_<slot>`, repair spots `<hull>__spot_<n>`. Ship nose is

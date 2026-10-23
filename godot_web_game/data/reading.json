@@ -131,6 +131,13 @@
       "day": 1,
       "requires": "halloran_drawer_letter",
       "body": "Dear {name},\n\nIf you've opened this drawer, it's later. Good. I hoped it would be.\n\nI didn't leave because I was tired of the shop. I left because I'd stopped hearing the ships. You'll know what I mean soon if you don't already: the way a seam sings when it's about to go, the way an engine sighs when it's been treated kindly. I'd started fixing things by the manual instead of by ear, and that's no way to treat a ship, or a dock.\n\nOut here past the comet line I'm learning to listen again. The comet bloom is coming, by the way. Odessa will want to see it. Everyone will. Go, if you can. Close the shop for a night.\n\nGrommet knows where the good drawer is. Bribe accordingly.\n\nWith grease under every fingernail,\nHalloran"
+    },
+    "race_calendar": {
+      "kind": "bulletin",
+      "title": "Race calendar",
+      "from": "Quietwater Racing Club",
+      "day": 3,
+      "body": "THE CLUB RACE\nEvery evening at last bell, around the Quietwater Ring. Open to all.\n\nSLOW SUNDAY CUP (days 7, 14, 21...)\nThe Quietwater Ring, for gentle ships. Nothing rated over 175. Odessa Vell has entered, and says she intends to win, slowly.\n\nRING SHADOW NIGHT RUN (days 3, 10, 17...)\nA fast night course through Bramble's shadow, for Class B ships rated 245 or under.\n\nDRUM GARDEN DASH (days 5, 12, 19...)\nThree laps of the twistiest course on the dock, between the floating terrariums. Anything goes.\n\nYour ship's race rating is on its readout at the workbench."
     }
   }
 }

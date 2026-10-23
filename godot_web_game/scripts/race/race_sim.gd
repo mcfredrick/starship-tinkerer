@@ -20,6 +20,12 @@ const RIBBON_LENGTH := 70.0
 const RIBBON_TIME := 7.0
 const SHIELD_TIME := 5.0
 const GADGET_COOLDOWN := 12.0
+## Tow magnet: for a few seconds, a ship within reach ahead pulls you along.
+const TOW_TIME := 3.5
+const TOW_REACH := 45.0
+## Foghorn: ships just ahead of you jump and slow for a moment (unless shielded).
+const HORN_REACH := 35.0
+const STARTLE_TIME := 1.4
 
 var track: Track
 var laps: int
@@ -43,7 +49,7 @@ func add_racer(id: String, stats: Dictionary, gadget: String, ai: bool, skill :=
 		"id": id, "ai": ai, "skill": skill, "m": ShipStats.handling_model(stats),
 		"s": -6.0 - grid * 9.0, "d": [3.0, -3.0, 0.0, 6.0][grid % 4], "v": 0.0, "psi": 0.0,
 		"steer": 0.0, "boost": 0.0, "boosting": false, "drift": false, "charge": 0.0, "mini": 0.0,
-		"gadget": gadget, "cooldown": 3.0, "shield": 0.0, "finish": -1.0, "bump": 0.0,
+		"gadget": gadget, "cooldown": 3.0, "shield": 0.0, "finish": -1.0, "bump": 0.0, "tow": 0.0, "startled": 0.0,
 		"drift_need": DRIFT_CHARGE * (1.0 - perks.get("drift_charge", 0.0)),
 		"wall_slow": 0.93 if perks.get("wall_grace", 0.0) > 0 else WALL_SLOW,
 		"gadget_time": GADGET_COOLDOWN * (1.0 - perks.get("gadget_cooldown", 0.0)),
@@ -106,6 +112,8 @@ func _drive(r: Dictionary, input: Dictionary, dt: float) -> void:
 	var accel: float = m.accel
 	r.mini = maxf(r.mini - dt, 0.0)
 	r.shield = maxf(r.shield - dt, 0.0)
+	r.tow = maxf(r.tow - dt, 0.0)
+	r.startled = maxf(r.startled - dt, 0.0)
 	r.cooldown = maxf(r.cooldown - dt, 0.0)
 	r.bump = maxf(r.bump - dt, 0.0)
 
@@ -125,6 +133,11 @@ func _drive(r: Dictionary, input: Dictionary, dt: float) -> void:
 	if _on_ribbon(r):
 		top *= 1.3
 		accel *= 1.5
+	if r.tow > 0 and _ahead(r, TOW_REACH):
+		top *= 1.25
+		accel *= 1.8
+	if r.startled > 0:
+		top *= 0.78
 
 	if input.get("throttle", false) or r.boosting:
 		r.v += accel * maxf(1.0 - r.v / top, -0.6) * dt
@@ -183,7 +196,25 @@ func _use_gadget(r: Dictionary) -> void:
 			ribbons.append({"from": r.s + 4.0, "to": r.s + 4.0 + RIBBON_LENGTH, "d": r.d, "life": RIBBON_TIME})
 		"bubble":
 			r.shield = SHIELD_TIME
+		"magnet":
+			r.tow = TOW_TIME
+		"horn":
+			for other in racers:
+				var gap: float = other.s - r.s
+				if other != r and gap > 0 and gap < HORN_REACH and other.shield <= 0:
+					other.startled = STARTLE_TIME
+					events.append({"type": "startled", "id": other.id, "by": r.id})
 	events.append({"type": "gadget", "id": r.id, "gadget": r.gadget})
+
+
+## The nearest ship ahead within `reach`, or {}.
+func _ahead(r: Dictionary, reach: float) -> Dictionary:
+	var best := {}
+	for other in racers:
+		var gap: float = other.s - r.s
+		if other != r and gap > 2.0 and gap < reach and (best.is_empty() or other.s < best.s):
+			best = other
+	return best
 
 
 func _on_ribbon(r: Dictionary) -> bool:
@@ -227,5 +258,6 @@ func _ai_input(r: Dictionary) -> Dictionary:
 	return {
 		"steer": steer, "throttle": r.v < target_v, "brake": r.v > target_v * 1.12,
 		"boost": straight and r.boost > r.m.boost_capacity * 0.5 and r.skill > 0.5,
-		"drift": false, "gadget": r.cooldown <= 0 and straight,
+		"drift": false, "gadget": r.cooldown <= 0 and (straight if r.gadget in ["ribbon", "bubble"]
+			else not _ahead(r, HORN_REACH if r.gadget == "horn" else TOW_REACH).is_empty()),
 	}

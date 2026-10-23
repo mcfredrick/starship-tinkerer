@@ -1,4 +1,5 @@
-## Simulates club races with AI drivers and prints finish times, for balancing.
+## Simulates every race with AI drivers (the Kettle in three builds) and prints finish times and
+## wall hits, for balancing.
 ## Run: godot --headless --path godot_web_game --script res://tools/race_report.gd
 extends SceneTree
 
@@ -6,21 +7,24 @@ extends SceneTree
 func _init() -> void:
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/parts.json"))
 	var world: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/world.json"))
+	var tracks: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/tracks.json"))
 	var stock: Dictionary = world.ships.kettle
 	var tuned := stock.duplicate(true)
 	tuned.parts.merge({"engine": "engine_hush", "fins": "fin_swept", "lights": "lights_bar", "top": "gadget_ribbon"}, true)
 	var racer := stock.duplicate(true)
 	racer.parts.merge({"engine": "engine_sprint", "fins": "fin_wing", "cockpit": "cockpit_visor", "top": "gadget_ribbon"},
 		true)
-	for build in [["stock", stock], ["tuned", tuned], ["racer", racer]]:
-		print("--- kettle ", build[0], " rating ", ShipStats.rating(ShipStats.compute(build[1], data)))
-		print(report(build[1], data, world))
+	for race_id in world.races:
+		var race: Dictionary = world.races[race_id]
+		print("===== %s (%s, %d laps, cap %s)" % [race.name, race.track, race.laps, race.get("cap", "none")])
+		for build in [["stock", stock], ["tuned", tuned], ["racer", racer]]:
+			print("--- kettle ", build[0], " rating ", ShipStats.rating(ShipStats.compute(build[1], data)))
+			print(report(build[1], data, world, race, tracks))
 	quit()
 
 
-static func report(kettle: Dictionary, data: Dictionary, world: Dictionary) -> String:
-	var race: Dictionary = world.race.club
-	var sim := RaceSim.new(Track.quietwater(), race.laps)
+static func report(kettle: Dictionary, data: Dictionary, world: Dictionary, race: Dictionary, tracks: Dictionary) -> String:
+	var sim := RaceSim.new(Track.from_spec(tracks[race.track]), race.laps)
 	var walls := {}
 	var entries := [["kettle", kettle, 0.92]]
 	for pilot in race.rivals:

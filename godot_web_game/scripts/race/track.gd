@@ -85,13 +85,7 @@ func forward(s: float) -> Vector3:
 	return (position(s + STEP, 0) - position(s - STEP, 0)).normalized()
 
 
-## The Quietwater ring circuit: a long dock straight, a climb into the sweeping bend, the
-## sun-hairpin at the crest, a plunge under the terrariums and an S back up to the line.
-static func quietwater() -> Track:
-	var pts := [
-		Vector3(0, 0, 0), Vector3(220, 4, 0), Vector3(360, 16, 30), Vector3(420, 28, 130), Vector3(370, 34, 230),
-		Vector3(260, 26, 250), Vector3(200, 14, 320), Vector3(250, 2, 400), Vector3(210, -10, 470),
-		Vector3(110, -16, 450), Vector3(0, -8, 400), Vector3(-90, 6, 330), Vector3(-60, 18, 230),
-		Vector3(-150, 14, 160), Vector3(-190, 6, 70), Vector3(-120, 2, 10),
-	]
-	return from_points(pts, 11.0)
+## A track from its data/tracks.json entry: control points [[x, height, z], ...] and a width.
+static func from_spec(spec: Dictionary) -> Track:
+	var pts: Array = spec.points.map(func(p): return Vector3(p[0], p[1], p[2]))
+	return from_points(pts, float(spec.width))

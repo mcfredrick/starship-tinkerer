@@ -449,9 +449,9 @@ really left.
 6. **Trading.** Done. Drifting prices and market events, hawkers and their carts, worn parts to
    restore, the salvage yard with junkers to flip or race, trinkets hidden in ships, and Halloran's
    drawers.
-7. **Racing.** Physics tuning so stats drive handling, build gadgets, three tracks, class ratings,
-   the club race and the seasonal calendar. (The club race, its space course, pause and touch
-   controls are in.)
+7. **Racing.** Done. Three tracks in data (Quietwater Ring, the Ring Shadow night run, the Drum
+   Garden twist), each with its own scenery theme; a weekly calendar of cups with rating caps beside
+   the nightly club race; four gadgets (ribbon, bubble, tow magnet, foghorn); race any fixed ship.
 8. **The cast.** All the pilots with their full arcs, letters, reading content and after-arc
    storylets.
    Special events at the places the story talks about, starting with the Comet Bloom.
