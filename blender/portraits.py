@@ -1,10 +1,12 @@
-"""Render character portrait sheets: one toon-shaded bust per expression, transparent background.
+"""Render character portrait sheets: one comic-inked alien bust per expression, transparent background.
 
 Run: Blender -b --python blender/portraits.py -- [character ...]
 Writes godot_web_game/assets/portraits/<character>_<expression>.png.
 
-Faces look toward -Y (the camera), +Z is up. Expressions only move brows, eyes and mouth, so every
-character gets the full set from one description.
+The look is a comic panel: Freestyle brush lines that swell, taper and wobble, halftone dots through
+the midtones and hatching in the deepest shadows. Shading is done in screen space, so it stays
+print-sized whatever the shape. Faces look toward -Y (the camera), +Z is up. Expressions only move
+brows, eyes and mouth, so every character gets the full set from one description.
 """
 
 import math
@@ -16,11 +18,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 import bpy  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
-from kit_common import (box_bm, clear_scene, empty, lathe_bm, mesh_obj, sphere_bm,  # noqa: E402
-                        transform_bm, tube_bm)
+from kit_common import box_bm, clear_scene, empty, lathe_bm, mesh_obj, sphere_bm, transform_bm, tube_bm  # noqa: E402
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "godot_web_game" / "assets" / "portraits"
 SIZE = (512, 640)
+# Halftone and hatch spacing, in cells across and down the frame (about 7 pixels each).
+CELLS = (74, 92)
 
 # brow: (height, inner tilt; positive lifts the inner ends) per side, eye: openness 0..1 or "arc"
 # for happily closed eyes, look: pupil offset, mouth: (smile -1..1, open 0..1, width scale).
@@ -35,57 +38,34 @@ EXPRESSIONS = {
     "grumpy": {"brow": ((-0.06, -0.3), (-0.06, -0.3)), "eye": 0.7, "look": (0, 0), "mouth": (-0.35, 0.0, 0.8)},
 }
 
+
+def hexc(h):
+    """sRGB hex to the linear values Blender's emission expects, so colors land exactly as picked."""
+    return tuple((int(h[i:i + 2], 16) / 255) ** 2.2 for i in (0, 2, 4))
+
+
+INK = hexc("1a0f24")
+
 CHARACTERS = {
-    "odessa": {
-        "skin": (0.55, 0.36, 0.25), "hair": (0.86, 0.85, 0.88), "iris": (0.25, 0.15, 0.08),
-        "jacket": (0.85, 0.62, 0.22), "accent": (0.18, 0.55, 0.55), "head": (0.88, 0.84, 1.0),
-        "hair_style": "bun", "glasses": True, "brow_color": (0.8, 0.8, 0.82),
-    },
-    "ilse": {
-        "skin": (0.93, 0.72, 0.6), "hair": (0.82, 0.7, 0.42), "iris": (0.2, 0.45, 0.6),
-        "jacket": (0.78, 0.18, 0.2), "accent": (0.95, 0.95, 0.92), "head": (0.82, 0.82, 1.05),
-        "hair_style": "bob", "goggles": True, "brow_color": (0.75, 0.62, 0.35),
-    },
-    "crake": {
-        "skin": (0.9, 0.74, 0.66), "hair": (0.28, 0.2, 0.17), "iris": (0.35, 0.3, 0.2),
-        "jacket": (0.49, 0.25, 0.43), "accent": (0.79, 0.64, 0.29), "head": (0.8, 0.82, 1.08),
-        "hair_style": "slick", "mustache": True, "monocle": True, "brow_color": (0.25, 0.18, 0.15),
-    },
-    "brindle": {
-        "robot": True, "shell": (0.42, 0.62, 0.62), "jacket": (0.95, 0.5, 0.15), "glow": (0.55, 1.0, 0.85),
-        "screen": (0.06, 0.1, 0.12), "accent": (0.25, 0.27, 0.3),
-    },
+    # A three-eyed grandmother with pom-tipped antennae, ear frills and round glasses.
+    "odessa": {"build": "odessa", "skin": hexc("ff5a5f"), "jacket": hexc("ffc300"), "accent": hexc("00c2b8"),
+               "iris": hexc("2b0f54"), "head": (1.02, 0.88, 0.86)},
+    # A racer with an axolotl's grin and feathery gill fronds, goggles pushed up.
+    "ilse": {"build": "ilse", "skin": hexc("5ec8f2"), "jacket": hexc("e63946"), "accent": hexc("ff70a6"),
+             "trim": hexc("fff4e0"), "iris": hexc("14213d"), "head": (1.0, 0.85, 0.8)},
+    # A gourd-headed, one-eyed yacht owner with a monocle, gold crest and curled tentacle mustache.
+    "crake": {"build": "crake", "skin": hexc("9be22d"), "jacket": hexc("7b2cbf"), "accent": hexc("ffb703"),
+              "stache": hexc("4f8a10"), "iris": hexc("ff2e63"), "head": (0.68, 0.72, 1.22)},
+    # A maintenance robot with a face screen.
+    "brindle": {"build": "robot", "shell": hexc("3fb8af"), "jacket": hexc("ff8c1a"), "accent": hexc("4a4e69"),
+                "glow": hexc("9dffd9"), "screen": hexc("10232b")},
 }
 
 
 # ---------------------------------------------------------------- materials
 
-def toon_material(name, color, shadow=0.62):
-    """Two-band cel shading: diffuse light through a constant ramp, emitted so colors stay exact."""
-    m = bpy.data.materials.new(name)
-    m.use_nodes = True
-    nt = m.node_tree
-    nt.nodes.clear()
-    diffuse = nt.nodes.new("ShaderNodeBsdfDiffuse")
-    to_rgb = nt.nodes.new("ShaderNodeShaderToRGB")
-    ramp = nt.nodes.new("ShaderNodeValToRGB")
-    ramp.color_ramp.interpolation = "CONSTANT"
-    ramp.color_ramp.elements[0].color = (shadow, shadow, shadow * 1.05, 1)
-    ramp.color_ramp.elements[1].position = 0.35
-    ramp.color_ramp.elements[1].color = (1, 1, 1, 1)
-    mix = nt.nodes.new("ShaderNodeMix")
-    mix.data_type = "RGBA"
-    mix.blend_type = "MULTIPLY"
-    mix.inputs["Factor"].default_value = 1.0
-    mix.inputs["B"].default_value = (*color, 1)
-    emit = nt.nodes.new("ShaderNodeEmission")
-    out = nt.nodes.new("ShaderNodeOutputMaterial")
-    nt.links.new(diffuse.outputs["BSDF"], to_rgb.inputs["Shader"])
-    nt.links.new(to_rgb.outputs["Color"], ramp.inputs["Fac"])
-    nt.links.new(ramp.outputs["Color"], mix.inputs["A"])
-    nt.links.new(mix.outputs["Result"], emit.inputs["Color"])
-    nt.links.new(emit.outputs["Emission"], out.inputs["Surface"])
-    return m
+def lerp(a, b, t):
+    return tuple(x + (y - x) * t for x, y in zip(a, b))
 
 
 def flat_material(name, color):
@@ -100,26 +80,137 @@ def flat_material(name, color):
     return m
 
 
-def outline_material():
-    m = flat_material("outline", (0.05, 0.04, 0.06))
-    m.use_backface_culling = True
+def _math(nt, op, a, b, clamp=False):
+    n = nt.nodes.new("ShaderNodeMath")
+    n.operation = op
+    n.use_clamp = clamp
+    for i, x in enumerate((a, b)):
+        if isinstance(x, (int, float)):
+            n.inputs[i].default_value = x
+        else:
+            nt.links.new(x, n.inputs[i])
+    return n.outputs[0]
+
+
+def _screen(nt, angle):
+    """Window coordinates in halftone cells, rotated so dots and hatching run on a diagonal."""
+    coord = nt.nodes.new("ShaderNodeTexCoord")
+    scale = nt.nodes.new("ShaderNodeVectorMath")
+    scale.operation = "MULTIPLY"
+    scale.inputs[1].default_value = (*CELLS, 0)
+    nt.links.new(coord.outputs["Window"], scale.inputs[0])
+    rot = nt.nodes.new("ShaderNodeVectorRotate")
+    rot.rotation_type = "Z_AXIS"
+    rot.inputs["Angle"].default_value = math.radians(angle)
+    nt.links.new(scale.outputs[0], rot.inputs["Vector"])
+    return rot.outputs[0]
+
+
+def _mix(nt, factor, a, b):
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    for slot, v in (("A", a), ("B", b)):
+        if isinstance(v, tuple):
+            mix.inputs[slot].default_value = (*v, 1)
+        else:
+            nt.links.new(v, mix.inputs[slot])
+    nt.links.new(factor, mix.inputs["Factor"])
+    return mix.outputs["Result"]
+
+
+def comic_material(name, color):
+    """Flat color, halftone dots that grow as the light falls off, and ink hatching in deep shadow."""
+    shade = lerp(tuple(ch * 0.45 for ch in color), (0.03, 0.0, 0.1), 0.3)
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    nt.nodes.clear()
+    diffuse = nt.nodes.new("ShaderNodeBsdfDiffuse")
+    to_rgb = nt.nodes.new("ShaderNodeShaderToRGB")
+    nt.links.new(diffuse.outputs[0], to_rgb.inputs[0])
+    bw = nt.nodes.new("ShaderNodeRGBToBW")
+    nt.links.new(to_rgb.outputs[0], bw.inputs[0])
+    light = bw.outputs[0]
+
+    frac = nt.nodes.new("ShaderNodeVectorMath")
+    frac.operation = "FRACTION"
+    nt.links.new(_screen(nt, 45), frac.inputs[0])
+    centered = nt.nodes.new("ShaderNodeVectorMath")
+    centered.operation = "SUBTRACT"
+    centered.inputs[1].default_value = (0.5, 0.5, 0)
+    nt.links.new(frac.outputs[0], centered.inputs[0])
+    length = nt.nodes.new("ShaderNodeVectorMath")
+    length.operation = "LENGTH"
+    nt.links.new(centered.outputs[0], length.inputs[0])
+    radius = _math(nt, "MULTIPLY", _math(nt, "MULTIPLY", _math(nt, "SUBTRACT", 0.75, light), 2.2, clamp=True), 0.62)
+    dots = _math(nt, "LESS_THAN", length.outputs["Value"], radius)
+
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(_screen(nt, -45), sep.inputs[0])
+    width = _math(nt, "MULTIPLY", _math(nt, "MULTIPLY", _math(nt, "SUBTRACT", 0.3, light), 3.0, clamp=True), 0.4)
+    hatch = _math(nt, "LESS_THAN", _math(nt, "FRACT", sep.outputs[0], 0), width)
+
+    result = _mix(nt, hatch, _mix(nt, dots, color, shade), INK)
+    emit = nt.nodes.new("ShaderNodeEmission")
+    nt.links.new(result, emit.inputs["Color"])
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    nt.links.new(emit.outputs[0], out.inputs["Surface"])
     return m
 
 
-OUTLINE = None
+def ink_lines(scene):
+    """Freestyle brush: a slanted nib, tapered ends, two loose passes that overshoot a little."""
+    scene.render.use_freestyle = True
+    scene.render.line_thickness_mode = "ABSOLUTE"
+    layer = scene.view_layers[0]
+    layer.use_freestyle = True
+    settings = layer.freestyle_settings
+    settings.crease_angle = math.radians(135)
+    lineset = settings.linesets[0] if settings.linesets else settings.linesets.new("ink")
+    for attr in ("select_silhouette", "select_border", "select_crease", "select_contour", "select_external_contour"):
+        setattr(lineset, attr, True)
+    style = bpy.data.linestyles.new("ink")
+    lineset.linestyle = style
+    style.color = INK
+    style.thickness = 4.0
+    style.use_chaining = True
+    style.chaining = "SKETCHY"
+    style.rounds = 2
+    style.geometry_modifiers.new("sample", "SAMPLING").sampling = 2.0
+    wobble = style.geometry_modifiers.new("wobble", "PERLIN_NOISE_1D")
+    wobble.frequency = 6.0
+    wobble.amplitude = 1.5
+    wobble.octaves = 2
+    style.geometry_modifiers.new("overshoot", "BACKBONE_STRETCHER").backbone_length = 4.2
+    nib = style.thickness_modifiers.new("nib", "CALLIGRAPHY")
+    nib.orientation = 60
+    nib.thickness_min = 1.5
+    nib.thickness_max = 5.5
+    taper = style.thickness_modifiers.new("taper", "ALONG_STROKE")
+    taper.blend = "MULTIPLY"
+    taper.mapping = "CURVE"
+    curve = taper.curve.curves[0]
+    curve.points[0].location = (0.0, 0.1)
+    curve.points[1].location = (1.0, 0.1)
+    curve.points.new(0.25, 1.0)
+    curve.points.new(0.75, 1.0)
+    taper.curve.update()
 
 
-def dress(obj, material, line=0.018):
-    """Assign a material and an inverted-hull outline (a flipped, back-face-culled shell)."""
+def dress(obj, material):
     obj.data.materials.append(material)
-    if line:
-        obj.data.materials.append(OUTLINE)
-        mod = obj.modifiers.new("outline", "SOLIDIFY")
-        mod.thickness = line
-        mod.offset = 1.0
-        mod.use_flip_normals = True
-        mod.material_offset = 1
     return obj
+
+
+def palette(c):
+    mats = {key: comic_material(key, c[key]) for key in ("skin", "jacket", "accent", "trim", "stache", "shell")
+            if key in c}
+    mats.update({
+        "white": flat_material("white", (1, 1, 1)), "iris": flat_material("iris", c.get("iris", INK)),
+        "brow": flat_material("brow", INK), "line": flat_material("line", INK),
+        "mouth": flat_material("mouth", hexc("6b0f2e")),
+    })
+    return mats
 
 
 # ---------------------------------------------------------------- face helpers
@@ -131,218 +222,233 @@ def face_point(head, x, z, out=0.0):
     return Vector((x, -ry * math.sqrt(k) - out, z))
 
 
-def build_eyes(c, e, mats, root, head, eye_z=0.08, spacing=0.31, eye_r=0.13):
-    for side in (-1, 1):
+def ring(center, rx, rz, n=24):
+    return [center + Vector((math.cos(a) * rx, 0, math.sin(a) * rz)) for a in (2 * math.pi * i / n for i in range(n + 1))]
+
+
+def build_eyes(e, mats, root, head, eye_z=0.08, spacing=0.31, eye_r=0.13, count=2):
+    sides = (0,) if count == 1 else (-1, 1)
+    for side in sides:
         x = side * spacing
         base = face_point(head, x, eye_z, out=-0.04)
-        tag = "lr"[side > 0]
+        tag = f"{side}"
         if e["eye"] == "arc":
-            pts = [base + Vector((side * 0 + (i / 8 - 0.5) * 0.22, -0.06, 0.035 * math.sin(math.pi * i / 8)))
+            pts = [base + Vector(((i / 8 - 0.5) * eye_r * 1.7, -0.06, eye_r * 0.27 * math.sin(math.pi * i / 8)))
                    for i in range(9)]
-            dress(mesh_obj(f"lid{tag}", tube_bm(pts, [0.022] * 9, 8), root), mats["line"], line=0)
+            dress(mesh_obj(f"lid{tag}", tube_bm(pts, [0.022] * 9, 8), root), mats["line"])
             continue
         open_ = e["eye"]
         white = sphere_bm(eye_r, 24, 12, lambda v: Vector((v.x, v.y * 0.6, v.z * 1.15 * open_)))
-        dress(mesh_obj(f"white{tag}", transform_bm(white, lambda v: v + base), root), mats["white"], line=0.012)
+        dress(mesh_obj(f"white{tag}", transform_bm(white, lambda v: v + base), root), mats["white"])
         lx, lz = e["look"]
         pupil_at = base + Vector((lx, -eye_r * 0.55, lz * open_))
         iris = sphere_bm(eye_r * 0.62, 16, 8, lambda v: Vector((v.x, v.y * 0.4, v.z * 1.1 * min(open_, 1.0))))
-        dress(mesh_obj(f"iris{tag}", transform_bm(iris, lambda v: v + pupil_at), root), mats["iris"], line=0)
+        dress(mesh_obj(f"iris{tag}", transform_bm(iris, lambda v: v + pupil_at), root), mats["iris"])
         glint = sphere_bm(eye_r * 0.18, 8, 4)
         dress(mesh_obj(f"glint{tag}", transform_bm(glint, lambda v: v + pupil_at + Vector((-0.03, -0.04, 0.04))),
-                       root), mats["white"], line=0)
+                       root), mats["white"])
 
 
-def build_brows(e, mats, root, head, brow_z=0.33, spacing=0.31):
+def build_brows(e, mats, root, head, brow_z=0.33, spacing=0.31, length=0.26):
     for side, (height, tilt) in zip((-1, 1), e["brow"]):
         pts = []
         for i in range(7):
             u = i / 6
-            x = side * (spacing - 0.13 + 0.26 * u)
+            x = side * (spacing - length / 2 + length * u)
             inner = 1 - u
             z = brow_z + height + tilt * 0.35 * (inner - 0.5) + 0.03 * math.sin(math.pi * u)
             pts.append(face_point(head, x, z, out=0.02))
-        dress(mesh_obj(f"brow{'lr'[side > 0]}", tube_bm(pts, [0.032] * 7, 8), root), mats["brow"], line=0)
+        dress(mesh_obj(f"brow{side}", tube_bm(pts, [0.032] * 7, 8), root), mats["brow"])
 
 
-def build_mouth(e, mats, root, head, mouth_z=-0.42):
+def build_mouth(e, mats, root, head, mouth_z=-0.42, wide=1.0):
     smile, open_, width = e["mouth"]
-    w = 0.2 * width
+    w = 0.2 * width * wide
     if open_ > 0:
         cavity = sphere_bm(1.0, 24, 12, lambda v: Vector((v.x * w * 0.9, v.y * 0.05,
                                                           v.z * 0.16 * open_ if v.z < 0 else v.z * 0.03)))
         at = face_point(head, 0, mouth_z - 0.04 * open_, out=-0.02)
-        dress(mesh_obj("cavity", transform_bm(cavity, lambda v: v + at), root), mats["mouth"], line=0.012)
+        dress(mesh_obj("cavity", transform_bm(cavity, lambda v: v + at), root), mats["mouth"])
     pts = []
     for i in range(9):
         u = (i / 8) * 2 - 1
         z = mouth_z + smile * 0.07 * (u * u - 0.5)
         pts.append(face_point(head, u * w, z, out=0.015))
-    dress(mesh_obj("lips", tube_bm(pts, [0.02] * 9, 8), root), mats["line"], line=0)
+    dress(mesh_obj("lips", tube_bm(pts, [0.02] * 9, 8), root), mats["line"])
+
+
+def egg_head(head, mats, root, taper_top=0.0, jowl=0.0):
+    """An ellipsoid head that can narrow toward the top (gourd) or widen toward the chin (jowls)."""
+    def shape(v):
+        widen = (1 - taper_top * max(v.z, 0)) * (1 + jowl * max(-v.z, 0))
+        return Vector((v.x * head[0] * widen, v.y * head[1], v.z * head[2]))
+    return dress(mesh_obj("head", sphere_bm(1.0, 48, 24, shape), root), mats["skin"])
+
+
+def bust(mats, root, top=-0.8):
+    body = lathe_bm([(top, 0.5), (top - 0.2, 0.75), (top - 0.55, 1.0), (top - 0.9, 1.1), (-2.3, 1.15)], axis="z",
+                    squash=(1.3, 0.62))
+    dress(mesh_obj("bust", body, root), mats["jacket"])
+    collar = lathe_bm([(top + 0.08, 0.5), (top - 0.02, 0.68), (top - 0.12, 0.72)], axis="z", squash=(1.12, 0.9))
+    dress(mesh_obj("collar", collar, root), mats["accent"])
 
 
 # ---------------------------------------------------------------- characters
 
-def smooth(d, width=0.08):
-    """0 below -width, 1 above +width, smooth in between: soft hairlines without jagged steps."""
-    t = min(max((d + width) / (2 * width), 0.0), 1.0)
-    return t * t * (3 - 2 * t)
-
-
-def hair_shell(v, head, puff, cover):
-    """Scale a unit-sphere vertex onto the head, puffed out where hair covers and tucked in elsewhere."""
-    k = 0.93 + (puff - 0.93) * cover
-    return Vector((v.x * head[0] * k, v.y * head[1] * k, v.z * head[2] * k))
-
-
-def human(c, e):
+def odessa(c, e):
     head = c["head"]
-    mats = {
-        "skin": toon_material("skin", c["skin"]), "hair": toon_material("hair", c["hair"]),
-        "jacket": toon_material("jacket", c["jacket"]), "accent": toon_material("accent", c["accent"]),
-        "white": flat_material("white", (0.97, 0.96, 0.94)), "iris": flat_material("iris", c["iris"]),
-        "brow": flat_material("brow", c["brow_color"]), "line": flat_material("line", (0.12, 0.06, 0.06)),
-        "mouth": flat_material("mouth", (0.35, 0.08, 0.1)), "metal": toon_material("metal", (0.7, 0.68, 0.6)),
-        "glass": flat_material("glass", (0.75, 0.9, 0.95)),
-    }
+    mats = palette(c)
     root = empty("portrait")
-    dress(mesh_obj("head", sphere_bm(1.0, 48, 24, lambda v: Vector((v.x * head[0], v.y * head[1], v.z * head[2]))),
-                   root), mats["skin"])
-    nose = sphere_bm(0.11, 16, 8, lambda v: Vector((v.x, v.y * 1.2, v.z * 1.2)))
-    dress(mesh_obj("nose", transform_bm(nose, lambda v: v + face_point(head, 0, -0.12, out=0.02)), root),
-          mats["skin"], line=0.012)
+    egg_head(head, mats, root, jowl=0.15)
     for side in (-1, 1):
-        ear = sphere_bm(0.17, 16, 8, lambda v: Vector((v.x * 0.5, v.y * 0.8, v.z)))
-        dress(mesh_obj(f"ear{'lr'[side > 0]}", transform_bm(ear, lambda v, s=side: v + Vector((s * head[0] * 0.98, 0.05, -0.02))),
-                       root), mats["skin"])
-    neck = lathe_bm([(-0.6, 0.3), (-1.15, 0.33)], axis="z")
-    dress(mesh_obj("neck", neck, root), mats["skin"])
-    bust = lathe_bm([(-0.95, 0.36), (-1.1, 0.55), (-1.35, 0.95), (-1.7, 1.1), (-2.3, 1.15)], axis="z",
-                    squash=(1.35, 0.6))
-    dress(mesh_obj("bust", bust, root), mats["jacket"])
-    collar = lathe_bm([(-0.88, 0.37), (-0.98, 0.5), (-1.08, 0.52)], axis="z", squash=(1.1, 0.95))
-    dress(mesh_obj("collar", collar, root), mats["accent"])
-
-    if c["hair_style"] == "bun":
-        def cap(v):
-            cover = min(max(smooth(v.z - (0.45 - 0.15 * abs(v.x))), smooth(v.y + 0.2)), smooth(v.z + 0.15))
-            return hair_shell(v, head, 1.07, cover)
-        dress(mesh_obj("hair", sphere_bm(1.0, 64, 32, cap), root), mats["hair"])
-        bun = sphere_bm(0.42, 24, 12)
-        dress(mesh_obj("bun", transform_bm(bun, lambda v: v + Vector((0, 0.45, 0.95))), root), mats["hair"])
-    elif c["hair_style"] == "slick":
-        # Combed back from a high hairline with a side part.
-        def slick(v):
-            cover = min(max(smooth(v.z - (0.55 - 0.08 * v.x)), smooth(v.y + 0.05)), smooth(v.z + 0.1))
-            p = hair_shell(v, head, 1.06, cover)
-            part = smooth(0.06 - abs(v.x + 0.35), 0.03) * cover
-            return p * (1.0 - 0.02 * part)
-        dress(mesh_obj("hair", sphere_bm(1.0, 64, 32, slick), root), mats["hair"])
-    else:
-        def bob(v):
-            cover = min(max(smooth(v.z - (0.42 + 0.22 * v.x)), smooth(v.y + 0.25)), smooth(v.z + 0.6))
-            return hair_shell(v, head, 1.1, cover)
-        dress(mesh_obj("hair", sphere_bm(1.0, 64, 32, bob), root), mats["hair"])
-
-    build_eyes(c, e, mats, root, head)
-    build_brows(e, mats, root, head)
-    build_mouth(e, mats, root, head)
-    blush = flat_material("blush", tuple(min(ch * 1.15 + 0.08, 1) for ch in (c["skin"][0] * 1.1, c["skin"][1] * 0.8,
-                                                                               c["skin"][2] * 0.85)))
+        pts = []
+        for i in range(12):
+            a = i / 11 * math.pi * 1.1
+            pts.append(Vector((side * (0.3 + 0.45 * math.sin(a) * i / 11), 0.1, 0.75 + 0.75 * math.sin(a * 0.9))))
+        dress(mesh_obj(f"antenna{side}", tube_bm(pts, [0.1 - 0.04 * i / 11 for i in range(12)], 8), root), mats["skin"])
+        dress(mesh_obj(f"pom{side}", transform_bm(sphere_bm(0.15, 16, 8), lambda v, p=pts[-1]: v + p), root),
+              mats["accent"])
+        frill = sphere_bm(0.3, 16, 8, lambda v: Vector((v.x * 0.35, v.y * 0.5, v.z)))
+        dress(mesh_obj(f"frill{side}", transform_bm(frill, lambda v, s=side: Vector((v.x + s * 1.02, v.y + 0.1,
+                                                                                   v.z + 0.05 + s * v.x * 0.8))),
+                       root), mats["accent"])
+    build_eyes(e, mats, root, head, eye_r=0.16, spacing=0.34)
+    # The third eye only opens when she's surprised.
+    third_open = 0.9 if e["eye"] != "arc" and e["eye"] > 1 else 0.25
+    third = sphere_bm(0.08, 16, 8, lambda v: Vector((v.x, v.y * 0.5, v.z * third_open)))
+    dress(mesh_obj("third", transform_bm(third, lambda v: v + face_point(head, 0, 0.5, out=-0.02)), root), mats["iris"])
+    build_brows(e, mats, root, head, spacing=0.34)
+    build_mouth(e, mats, root, head, mouth_z=-0.36)
     for side in (-1, 1):
-        cheek = sphere_bm(0.12, 16, 8, lambda v: Vector((v.x * 1.2, v.y * 0.15, v.z * 0.7)))
-        at = face_point(head, side * 0.42, -0.2, out=0.0)
-        dress(mesh_obj(f"cheek{'lr'[side > 0]}", transform_bm(cheek, lambda v, a=at: v + a), root), blush, line=0)
+        rim = ring(face_point(head, side * 0.34, 0.08, out=0.12), 0.22, 0.2)
+        dress(mesh_obj(f"rim{side}", tube_bm(rim, [0.026] * len(rim), 8, cap=False), root), mats["accent"])
+    bridge = [face_point(head, -0.13, 0.1, out=0.12), face_point(head, 0, 0.14, out=0.14),
+              face_point(head, 0.13, 0.1, out=0.12)]
+    dress(mesh_obj("bridge", tube_bm(bridge, [0.02] * 3, 6), root), mats["accent"])
+    bust(mats, root)
 
-    if c.get("glasses"):
-        for side in (-1, 1):
-            center = face_point(head, side * 0.31, 0.08, out=0.1)
-            ring = [center + Vector((math.cos(a) * 0.19, 0, math.sin(a) * 0.17))
-                    for a in (2 * math.pi * i / 24 for i in range(25))]
-            dress(mesh_obj(f"rim{'lr'[side > 0]}", tube_bm(ring, [0.022] * 25, 8, cap=False), root),
-                  mats["metal"], line=0)
-        bridge = [face_point(head, -0.12, 0.1, out=0.1), face_point(head, 0, 0.13, out=0.12),
-                  face_point(head, 0.12, 0.1, out=0.1)]
-        dress(mesh_obj("bridge", tube_bm(bridge, [0.018] * 3, 6), root), mats["metal"], line=0)
-    if c.get("mustache"):
-        for side in (-1, 1):
-            pts = []
-            for i in range(9):
-                u = i / 8
-                x = side * (0.03 + 0.3 * u)
-                z = -0.27 - 0.06 * math.sin(math.pi * u) + 0.12 * u ** 3
-                pts.append(face_point(head, x, z, out=0.04))
-            radii = [0.05 - 0.035 * (i / 8) ** 1.5 for i in range(9)]
-            dress(mesh_obj(f"stache{'lr'[side > 0]}", tube_bm(pts, radii, 10), root), mats["hair"], line=0.01)
-    if c.get("monocle"):
-        center = face_point(head, 0.31, 0.08, out=0.1)
-        ring = [center + Vector((math.cos(a) * 0.2, 0, math.sin(a) * 0.2)) for a in (2 * math.pi * i / 24 for i in range(25))]
-        dress(mesh_obj("monocle", tube_bm(ring, [0.026] * 25, 8, cap=False), root), mats["metal"], line=0)
-        chain = [center + Vector((0.2, 0.02, 0)), center + Vector((0.3, 0.1, -0.5)), center + Vector((0.32, 0.25, -1.1))]
-        dress(mesh_obj("chain", tube_bm(chain, [0.012] * 3, 6), root), mats["metal"], line=0)
-    if c.get("goggles"):
-        strap = [Vector((math.cos(a) * head[0] * 1.13, math.sin(a) * head[1] * 1.13, 0.62))
-                 for a in (math.pi * i / 16 for i in range(17))]
-        dress(mesh_obj("strap", tube_bm(strap, [0.06] * 17, 8), root), mats["accent"], line=0.01)
-        for side in (-1, 1):
-            lens = lathe_bm([(0.1, 0.0), (0.1, 0.17), (-0.05, 0.19)], axis="y", squash=(1, 1))
-            at = face_point(head, side * 0.3, 0.6, out=0.06)
-            dress(mesh_obj(f"goggle{'lr'[side > 0]}", transform_bm(lens, lambda v, a=at: Vector((v.x, -v.y, v.z)) + a),
-                           root), mats["glass"], line=0.014)
-    return root
+
+def ilse(c, e):
+    head = c["head"]
+    mats = palette(c)
+    root = empty("portrait")
+    egg_head(head, mats, root)
+    # Three feathery gill fronds a side, fanned back like a swept wing.
+    for side in (-1, 1):
+        for k, (lift, reach, rise) in enumerate(((0.4, 0.38, 0.45), (0.12, 0.45, 0.25), (-0.16, 0.38, 0.08))):
+            start = Vector((side * head[0] * 0.88, 0.15, lift))
+            pts = [start + Vector((side * reach * u, 0.2 * u, rise * u + 0.08 * math.sin(math.pi * u))) for u in
+                   (i / 7 for i in range(8))]
+            dress(mesh_obj(f"gill{side}{k}", tube_bm(pts, [0.07 - 0.04 * i / 7 for i in range(8)], 8), root),
+                  mats["accent"])
+            for j in range(2, 8, 2):
+                tuft = sphere_bm(0.06, 10, 5, lambda v: Vector((v.x, v.y, v.z * 1.6)))
+                dress(mesh_obj(f"tuft{side}{k}{j}", transform_bm(tuft, lambda v, p=pts[j]: v + p + Vector((0, 0, 0.07))),
+                               root), mats["accent"])
+    build_eyes(e, mats, root, head, eye_r=0.13, spacing=0.42, eye_z=0.12)
+    build_brows(e, mats, root, head, spacing=0.42, brow_z=0.34, length=0.22)
+    build_mouth(e, mats, root, head, mouth_z=-0.3, wide=1.6)
+    strap = [Vector((math.cos(a) * head[0] * 1.06, math.sin(a) * head[1] * 1.06, 0.55))
+             for a in (math.pi * i / 16 for i in range(17))]
+    dress(mesh_obj("strap", tube_bm(strap, [0.06] * 17, 8), root), mats["jacket"])
+    for side in (-1, 1):
+        lens = lathe_bm([(0.12, 0.0), (0.12, 0.17), (-0.04, 0.19)], axis="y")
+        at = face_point(head, side * 0.3, 0.55, out=0.06)
+        dress(mesh_obj(f"goggle{side}", transform_bm(lens, lambda v, a=at: Vector((v.x, -v.y, v.z)) + a), root),
+              mats["jacket"])
+    bust(mats, root, top=-0.72)
+    stripe = lathe_bm([(-1.05, 0.83), (-1.18, 0.92)], axis="z", squash=(1.32, 0.64))
+    dress(mesh_obj("stripe", stripe, root), mats["trim"])
+
+
+def crake(c, e):
+    head = c["head"]
+    mats = palette(c)
+    root = empty("portrait")
+    egg_head(head, mats, root, taper_top=0.25)
+    crest = [Vector((0, 0.1 + 0.35 * i / 8, 1.15 + 0.25 * math.sin(math.pi * i / 8) - 0.1 * i / 8)) for i in range(9)]
+    dress(mesh_obj("crest", tube_bm(crest, [0.1 * math.sin(math.pi * (i + 1) / 10) for i in range(9)], 10), root),
+          mats["accent"])
+    build_eyes(e, mats, root, head, eye_z=0.25, eye_r=0.24, count=1)
+    build_brows(e, mats, root, head, brow_z=0.58, spacing=0.13, length=0.2)
+    center = face_point(head, 0, 0.25, out=0.12)
+    monocle = ring(center, 0.32, 0.32)
+    dress(mesh_obj("monocle", tube_bm(monocle, [0.035] * len(monocle), 8, cap=False), root), mats["accent"])
+    chain = [center + Vector((0.32, 0.02, 0)), center + Vector((0.5, 0.1, -0.6)), center + Vector((0.55, 0.25, -1.3))]
+    dress(mesh_obj("chain", tube_bm(chain, [0.015] * 3, 6), root), mats["accent"])
+    # A handlebar of two tentacles: out along the lip, then curled up and in at the tips.
+    lip = face_point(head, 0, -0.22, out=0.08)
+    for side in (-1, 1):
+        pts = []
+        for i in range(18):
+            u = i / 17
+            if u < 0.6:
+                t = u / 0.6
+                pts.append(lip + Vector((side * (0.04 + 0.5 * t), -0.04 * t, -0.08 * math.sin(math.pi * t))))
+            else:
+                a = (u - 0.6) / 0.4 * math.pi * 1.4
+                pts.append(lip + Vector((side * (0.54 + 0.12 * math.sin(a)), -0.04, 0.12 - 0.12 * math.cos(a))))
+        radii = [0.085 - 0.06 * (i / 17) ** 1.2 for i in range(18)]
+        dress(mesh_obj(f"stache{side}", tube_bm(pts, radii, 12), root), mats["stache"])
+    build_mouth(e, mats, root, head, mouth_z=-0.48)
+    bust(mats, root)
+    for side in (-1, 1):
+        wing = sphere_bm(0.16, 16, 8, lambda v: Vector((v.x * 1.1, v.y * 0.5, v.z * (0.6 + 0.4 * abs(v.x) / 0.16))))
+        dress(mesh_obj(f"bow{side}", transform_bm(wing, lambda v, s=side: v + Vector((s * 0.17, -0.62, -0.86))), root),
+              mats["accent"])
+    knot = sphere_bm(0.07, 12, 6)
+    dress(mesh_obj("knot", transform_bm(knot, lambda v: v + Vector((0, -0.66, -0.86))), root), mats["accent"])
 
 
 def robot(c, e):
-    mats = {
-        "shell": toon_material("shell", c["shell"]), "jacket": toon_material("vest", c["jacket"]),
-        "accent": toon_material("accent", c["accent"]), "screen": flat_material("screen", c["screen"]),
-        "glow": flat_material("glow", c["glow"]),
-    }
+    mats = palette(c)
+    mats["glow"] = flat_material("glow", c["glow"])
+    mats["screen"] = flat_material("screen", c["screen"])
+    mats["vest"] = mats["jacket"]
     root = empty("portrait")
     dress(mesh_obj("head", box_bm((1.9, 1.5, 1.6), bevel=0.35, segments=4), root), mats["shell"])
     dress(mesh_obj("screen", transform_bm(box_bm((1.5, 0.1, 1.05), bevel=0.2, segments=3),
-                                          lambda v: v + Vector((0, -0.72, -0.02))), root), mats["screen"], line=0.01)
+                                          lambda v: v + Vector((0, -0.72, -0.02))), root), mats["screen"])
     for side in (-1, 1):
         bolt = lathe_bm([(0.1, 0.3), (-0.1, 0.3)], axis="y")
-        dress(mesh_obj(f"bolt{'lr'[side > 0]}", transform_bm(bolt, lambda v, s=side: Vector((v.y + s * 1.0, v.x, v.z))),
-                       root), mats["accent"])
+        dress(mesh_obj(f"bolt{side}", transform_bm(bolt, lambda v, s=side: Vector((v.y + s * 1.0, v.x, v.z))), root),
+              mats["accent"])
     antenna = [(0.3, 0.1, 0.8 + 0.08 * i) for i in range(6)]
-    dress(mesh_obj("antenna", tube_bm(antenna, [0.04] * 6, 8), root), mats["accent"], line=0.01)
-    dress(mesh_obj("bulb", transform_bm(sphere_bm(0.1, 12, 6), lambda v: v + Vector((0.3, 0.1, 1.28))), root),
-          mats["glow"], line=0.01)
+    dress(mesh_obj("antenna", tube_bm(antenna, [0.05] * 6, 8), root), mats["accent"])
+    dress(mesh_obj("bulb", transform_bm(sphere_bm(0.12, 12, 6), lambda v: v + Vector((0.3, 0.1, 1.3))), root),
+          mats["glow"])
     neck = lathe_bm([(-0.75, 0.25), (-1.2, 0.28)], axis="z")
     dress(mesh_obj("neck", neck, root), mats["accent"])
-    bust = lathe_bm([(-1.0, 0.4), (-1.15, 0.7), (-1.4, 1.05), (-1.8, 1.15), (-2.3, 1.15)], axis="z",
-                    squash=(1.3, 0.65))
-    dress(mesh_obj("vest", bust, root), mats["jacket"])
+    vest = lathe_bm([(-1.0, 0.4), (-1.15, 0.7), (-1.4, 1.05), (-1.8, 1.15), (-2.3, 1.15)], axis="z", squash=(1.3, 0.65))
+    dress(mesh_obj("vest", vest, root), mats["vest"])
 
     # Eyes and brows are glowing shapes on the face screen.
     z0, y = 0.02, -0.79
     for side, (height, tilt) in zip((-1, 1), e["brow"]):
         x = side * 0.38
-        tag = "lr"[side > 0]
         if e["eye"] == "arc":
             pts = [Vector((x + (i / 8 - 0.5) * 0.3, y, z0 + 0.06 * math.sin(math.pi * i / 8))) for i in range(9)]
-            dress(mesh_obj(f"eye{tag}", tube_bm(pts, [0.04] * 9, 8), root), mats["glow"], line=0)
+            dress(mesh_obj(f"eye{side}", tube_bm(pts, [0.04] * 9, 8), root), mats["glow"])
         else:
             open_ = e["eye"]
             lx, lz = e["look"]
             eye = sphere_bm(0.15, 16, 8, lambda v: Vector((v.x, v.y * 0.2, v.z * 1.2 * open_)))
-            dress(mesh_obj(f"eye{tag}", transform_bm(eye, lambda v, p=(x + lx, y, z0 + lz): v + Vector(p)), root),
-                  mats["glow"], line=0)
+            dress(mesh_obj(f"eye{side}", transform_bm(eye, lambda v, p=(x + lx, y, z0 + lz): v + Vector(p)), root),
+                  mats["glow"])
         pts = []
         for i in range(5):
             u = i / 4
             inner = 1 - u if side > 0 else u
-            bx = x + (u - 0.5) * 0.3
-            pts.append(Vector((bx, y, z0 + 0.3 + height + tilt * 0.3 * (inner - 0.5))))
-        dress(mesh_obj(f"brow{tag}", tube_bm(pts, [0.03] * 5, 6), root), mats["glow"], line=0)
+            pts.append(Vector((x + (u - 0.5) * 0.3, y, z0 + 0.3 + height + tilt * 0.3 * (inner - 0.5))))
+        dress(mesh_obj(f"brow{side}", tube_bm(pts, [0.03] * 5, 6), root), mats["glow"])
     smile, open_, width = e["mouth"]
     w = 0.22 * width
     pts = [Vector(((i / 8 * 2 - 1) * w, y, -0.28 + smile * 0.08 * (((i / 8 * 2 - 1) ** 2) - 0.5) - 0.05 * open_))
            for i in range(9)]
-    dress(mesh_obj("mouth", tube_bm(pts, [0.03 + 0.05 * open_] * 9, 8), root), mats["glow"], line=0)
-    return root
+    dress(mesh_obj("mouth", tube_bm(pts, [0.03 + 0.05 * open_] * 9, 8), root), mats["glow"])
+
+
+BUILDERS = {"odessa": odessa, "ilse": ilse, "crake": crake, "robot": robot}
 
 
 # ---------------------------------------------------------------- render
@@ -364,19 +470,20 @@ def setup_render(scene):
     cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
     scene.collection.objects.link(cam)
     cam.data.type = "ORTHO"
-    cam.data.ortho_scale = 3.9
-    target = Vector((0, 0, -0.45))
-    cam.location = target + Vector((1.6, -6.0, 0.9))
+    cam.data.ortho_scale = 4.3
+    target = Vector((0, 0, -0.35))
+    cam.location = target + Vector((0, -6.0, 0.35))
     cam.rotation_euler = (target - cam.location).to_track_quat("-Z", "Y").to_euler()
     scene.camera = cam
+    ink_lines(scene)
 
 
 def render(name, expression, character):
-    global OUTLINE
     clear_scene()
+    for style in list(bpy.data.linestyles):
+        bpy.data.linestyles.remove(style)
     scene = bpy.context.scene
-    OUTLINE = outline_material()
-    (robot if character.get("robot") else human)(character, EXPRESSIONS[expression])
+    BUILDERS[character["build"]](character, EXPRESSIONS[expression])
     setup_render(scene)
     scene.render.filepath = str(OUT_DIR / f"{name}_{expression}.png")
     bpy.ops.render.render(write_still=True)

@@ -241,9 +241,11 @@ through Bramble's rings and down the dock's service tunnels.
 ## The cast
 
 Each pilot has a 5 to 7 step arc that moves forward through commissions, letters and (optionally)
-races. These are starting sketches.
+races. These are starting sketches. Everyone on Quietwater is an alien (or a robot), each species
+with a strong, simple silhouette and a quirk you can read from across the hangar.
 
-**Odessa Vell** (she/her). A retired long-haul courier who flies the *Pocket Moth*, a sturdy little
+**Odessa Vell** (she/her). A three-eyed, coral-skinned retired long-haul courier with pom-tipped
+antennae and round glasses. The third eye only opens when something surprises her. She flies the *Pocket Moth*, a sturdy little
 hauler. She wants it made comfortable so she can visit her grandchildren, who are scattered across
 three moons. Her arc is about deciding whether to keep roaming or put down roots near one of them.
 Pays in pebs and seed cakes. Doesn't race, until a late beat where she enters the Slow Sunday Cup
@@ -254,9 +256,15 @@ like. It's earnest, literal and very curious about why people want the things th
 salvaged parts, which are often surprisingly good. Its arc follows it working out what it actually
 enjoys, which may turn out to be cheering from the stands.
 
-**Captain Ilse Marrow** (she/her). The dock's reigning racing champion, who flies the *Heron*. Gruff,
+**Captain Ilse Marrow** (she/her). A sky-blue racer with an axolotl's wide grin, feathery gill
+fronds and goggles pushed up on her forehead. The dock's reigning racing champion, who flies the *Heron*. Gruff,
 generous and secretly worried about getting slower. She brings you her race ship for exacting tune-ups
 and pays very well. Her arc moves from rivalry toward mentorship, and possibly retirement.
+
+**Thaddeus Crake** (he/him). A one-eyed, gourd-headed yacht owner with a gold crest, a monocle and
+a curled tentacle mustache, who flies the plum-and-brass *Magnificence*. He haggles, he sneers, and
+he is the obvious target for mischief. His arc is about whether anyone has ever been kind to him
+without wanting something.
 
 **Tam and Juniper Okafor** (he/him, she/her). Siblings who run a noodle cart out of a converted
 tug, the *Brothy*. They need kitchen fittings, cargo cooling and a bigger serving hatch. Pays mostly in
@@ -281,9 +289,12 @@ really left.
   carry named sockets (`engine`, `fin_l`, `cockpit`, `cabin`, `lights`...) and parts snap onto them.
   Mesh names end in a material role (`_paint`, `_trim`, `_glass`, `_metal`, `_glow`) so the paint
   shop can recolor any part. Cel shading plus an outline pass, warm and soft.
-- **Characters** are 2D portraits rendered from Blender: toon-shaded busts with a set of expressions
-  each (neutral, happy, thoughtful, surprised, sad, laughing), shown visual-novel style during
-  conversations.
+- **Characters** are 2D portraits rendered from Blender in a comic-book ink style. Bold flat colors
+  are inked with Freestyle brush lines that swell, taper, wobble and overshoot a little, as if drawn
+  by hand. Midtones are halftone dots and the deepest shadows are cross-hatched, both in screen
+  space so they stay print-sized. Each character has seven expressions (neutral, happy, laughing,
+  thoughtful, surprised, sad, grumpy), shown visual-novel style during conversations. Prop icons use
+  the same ink.
 - **The shop, the tea nook and the tracks** are simple 3D scenes with the same toon look. Teas,
   cakes and trinkets are small Blender models rendered as icons.
 - **The tablet** is a UI panel with a frosted, faintly tinted glass shader over the scene behind it.
