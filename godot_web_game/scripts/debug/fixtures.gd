@@ -101,6 +101,12 @@ static func apply(name: String) -> void:
 			for f in ["seen_intro", "seen_grommet_intro", "seen_day4_morning", "read_novel_5", "read_lumen_invite"]:
 				GameState.flags[f] = true
 			GameState.day = 15
+		"harvest":
+			# Day seven, the harvest announced, and the club race already won once.
+			for f in ["seen_intro", "seen_grommet_intro", "seen_day4_morning", "seen_harvest_eve", "won_club",
+					"seen_crake_arrives"]:
+				GameState.flags[f] = true
+			GameState.day = 7
 		"levelup":
 			GameState.flags.seen_intro = true
 			GameState.flags.seen_grommet_intro = true

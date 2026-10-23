@@ -53,7 +53,7 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
 `crake`, `midway` (Crake's job with every fault one step in), `board` (day 4, walk-ins on the board),
 `walkin` (a walk-in's job on the bench), `hawker` (Fennimore's cart, a worn part on the shelf), `yard`
 (day 5 with a junker bought), `drawers` (day 8, skilled), `close_pass` (day 11, arcs done),
-`lumen` (day 15, Themba's letter read), `levelup`. The shop also takes `--cat=sweet|grumpy|sleepy`.
+`lumen` (day 15, Themba's letter read), `harvest` (day 7, the harvest announced), `levelup`. The shop also takes `--cat=sweet|grumpy|sleepy`.
 
 ## Conventions
 
@@ -63,7 +63,7 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
   `GameState.job_spec(id)`. Generated customers speak as `guest` in dialogue, with `{guest}`,
   `{guest_ship}` and `{request}` tokens; `Router.talk(scene, guest_id)` says who that is.
 - Special events (`world.json` `events`) are launched by a beat with `"event": id` and play on the
-  event screen: a `place` (`comet`, `lighthouse`), a `scene`, optional `minigame`, `after` scene,
+  event screen: a `place` (`comet`, `lighthouse`, `gardens`), a `scene`, optional `minigame`, `after` scene,
   `gift` trinket and `unlock` flag. Handoffs set `<job>_<tier>` flags for later branches.
 - Storylets (`data/storylets.json`, scenes in `data/dialogue/storylets.txt`) attach to new walk-ins
   and play a scene per hook (`arrive`, `handoff`, next `morning`) through `Router.story(guest, hook)`.

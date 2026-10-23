@@ -7,6 +7,9 @@ const TAIL := preload("res://shaders/comet_tail.gdshader")
 ## High over the gathered ships, so it reads above them and clear of the dialogue box.
 const COMET := Vector3(-260, 400, -900)
 const SHIP_HEIGHT := 5.0
+## The drum garden's size: the park wraps all the way round the inside of this cylinder.
+const DRUM_RADIUS := 40.0
+const DRUM_LENGTH := 160.0
 ## Where the lighthouse's whale settles once the beacon is lit: off to the side, behind the tower.
 const WHALE_REST := Vector3(30, 24, 14)
 
@@ -32,7 +35,11 @@ func _ready() -> void:
 	_event = Content.world.events[_id]
 	var world := Node3D.new()
 	add_child(world)
-	if _event.place == "lighthouse":
+	if _event.place == "gardens":
+		world.add_child(SpaceScenery.environment_for({"sky": ["3a2f5a", "6b4a8a", "ffd27a"], "fog_density": 0.004,
+			"fog": "6b5a8a", "ambient": "8a7a6a"}))
+		_drum(world)
+	elif _event.place == "lighthouse":
 		world.add_child(SpaceScenery.environment_for({"sky": ["1d4a5a", "3a5f8a", "c9e8ff"], "deep": "02060c",
 			"fog_density": 0.0, "ambient": "5a6f8a"}))
 		_lighthouse(world)
@@ -53,6 +60,11 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_orbit += delta * 0.04
+	if _event.place == "gardens":
+		# Stand on the orchard floor and look along the drum, so the far side curves up overhead.
+		_cam.position = Vector3(-DRUM_LENGTH * 0.42, -DRUM_RADIUS + 3.0, sin(_orbit) * 4.0)
+		_cam.look_at(Vector3(DRUM_LENGTH * 0.12, DRUM_RADIUS * 0.15, 6.0))
+		return
 	if _event.place == "lighthouse":
 		_cam.position = Vector3(-34.0 + sin(_orbit) * 6.0, 12.0, 46.0 + cos(_orbit) * 4.0)
 		_cam.look_at(Vector3(0, 16, 0))
@@ -119,6 +131,114 @@ func _comet(world: Node3D) -> void:
 	sun.light_color = Color("ffe2c8")
 	sun.rotation_degrees = Vector3(-35, -30, 0)
 	world.add_child(sun)
+
+
+## Inside a drum garden: lawns and orchards on every side of a slowly turning cylinder, an amber
+## sun-line down the middle, misters, and paper lanterns drifting up toward it.
+func _drum(world: Node3D) -> void:
+	var lamp := OmniLight3D.new()
+	lamp.light_color = Color("ffd9a0")
+	lamp.light_energy = 2.0
+	lamp.omni_range = DRUM_LENGTH
+	world.add_child(lamp)
+	var shell := CylinderMesh.new()
+	shell.top_radius = DRUM_RADIUS
+	shell.bottom_radius = DRUM_RADIUS
+	shell.height = DRUM_LENGTH
+	shell.radial_segments = 64
+	shell.flip_faces = true
+	shell.cap_top = false
+	shell.cap_bottom = false
+	var floor := Stage.mesh(shell, Stage.toon(Color("6fae5c"), 0.0, 0.0))
+	floor.rotation.z = PI / 2
+	world.add_child(floor)
+	var axis := Basis(Vector3(0, 0, 1), PI / 2)
+	# End walls: plated discs with a big round window onto space and a brass rim.
+	for end in [-1, 1]:
+		var wall := CylinderMesh.new()
+		wall.top_radius = DRUM_RADIUS
+		wall.bottom_radius = DRUM_RADIUS
+		wall.height = 1.0
+		var w := Stage.mesh(wall, Stage.toon(Color("8e9298"), 0.2, 0.0), Vector3(end * DRUM_LENGTH / 2, 0, 0))
+		w.basis = axis
+		world.add_child(w)
+		var pane := CylinderMesh.new()
+		pane.top_radius = DRUM_RADIUS * 0.45
+		pane.bottom_radius = DRUM_RADIUS * 0.45
+		pane.height = 1.2
+		var p := Stage.mesh(pane, Stage.glow(Color("1d1838")), Vector3(end * (DRUM_LENGTH / 2 - 0.2), 0, 0))
+		p.basis = axis
+		world.add_child(p)
+		var rim := TorusMesh.new()
+		rim.inner_radius = DRUM_RADIUS * 0.45
+		rim.outer_radius = DRUM_RADIUS * 0.5
+		var r := Stage.mesh(rim, Stage.toon(Color("e8a33d"), 0.5, 0.0), Vector3(end * (DRUM_LENGTH / 2 - 0.6), 0, 0))
+		r.basis = axis
+		world.add_child(r)
+	var sun := CylinderMesh.new()
+	sun.top_radius = 0.8
+	sun.bottom_radius = 0.8
+	sun.height = DRUM_LENGTH
+	var s := Stage.mesh(sun, Stage.glow(Color("ffd27a")))
+	s.basis = axis
+	world.add_child(s)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 11
+	var leaves := [Color("8fae7e"), Color("6f9e6e"), Color("a8c686")]
+	var plum := Stage.toon(Color("7d3f6e"), 0.4, 0.02)
+	for i in 160:
+		var a := rng.randf() * TAU
+		var x := rng.randf_range(-DRUM_LENGTH * 0.48, DRUM_LENGTH * 0.48)
+		var inward := Vector3(0, -cos(a), -sin(a))
+		var base := -inward * DRUM_RADIUS + Vector3(x, 0, 0)
+		var tree := Node3D.new()
+		tree.transform = Transform3D(Basis(inward.cross(Vector3.RIGHT).normalized(), inward, Vector3.RIGHT), base)
+		var h := rng.randf_range(4.0, 7.0)
+		var trunk := CylinderMesh.new()
+		trunk.top_radius = 0.25
+		trunk.bottom_radius = 0.4
+		trunk.height = h * 0.6
+		tree.add_child(Stage.mesh(trunk, Stage.toon(Color("7a5040"), 0.0, 0.03), Vector3(0, h * 0.3, 0)))
+		var crown := SphereMesh.new()
+		crown.radius = h * 0.35
+		crown.height = h * 0.6
+		tree.add_child(Stage.mesh(crown, Stage.toon(leaves[i % 3], 0.0, 0.03), Vector3(0, h * 0.75, 0)))
+		for k in 3:
+			var fruit := SphereMesh.new()
+			fruit.radius = 0.3
+			fruit.height = 0.6
+			var off := Vector3(rng.randf_range(-1, 1), rng.randf_range(-0.6, 0.2), rng.randf_range(-1, 1)).normalized() * h * 0.33
+			tree.add_child(Stage.mesh(fruit, plum, Vector3(0, h * 0.75, 0) + off))
+		world.add_child(tree)
+	var lanterns := CPUParticles3D.new()
+	lanterns.amount = 160
+	lanterns.lifetime = 14.0
+	lanterns.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	lanterns.emission_box_extents = Vector3(DRUM_LENGTH * 0.45, 1, 6)
+	lanterns.position = Vector3(0, -DRUM_RADIUS + 3, 0)
+	lanterns.direction = Vector3.UP
+	lanterns.spread = 10.0
+	lanterns.gravity = Vector3.ZERO
+	lanterns.initial_velocity_min = 1.5
+	lanterns.initial_velocity_max = 2.5
+	lanterns.mesh = Fx.blob(0.45)
+	lanterns.color_ramp = Fx.fade(Color(1.0, 0.75, 0.4, 1.0))
+	lanterns.preprocess = 10.0
+	world.add_child(lanterns)
+	var mist := CPUParticles3D.new()
+	mist.amount = 80
+	mist.lifetime = 3.0
+	mist.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	mist.emission_box_extents = Vector3(DRUM_LENGTH * 0.45, 0.5, 2)
+	mist.position = Vector3(0, -DRUM_RADIUS + 1.5, 9)
+	mist.direction = Vector3.UP
+	mist.gravity = Vector3(0, -1, 0)
+	mist.initial_velocity_min = 2.0
+	mist.initial_velocity_max = 4.0
+	mist.mesh = Fx.blob(0.3)
+	mist.color_ramp = Fx.fade(Color(0.9, 0.97, 1.0, 0.5))
+	mist.preprocess = 3.0
+	world.add_child(mist)
 
 
 ## A striped lighthouse on a floe in a drifting ice field, its lamp dark until the beacon's fixed,
@@ -206,6 +326,8 @@ func _light_the_beacon() -> void:
 func _gather(world: Node3D) -> void:
 	var ids: Array = _event.guests.map(func(p): return Content.world.pilots[p].ship)
 	ids.append(GameState.race_ship)
+	if _event.place == "gardens":
+		return
 	if _event.place == "lighthouse":
 		var holder := Node3D.new()
 		holder.position = Vector3(-9, 3.5, 7)

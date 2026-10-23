@@ -454,5 +454,6 @@ really left.
    the nightly club race; four gadgets (ribbon, bubble, tow magnet, foghorn); race any fixed ship.
 8. **The cast.** Done. Second commissions and arcs for Odessa, Ilse, Brindle and Crake; new arcs for
    Pip, Tam and Juniper Okafor and Dr. Yaneva, each with two commissions, a choice or a cup, and
-   letters; two special events, the Close Pass (day 11) and the Lighthouse of Lumen Reach (day 15).
+   letters; three special events: the Moon-plum Harvest in the drum gardens (day 7), the Close Pass
+   (day 11) and the Lighthouse of Lumen Reach (day 15). An illustrated field guide on the tablet.
 9. **Polish and launch** on starship-tinkerer.crap.games.

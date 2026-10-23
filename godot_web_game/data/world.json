@@ -259,6 +259,8 @@
     {"scene": "day3_morning", "day": 3},
     {"scene": "crake_arrives", "day": 3, "phase": "morning", "idle": true},
     {"scene": "day4_morning", "min_day": 4},
+    {"scene": "harvest_eve", "min_day": 6, "phase": "morning", "requires": "seen_day4_morning"},
+    {"scene": "harvest_call", "min_day": 7, "phase": "morning", "requires": "seen_harvest_eve", "event": "harvest"},
     {"scene": "ilse_arrives", "min_day": 5, "phase": "morning", "idle": true},
     {"scene": "odessa_returns", "min_day": 6, "phase": "morning", "idle": true, "requires": "ilse_1_done"},
     {"scene": "brindle_returns", "min_day": 8, "phase": "morning", "idle": true, "requires": "odessa_2_done"},
@@ -278,6 +280,7 @@
   ],
   "events": {
     "close_pass": {"name": "The Close Pass", "place": "comet", "scene": "close_pass", "unlock": "knows_comet", "unlock_note": "You can paint the Comet trail livery now.", "guests": ["odessa", "ilse", "brindle", "crake"]},
+    "harvest": {"name": "The Moon-plum Harvest", "place": "gardens", "scene": "harvest", "guests": []},
     "lumen_reach": {"name": "The Lighthouse of Lumen Reach", "place": "lighthouse", "scene": "lumen_arrive", "minigame": "calibrate",
       "after": "lumen_after", "gift": "beacon_glass", "guests": []}
   },

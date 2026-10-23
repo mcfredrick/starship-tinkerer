@@ -251,3 +251,66 @@ end
 * Themba is crying a little, and laughing. The cat sits down on the logbook.
 * Before you leave, Themba presses something into your hand: a shard of old beacon glass that still holds a little of the gold light.
 end
+
+# ---------------------------------------------------------------- the Moon-plum Harvest
+
+== harvest_eve
+* The dock bulletin has a banner across the top today: THE MOON-PLUM HARVEST IS TOMORROW, IN THE ODD DRUM. ALL HANDS, ALL BASKETS, ALL WELCOME.
+* Every shop on the spine will close at noon. Somebody has already hung lanterns along the drum's sun-line.
+end
+
+== harvest_call
+* At noon the hangar goes quiet, and the whole dock streams up the spine to the Odd drum with baskets on their arms.
+* Grommet leads the way, tail high, as if the harvest were their idea.
+end
+
+== harvest
+* Inside the Odd drum the orchards curve up and over your head, heavy with violet moon-plums. The sun-line has dimmed to a warm amber, and the misters are throwing rainbows everywhere.
+* Half the dock is here. Somebody is frying fritters. Somebody else is arguing about the fritters.
+odessa happy: {name}! Over here, love! Grab a basket. The low branches are on the ceiling this year.
+brindle laughing: {name}! The misters are making eleven rainbows at once! I have never measured eleven!
+ilse grumpy: Fritter contest at the bandstand. I've won it nine years running. Come and lose to me.
+> Pick moon-plums with Odessa. => plums
+> Measure rainbows with Brindle. => rainbows
+> Take on Ilse in the fritter contest. => fritters
+-- plums
+* Odessa shows you how to twist a moon-plum so it comes away clean. Half the ones you pick are on the far side of the drum, upside down, which takes some getting used to.
+odessa laughing: Don't look straight up, love, you'll go dizzy. Look along the curve. There!
+odessa happy: The grandkids used to pick here every autumn. They'd fill one basket and eat two.
+* By the time the sun-line goes amber, your basket is full and your hands smell of plums.
+! give cake_moon_plum 2
+! set harvest_plums
+=> finale
+-- rainbows
+* Brindle has set up a small folding stool under the biggest mister and is counting, very seriously.
+brindle thoughtful: Seven. Nine. Eleven. Twelve! {name}, twelve! A new record!
+brindle happy: I would like you to have the twelfth one. You cannot keep a rainbow. But you can keep that you were here when it happened.
+* Grommet walks straight through the mist, gets very wet, and looks betrayed by the entire universe.
+! set harvest_rainbows
+=> finale
+-- fritters
+* The bandstand is ringed with tables and the smell of hot sugar. Ilse rolls up her sleeves.
+ilse grumpy: Ten minutes. Most fritters. No gloating until the end. That's my job.
+? won_club => champion
+* It's close. It's very close. Ilse wins by a single fritter, and then insists on splitting her prize with you.
+ilse happy: Not bad. Next year, maybe.
+=> fritter_prize
+-- champion
+* It's close. It's very close. You win by a single fritter, and the bandstand erupts.
+ilse surprised: Beaten on the track AND at the fritters. In one season.
+ilse laughing: I'm retiring from fritters. Effective immediately. Take the prize before I change my mind.
+-- fritter_prize
+! give cake_nebula_roll 1
+! pebs 40
+! set harvest_fritters
+=> finale
+-- finale
+* At last bell the whole drum goes quiet. Someone hands out paper lanterns, and everyone lets them go at once.
+* They drift up toward the sun-line from every side of the drum at once, from the floor and the walls and the orchards overhead, and meet in the middle in a slow river of light.
+? seen_crake_arrives => crake
+=> end_scene
+-- crake
+* Off to one side, Thaddeus Crake is eating a fritter he very clearly told someone he didn't want. When he sees you looking, he pretends it's someone else's.
+-- end_scene
+* Grommet is asleep in a basket of moon-plums. Nobody has the heart to move them.
+end
