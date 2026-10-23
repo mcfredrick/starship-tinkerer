@@ -3,6 +3,7 @@ extends Screen
 
 const PRESETS := [["she/her", "she"], ["he/him", "he"], ["they/them", "they"], ["custom", "custom"]]
 
+var _open_credits := false
 var _name: LineEdit
 var _pronouns := "they"
 var _custom: GridContainer
@@ -17,6 +18,7 @@ var _open_form := ""
 ## pronouns. Used for screenshot checks.
 func setup(params: Dictionary) -> void:
 	_open_form = params.get("form", "")
+	_open_credits = params.has("credits")
 
 
 func _ready() -> void:
@@ -40,14 +42,34 @@ func _ready() -> void:
 	if GameState.has_save():
 		_menu.add_child(UI.button("Continue", _continue, 26))
 	_menu.add_child(UI.button("New game", _show_setup, 26))
+	_menu.add_child(UI.button("Credits", _show_credits, 20))
 	UI.place(_menu, Control.PRESET_BOTTOM_LEFT, Vector2(70, -220), Vector2(300, 0))
 	ui.add_child(_menu)
 
 	_build_setup()
+	if _open_credits:
+		_show_credits()
 	if _open_form != "":
 		_show_setup()
 		if _open_form == "custom":
 			_pick("custom")
+
+
+func _show_credits() -> void:
+	var box := UI.vbox([], 8)
+	for line in Content.credits.lines:
+		if line.has("heading"):
+			box.add_child(UI.heading(line.heading, 22, UI.TEAL))
+		else:
+			var l := UI.label(line.text, 18, UI.INK, true)
+			l.custom_minimum_size.x = 560
+			box.add_child(l)
+	var back := UI.button("Back", func(): pass, 20)
+	var panel := UI.panel(UI.vbox([box, back], 14), UI.CREAM, 26)
+	back.pressed.connect(panel.queue_free)
+	UI.place(panel, Control.PRESET_CENTER, Vector2(-320, -260), Vector2(640, 0))
+	UI.fit(panel)
+	ui.add_child(panel)
 
 
 func _continue() -> void:

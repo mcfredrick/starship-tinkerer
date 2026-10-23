@@ -20,3 +20,9 @@ Pushing to `main` deploys to GitHub Pages through the shared workflow in
 [mcfredrick/crap_games](https://github.com/mcfredrick/crap_games). The "Update Game Registry"
 workflow is run by hand at release to list the game on https://all.crap.games. Pull in template
 fixes with `copier update --trust`.
+
+## Thanks
+
+The dock's currency, the peb, is a small tip of the hat to Becky Chambers' *Monk and Robot* books,
+whose gentle mood this game hopes to share. Quietwater, its people and its stories are our own.
+Fonts are Fredoka, Nunito and Noto Sans Symbols 2, under the SIL Open Font License.
