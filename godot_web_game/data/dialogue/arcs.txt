@@ -1,0 +1,228 @@
+# The cast's arcs from day five, building to the Close Pass on day eleven and the Garden Dash after.
+# Job reactions are <job>_<tier>; the handoff also sets <job>_<tier> as a flag for later scenes.
+
+# ---------------------------------------------------------------- Ilse: getting slower
+
+== ilse_arrives
+* The Heron slides into the bay before the doors are fully open. Ilse climbs out and checks over her shoulder.
+ilse grumpy: Close the doors. I don't want the whole dock watching.
+ilse thoughtful: The Heron's lost a tenth of a second a lap. Every lap. For a month.
+> Could be the coupling. Could be a dozen things. => ship
+> Could it be the pilot? => pilot
+-- pilot
+ilse grumpy: ...
+ilse sad: That's what I'm afraid of. Eleven years I've held the club title. Nobody holds anything forever.
+ilse thoughtful: So. Find out if it's the ship. If it isn't, I'd rather hear it from you than from the timing board.
+! set ilse_confided
+=> terms
+-- ship
+ilse: That's what I'm hoping. A dozen things I can fix. The other thing I can't.
+=> terms
+-- terms
+ilse: Three hundred and forty pebs. And a little more on the straights while you're in there.
+ilse grumpy: And not a word to Brindle. It'll want to measure my feelings.
+! job ilse_1
+end
+
+== ilse_1_delighted
+* Ilse takes the Heron round the ring once, alone, and comes back with her visor up and her eyes bright.
+ilse surprised: A tenth. No. Two tenths. Under my old record.
+ilse laughing: It was the ship! It was the blasted coupling! Eleven years, and I nearly retired over a coupling!
+ilse happy: Here. Full price and a bit. And {name}? Thank you. For not saying the other thing.
+end
+
+== ilse_1_pleased
+ilse happy: She's quicker. Not what she was at her best, but quicker.
+ilse thoughtful: Maybe that's as good as either of us gets now. Here's your pebs.
+end
+
+== ilse_1_lukewarm
+ilse thoughtful: Same tenth. Maybe a little less.
+ilse sad: Well. Maybe it is me, after all. Here. You did what you could.
+end
+
+# ---------------------------------------------------------------- Odessa: roam or root
+
+== odessa_returns
+* A familiar rattle-free hum. The Pocket Moth noses into the bay, and Odessa waves through the window before she's even parked.
+odessa happy: {name}! I told you I'd be back through Quietwater. I've been thinking, like I said.
+odessa thoughtful: Sixty years I've been flying. Every moon in the system, and a few that aren't on maps. But the grandkids are growing up three moons apart, and I keep arriving just after the important bits.
+odessa: So. I could settle somewhere. Near one of them. Or all of them could come to me, and we keep flying, the lot of us, in the summers.
+> Put down roots. They'll come to you. => roots
+> Keep roaming, and take them along. => roam
+-- roots
+odessa surprised: Roots! At my age. Well, why not? Quietwater's as good a pot as any.
+! set odessa_roots
+=> job
+-- roam
+odessa laughing: Oh, I was hoping you'd say that. I'm not done with the sky yet.
+! set odessa_roams
+=> job
+-- job
+odessa: Either way, first things first. All three of them are coming for the Close Pass, and I want them in the Moth with me, noses to a big window.
+odessa happy: Two hundred and sixty pebs, and three seed cakes, and I'm not taking no for an answer about the cakes.
+! job odessa_2
+end
+
+== odessa_2_delighted
+* Odessa climbs into the new cabin and sits in each seat in turn, bouncing a little.
+odessa laughing: Look at that window! They'll fight over it. I'll let them. It'll be lovely.
+odessa happy: I can already hear them. Every word. Oh, {name}. Here, take the cakes before I cry on them.
+end
+
+== odessa_2_pleased
+odessa happy: There we are! Room for all of us, and a window to squash our noses on.
+odessa: Your pebs, and the cakes. Thank you, love.
+end
+
+== odessa_2_lukewarm
+odessa thoughtful: Well, we'll all fit. Just about. Cosy, we'll call it.
+odessa: Here's what we agreed. They'll love it anyway. Children love anything that flies.
+end
+
+# ---------------------------------------------------------------- Brindle: measuring joy
+
+== brindle_returns
+* The Bucket clanks into the bay with a fresh coat of happy yellow. Brindle hops out, antenna wobbling.
+brindle happy: {name}! I have news. I have entered the Drum Garden Dash.
+brindle thoughtful: It is the twistiest course on the dock. I have measured my joy in twists and it is very high. Higher than corners. Corners are just shy twists.
+brindle: I would like the Bucket to stick, and to turn, and to have a gadget. A gadget is a friend you bring.
+> What sort of friend? => friend
+> I'll make her a twisting champion. => champ
+-- friend
+brindle happy: Any sort. A magnet friend. A honking friend. A bubble friend. I am not fussy about friends.
+=> champ
+-- champ
+brindle laughing: Hooray! I have one hundred and fifty pebs and two tins of Drift Bloom. I do not drink tea. I like the smell.
+! job brindle_2
+end
+
+== brindle_2_delighted
+* Brindle drives the Bucket in a slow figure eight around the bay, then another, then a third, very slowly.
+brindle laughing: It twists! It twists like a happy thought that is also a ribbon!
+brindle happy: I am going to win. Or I am going to come second and be just as happy. I have checked, and I would be just as happy.
+end
+
+== brindle_2_pleased
+brindle happy: It twists better. That is very good. Thank you, {name}.
+end
+
+== brindle_2_lukewarm
+brindle thoughtful: It twists about the same. That is all right. I will twist with my whole self instead.
+end
+
+# ---------------------------------------------------------------- Crake: kindness without a catch
+
+== crake_returns
+* The Magnificence glides into the bay. This time it takes up only one bay. Thaddeus Crake climbs down, and for once he waits to be greeted.
+? crake_1_sabotage => sabotaged
+? crake_1_prank => pranked
+crake thoughtful: Good morning. I've come about a commission. A real one.
+=> mother
+-- pranked
+crake grumpy: I've kept the... the improvement you made last time. Mother finds it hilarious. I want that on the record.
+=> mother
+-- sabotaged
+crake grumpy: I'm told you're the only shop on the dock that does honest work these days. I have my doubts. But here I am.
+=> mother
+-- mother
+crake: My mother wishes to see the Close Pass. She's ninety-one. She will not be rattled, and she will not be cold.
+crake thoughtful: The Magnificence is built to be looked at, not sat in. I need her soft, and quiet. For Mother.
+> Three hundred pebs, the posted rate. => rate
+-- rate
+crake: Three hundred. Yes. That's fair.
+* He says it without a flicker. No haggling at all. It seems to surprise him too.
+! job crake_2
+end
+
+== crake_2_delighted
+* Crake sits in the cabin a long while with his eyes closed.
+crake surprised: It's quiet. It's actually quiet. She'll be able to hear the stars, she always says she can.
+crake thoughtful: Thank you, {name}.
+* He seems about to add something cutting, and doesn't.
+crake happy: Here. The posted rate, and a tip. A real one.
+end
+
+== crake_2_pleased
+crake happy: Much better. Mother will approve. She approves of very little.
+crake: Here, as agreed.
+end
+
+== crake_2_lukewarm
+crake grumpy: She's still a touch draughty. Mother will say so, at length.
+crake: But you tried. Here.
+end
+
+# ---------------------------------------------------------------- the Close Pass
+
+== close_pass_eve
+* The tablet chimes with a dock-wide notice: THE CLOSE PASS IS TOMORROW. The comet will come nearer Quietwater than at any time in fifty years.
+* Every shop on the dock is closing for the evening. Every ship that can fly is flying out to watch.
+* Somewhere in the back of the hangar, Grommet is already sitting by the bay door.
+end
+
+== close_pass_call
+* Before you've even put the kettle on, there's a knock at the bay door. Odessa, Brindle, Ilse, and Crake are standing in a row, which is a strange sight.
+odessa happy: Come on, love! The shop can spare you for one night. You fixed half the ships going.
+ilse: Bring your own ship. Nobody watches a comet from someone else's.
+brindle laughing: I have brought snacks. I do not eat snacks. I brought them for joy.
+* Grommet walks past all of you and gets into your ship first.
+end
+
+== close_pass
+* Out past the edge of the rings, the ships of Quietwater hang in a loose circle, lights dimmed, engines purring.
+* And then the comet comes. A bright head the size of a moon, and a tail that fills half the sky, silver and pink and slowly unfolding.
+? odessa_roots => odessa_roots
+odessa happy: Look at them, {name}. Noses on the glass. Every one of them talking at once.
+odessa laughing: This summer they're coming roaming with me. All three. The Moth's got room now.
+=> ilse
+-- odessa_roots
+odessa happy: Look at them, {name}. Noses on the glass. Every one of them talking at once.
+odessa: I've taken the old flat above the drum gardens. They'll come to me now. I'll be your neighbor, love. Your cake supplier.
+=> ilse
+-- ilse
+? ilse_1_lukewarm => ilse_slow
+ilse thoughtful: Garden Dash next. My last race of the season. Maybe my last, full stop. I'd like you on the grid.
+ilse happy: Don't go easy on me. I'll know.
+=> brindle
+-- ilse_slow
+ilse sad: I'm racing the Garden Dash. Maybe my last. If it is me who's slowing down, I'd like to find out against someone good.
+ilse thoughtful: Will you be on the grid?
+=> brindle
+-- brindle
+brindle surprised: {name}. I have measured my joy.
+brindle thoughtful: It is the highest it has ever been. And I am not moving at all. I am sitting still and watching.
+brindle happy: I did not know joy could be sitting still. I will have to measure everything again.
+? crake_2_delighted => crake_kind
+? crake_2_pleased => crake_kind
+* The Magnificence hangs a little apart from the rest. You can see an elderly lady at its window, pointing things out to her son.
+=> finale
+-- crake_kind
+* The Magnificence drifts over, close enough to talk. An elderly lady in a feathered hat waves to you from the window.
+crake thoughtful: Mother wants to know who made the cabin so quiet. I told her. She says I'm to be nicer to you.
+crake happy: I said I'd consider it. Thank you, {name}. Truly.
+-- finale
+* The comet's tail sweeps over the dock, and for a moment every hull in the circle glitters silver.
+* Back home, you'll find a little of that silver stays in your eyes. You could mix a paint like that.
+end
+
+# ---------------------------------------------------------------- after the Dash
+
+== ilse_after_dash
+? won_garden_dash => beaten
+ilse happy: I won the Dash. Again. Twelve years.
+ilse thoughtful: But I watched you in the gardens. You'll have it off me soon enough. When you do, I'll be ready.
+end
+-- beaten
+* Ilse comes into the shop with two cups of cocoa and puts one in front of you.
+ilse laughing: Beaten in the gardens. By Halloran's teakettle. I'll never hear the end of it.
+ilse happy: I'm stepping back. Not stopping. There's a nervous kid on the dock with a secondhand racer and nobody to show them the lines. I'm going to coach.
+ilse thoughtful: It wasn't the ship slowing down, and it wasn't me, either. It was time. That's all right.
+end
+
+== brindle_commentator
+* The club race tonight has a new voice over the dock speakers.
+brindle laughing: Hello, Quietwater! This is Brindle, your commentator! I am measuring everyone's joy for you, live!
+brindle happy: I do not race now. I tried, and it was good, but watching is better. I have checked many times.
+* Somewhere on the ring, Ilse can be heard laughing over her radio.
+end

@@ -61,6 +61,15 @@ func _t(key: String, fallback: Variant) -> Variant:
 	return _theme.get(key, fallback)
 
 
+## Just the nebula sky, light and fog for `theme`, for scenes that aren't race tracks.
+static func environment_for(theme: Dictionary) -> WorldEnvironment:
+	var s := SpaceScenery.new()
+	s._theme = theme
+	var env := s._environment()
+	s.free()
+	return env
+
+
 func _environment() -> WorldEnvironment:
 	var sky_mat := ShaderMaterial.new()
 	sky_mat.shader = SKY_SHADER

@@ -107,7 +107,8 @@
     "dots": {"name": "Polka dots", "pattern": 4},
     "zigzag": {"name": "Zigzag", "pattern": 5},
     "checker": {"name": "Checkers", "pattern": 6, "craft": 2},
-    "flames": {"name": "Flames", "pattern": 7, "craft": 3}
+    "flames": {"name": "Flames", "pattern": 7, "craft": 3},
+    "comet": {"name": "Comet trail", "pattern": 8, "knowledge": "knows_comet"}
   },
   "mischief": {
     "goose_horn": {"name": "Goose horn", "kind": "prank", "rapport": -1,

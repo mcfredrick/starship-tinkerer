@@ -84,6 +84,62 @@
       ],
       "barter": {},
       "dialogue": "crake_1"
+    },
+    "ilse_1": {
+      "pilot": "ilse",
+      "ship": "heron",
+      "budget": 340,
+      "request": "The Heron's lost a tenth of a second a lap. Every lap. For a month. Find it, and give me a little more on the straights. And keep this between us.",
+      "faults": [{"type": "coupling", "spot": 1}, {"type": "calibrate", "spot": 3}],
+      "wants": [
+        {"stat": "top_speed", "min": 78, "label": "Faster on the straights", "weight": 2},
+        {"stat": "handling", "min": 60, "label": "Still sharp in the hairpin", "weight": 1},
+        {"taste": true, "label": "Still her scarlet", "weight": 1}
+      ],
+      "barter": {},
+      "dialogue": "ilse_1"
+    },
+    "odessa_2": {
+      "pilot": "odessa",
+      "ship": "pocket_moth",
+      "budget": 260,
+      "request": "All three grandkids are coming for the Close Pass, and I want them in the Moth with me, noses to a big window. Room for four, comfy, and quiet like you made her.",
+      "faults": [{"type": "dent", "spot": 3}, {"type": "rewire", "spot": 4}],
+      "wants": [
+        {"stat": "view", "min": 1, "label": "A window for the little ones", "weight": 2},
+        {"stat": "comfort", "min": 62, "label": "Comfy for four", "weight": 1},
+        {"stat": "noise", "max": 42, "label": "Still quiet enough to talk", "weight": 1}
+      ],
+      "barter": {"cake_seed": 3},
+      "dialogue": "odessa_2"
+    },
+    "brindle_2": {
+      "pilot": "brindle",
+      "ship": "bucket",
+      "budget": 150,
+      "request": "I have entered the Drum Garden Dash. The course is very twisty. I would like the Bucket to stick, and to turn, and to have a gadget. A gadget is a friend you bring.",
+      "faults": [{"type": "weld", "spot": 2}, {"type": "dent", "spot": 5}],
+      "wants": [
+        {"stat": "grip", "min": 70, "label": "Sticks in the twisty bits", "weight": 1},
+        {"stat": "handling", "min": 56, "label": "Turns like a happy thought", "weight": 1},
+        {"has_slot": "top", "label": "A gadget friend", "weight": 1}
+      ],
+      "barter": {"tea_drift_bloom": 2},
+      "dialogue": "brindle_2"
+    },
+    "crake_2": {
+      "pilot": "crake",
+      "ship": "magnificence",
+      "budget": 300,
+      "request": "My mother wishes to see the Close Pass. She is ninety-one and she will not be rattled. Make the Magnificence soft and quiet. Please.",
+      "faults": [{"type": "weld", "spot": 3}, {"type": "rewire", "spot": 5}],
+      "wants": [
+        {"stat": "comfort", "min": 52, "label": "Soft enough for Mother", "weight": 2},
+        {"stat": "noise", "max": 60, "label": "Quiet enough for Mother", "weight": 1},
+        {"taste": true, "label": "Still his colors", "weight": 1}
+      ],
+      "barter": {},
+      "dialogue": "crake_2"
     }
   },
   "beats": [
@@ -95,8 +151,19 @@
     {"scene": "brindle_arrives", "day": 2, "phase": "morning", "idle": true},
     {"scene": "day3_morning", "day": 3},
     {"scene": "crake_arrives", "day": 3, "phase": "morning", "idle": true},
-    {"scene": "day4_morning", "min_day": 4}
+    {"scene": "day4_morning", "min_day": 4},
+    {"scene": "ilse_arrives", "min_day": 5, "phase": "morning", "idle": true},
+    {"scene": "odessa_returns", "min_day": 6, "phase": "morning", "idle": true, "requires": "ilse_1_done"},
+    {"scene": "brindle_returns", "min_day": 8, "phase": "morning", "idle": true, "requires": "odessa_2_done"},
+    {"scene": "crake_returns", "min_day": 9, "phase": "morning", "idle": true, "requires": "brindle_2_done"},
+    {"scene": "close_pass_eve", "min_day": 10, "phase": "morning", "requires": "crake_2_done"},
+    {"scene": "close_pass_call", "min_day": 11, "phase": "morning", "idle": true, "requires": "seen_close_pass_eve", "event": "close_pass"},
+    {"scene": "ilse_after_dash", "min_day": 13, "phase": "morning", "requires": "seen_close_pass_call"},
+    {"scene": "brindle_commentator", "min_day": 14, "phase": "morning", "requires": "seen_ilse_after_dash"}
   ],
+  "events": {
+    "close_pass": {"name": "The Close Pass", "scene": "close_pass", "unlock": "knows_comet", "guests": ["odessa", "ilse", "brindle", "crake"]}
+  },
   "races": {
     "club": {"name": "Quietwater Club Race", "track": "quietwater", "laps": 2, "rivals": {"ilse": 0.55, "brindle": 0.8},
       "prizes": [140, 80, 40], "about": "Every evening at last bell. Entry's free and so is the cocoa."},

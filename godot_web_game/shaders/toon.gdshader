@@ -62,6 +62,11 @@ float livery() {
 	} else if (pattern == 6) {
 		vec3 c = floor(p * 3.0);
 		return mod(c.x + c.y + c.z, 2.0);
+	} else if (pattern == 8) {
+		// Comet trail: a streak sweeping back from the nose, with sparkles in its wake.
+		float streak = smoothstep(0.18, 0.0, abs(p.y - 0.15 - p.z * 0.12)) * smoothstep(1.6, -1.2, p.z);
+		float sparkle = step(0.93, fract(sin(dot(floor(p * 9.0), vec3(12.9, 78.2, 37.7))) * 43758.5));
+		return clamp(streak + sparkle * step(0.0, p.z) * 0.8, 0.0, 1.0);
 	} else if (pattern == 7) {
 		float tongue = 0.35 * sin(atan(p.y, p.x) * 7.0) + 0.25 * sin(p.y * 13.0);
 		return float(p.z < -0.6 + tongue);

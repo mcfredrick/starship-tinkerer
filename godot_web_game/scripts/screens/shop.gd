@@ -60,6 +60,9 @@ func _play_beats() -> void:
 			# Marked after the scene so closing the game mid-conversation replays it.
 			GameState.flags[seen] = true
 			GameState.save()
+			if beat.has("event"):
+				Router.go("event", {"id": beat.event})
+				return
 			_refresh()
 	if GameState.phase == "morning":
 		for id in GameState.stories.keys():

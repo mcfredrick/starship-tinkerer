@@ -562,3 +562,65 @@ func test_beats_and_jobs_point_at_real_dialogue() -> void:
 			check(scenes.has("%s_%s" % [world.jobs[id].dialogue, tier]), "%s has a %s scene" % [id, tier])
 	for kind in ["prank", "sabotage"]:
 		check(scenes.has("mischief_" + kind), "generic %s reaction exists" % kind)
+
+
+## Every flag a beat, letter or dialogue check waits on must be one the game can set, or that part
+## of the story can never happen.
+func test_every_story_flag_can_be_set() -> void:
+	var scenes := {}
+	for file in DirAccess.get_files_at("res://data/dialogue"):
+		scenes.merge(Dialogue.parse(FileAccess.get_file_as_string("res://data/dialogue/" + file)))
+	var reading: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/reading.json"))
+	var drawers: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/drawers.json"))
+	var can := {"race_open": true, "any_mischief": true, "raced_today": true}
+	for beat in world.beats:
+		can["seen_" + beat.scene] = true
+	for id in world.jobs:
+		can[id + "_done"] = true
+		for outcome in ["delighted", "pleased", "lukewarm", "prank", "sabotage"]:
+			can["%s_%s" % [id, outcome]] = true
+		can["any_mischief_" + world.jobs[id].pilot] = true
+		for w in world.jobs[id].wants:
+			if w.has("flag"):
+				can[w.flag] = true
+	for id in world.races:
+		can["won_" + id] = true
+	for id in world.events:
+		can["event_" + id] = true
+		if world.events[id].has("unlock"):
+			can[world.events[id].unlock] = true
+		check(scenes.has(world.events[id].scene), "event %s has its scene" % id)
+	for e in reading.entries.values():
+		if e.has("unlock"):
+			can[e.unlock] = true
+	for id in drawers:
+		can["drawer_" + id] = true
+		if drawers[id].gives.has("flag"):
+			can[drawers[id].gives.flag] = true
+	for scene in scenes.values():
+		for st in scene:
+			if st.t == "cmd" and st.cmd == "set":
+				can[st.args[0]] = true
+	# Storylet flags live on the story, so "?" checks in storylet scenes read those instead.
+	var story_flags := {"tier_delighted": true, "tier_pleased": true, "tier_lukewarm": true}
+	for scene in scenes.values():
+		for st in scene:
+			if st.t == "cmd" and st.cmd == "story":
+				story_flags[st.args[0]] = true
+	var needed := []
+	for beat in world.beats:
+		for key in ["requires", "excludes"]:
+			if beat.has(key):
+				needed.append([beat[key], "beat " + beat.scene])
+		if beat.has("event"):
+			check(world.events.has(beat.event), "beat %s launches a real event" % beat.scene)
+	for id in reading.entries:
+		for key in ["requires", "excludes"]:
+			if reading.entries[id].has(key):
+				needed.append([reading.entries[id][key], "reading " + id])
+	for id in scenes:
+		for st in scenes[id]:
+			if st.t == "if":
+				needed.append([st.flag, "scene " + id])
+	for n in needed:
+		check(can.has(n[0]) or story_flags.has(n[0]), "%s waits on %s, which nothing sets" % [n[1], n[0]])

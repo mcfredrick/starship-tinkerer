@@ -88,6 +88,14 @@ static func apply(name: String) -> void:
 				GameState.skills[s] = 130
 			GameState.finds = {"brass_compass": true, "snow_globe": true}
 			GameState.flags.drawer_bolts = true
+		"close_pass":
+			# Day eleven, every arc job done well, the dock ready to fly out.
+			for f in ["seen_intro", "seen_grommet_intro", "seen_day4_morning", "seen_ilse_arrives", "ilse_1_done",
+					"ilse_1_delighted", "seen_odessa_returns", "odessa_2_done", "odessa_roots", "seen_brindle_returns",
+					"brindle_2_done", "seen_crake_returns", "crake_2_done", "crake_2_delighted", "seen_close_pass_eve",
+					"race_open", "odessa_1_done", "brindle_1_done", "crake_1_done"]:
+				GameState.flags[f] = true
+			GameState.day = 11
 		"levelup":
 			GameState.flags.seen_intro = true
 			GameState.flags.seen_grommet_intro = true

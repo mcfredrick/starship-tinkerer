@@ -85,6 +85,7 @@ func _pay() -> void:
 		gifts.append("%d × %s" % [_job.barter[item], Content.item(item).name])
 	GameState.rapport[_job.pilot] = GameState.rapport.get(_job.pilot, 0) + _grade.rapport
 	GameState.flags[_job_id + "_done"] = true
+	GameState.flags[_job_id + "_" + _grade.tier] = true
 	if _grade.mischief != "":
 		GameState.flags[_job_id + "_" + _grade.mischief] = true
 		GameState.flags.any_mischief = true
