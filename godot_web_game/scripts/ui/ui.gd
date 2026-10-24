@@ -214,10 +214,11 @@ static func place(c: Control, preset: Control.LayoutPreset, offset: Vector2, siz
 static func fit(c: Control, top := 12.0, bottom := 12.0) -> void:
 	var placed := [c.anchor_top, c.anchor_bottom, c.offset_top, c.offset_bottom, c.grow_vertical]
 	var placed_height: float = placed[3] - placed[2] if placed[0] == placed[1] else 0.0
+	var placed_width: float = c.offset_right - c.offset_left if c.anchor_left == c.anchor_right else 0.0
 	var refit := func():
 		var view := c.get_viewport_rect().size
 		var need := c.get_combined_minimum_size()
-		need.y = maxf(need.y, placed_height)
+		need = need.max(Vector2(placed_width, placed_height))
 		var y: float = placed[0] * view.y + placed[2]
 		var fits: bool = y >= top and y + need.y <= view.y - bottom and need.x <= view.x
 		c.anchor_top = placed[0] if fits else 0.5
@@ -232,6 +233,8 @@ static func fit(c: Control, top := 12.0, bottom := 12.0) -> void:
 	c.resized.connect(refit)
 	c.minimum_size_changed.connect(refit)
 	c.ready.connect(func(): c.get_viewport().size_changed.connect(refit))
+	# A fixed-size panel never resizes, so without this one pass it would only fit after a window change.
+	c.ready.connect(refit, CONNECT_DEFERRED)
 
 
 static func full(c: Control) -> Control:

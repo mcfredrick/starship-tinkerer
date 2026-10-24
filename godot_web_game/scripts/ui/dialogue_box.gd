@@ -63,7 +63,13 @@ func _ready() -> void:
 	add_child(_hint)
 
 	_choices = UI.vbox([], 10)
-	UI.place(_choices, Control.PRESET_CENTER_RIGHT, Vector2(-580, -220), Vector2(520, 0))
+	# Sits on top of the text box at its width and grows upward, so it never covers the box.
+	_choices.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_choices.offset_left = box.offset_left
+	_choices.offset_right = box.offset_right
+	_choices.offset_top = box.offset_top - 14
+	_choices.offset_bottom = box.offset_top - 14
+	_choices.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	add_child(_choices)
 
 
@@ -171,7 +177,8 @@ func _show_choice(s: Dictionary) -> void:
 	_hint.visible = false
 	for i in s.options.size():
 		var b := UI.button(_fill(s.options[i].text), _on_choice.bind(i), 22)
-		b.custom_minimum_size.x = 500
+		# Wrapping keeps long options inside the column instead of running off the screen edge.
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_choices.add_child(b)
 
 
