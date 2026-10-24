@@ -70,7 +70,6 @@ func _apply_grime() -> void:
 	for m in _materials.values():
 		if m.shader == TOON:
 			m.set_shader_parameter("grime", _build.get("grime", 0.0))
-			m.set_shader_parameter("ship_inverse", global_transform.affine_inverse())
 			m.set_shader_parameter("clean_spots", spots)
 			m.set_shader_parameter("clean_count", spots.size())
 
