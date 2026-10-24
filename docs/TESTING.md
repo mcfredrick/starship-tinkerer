@@ -11,6 +11,7 @@ structured play-test of what only a person can judge (feel, fun, pacing, clarity
 | Compile every script | part of `test.sh` | |
 | Logic tests (`tests/run_tests.gd`, every `test_` method) | part of `test.sh` | |
 | Autoplay soak (`tools/soak.tscn`): three seeded 40-day runs | part of `test.sh` | |
+| Layout (`tools/layout_check.tscn`): every screen state, dialogue line, choice and tablet page, at 1280x720 and the 960x540 phone canvas, fails if any visible control reaches past the screen edge | part of `test.sh` | |
 | Race balance (`tools/race_report.gd`): every race, three Kettle builds | run by hand after touching race stats or tracks | |
 | Screen sweep (`tools/sweep.sh`): every screen, desktop and phone, contact sheets | run by hand before a play-test or after UI changes (needs a display) | |
 | Live web boot | headless Chrome command in `CLAUDE.md` | after a deploy |

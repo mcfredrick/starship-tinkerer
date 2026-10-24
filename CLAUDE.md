@@ -30,7 +30,8 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | --- | --- |
 | Run the game | `godot --path .` |
 | Reimport (after assets or new `class_name`s) | `godot --headless --import` |
-| All automated checks (use this) | `./test.sh` (repo root): compiles every script, runs the logic tests and the autoplay soak test, fails on any script error. CI runs it before every deploy |
+| All automated checks (use this) | `./test.sh` (repo root): compiles every script, runs the logic tests, the autoplay soak test and the layout check, fails on any script error. CI runs it before every deploy |
+| Layout check alone | `godot --headless res://tools/layout_check.tscn [-- --phone]` (every screen state, dialogue line, choice and tablet page; fails on any control past the screen edge) |
 | Autoplay soak test alone | `godot --headless res://tools/soak.tscn` (three seeded 40-day runs; prints each run's economy) |
 | Screen sweep | `tools/sweep.sh [out_dir]` (repo root): every screen at desktop and phone size, contact sheets, script errors |
 | Logic tests | `godot --headless --script res://tests/run_tests.gd` (every `test_` method runs) |
@@ -98,7 +99,8 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
 
 - Phones (coarse pointer, short side ≤ 600 CSS px) run on a 960x540 canvas so everything draws
   larger (`UI.detect_device`). Centered overlays go through `UI.fit` so they center and shrink when
-  taller than the screen, and touch hit areas scale by `UI.reach()`. Check new overlays at phone size.
+  taller than the screen, and touch hit areas scale by `UI.reach()`. Check new overlays at phone size. New screen states
+  go in `CASES` in `tools/layout_check.gd` (and `tools/sweep.sh`) so the layout check covers them.
 
 ## Verifying visual changes
 
