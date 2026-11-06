@@ -2,17 +2,22 @@
 class_name UI
 extends RefCounted
 
-const INK := Color("4a3428")
-const CREAM := Color("fbf3e4")
-const PAPER := Color("f3e6cc")
-const AMBER := Color("e8a33d")
-const AMBER_DARK := Color("c7832a")
-const TEAL := Color("3f8f8f")
-const SAGE := Color("8fae7e")
-const ROSE := Color("e48aa0")
-const MUTED := Color("8a7565")
-const GOOD := Color("5f9e6e")
-const BAD := Color("c8643f")
+const SETTINGS := "user://settings.cfg"
+
+## The art style: chunky 8-bit, or the classic soft look. Screens read it as they build, so a change
+## only shows on screens built afterwards.
+static var eightbit := true
+static var INK: Color
+static var CREAM: Color
+static var PAPER: Color
+static var AMBER: Color
+static var AMBER_DARK: Color
+static var TEAL: Color
+static var SAGE: Color
+static var ROSE: Color
+static var MUTED: Color
+static var GOOD: Color
+static var BAD: Color
 
 ## Phones get a smaller canvas (so everything draws larger) and touch gets roomier hit areas.
 ## Both are decided once at boot by `detect_device`.
@@ -23,6 +28,48 @@ static var touch := false
 static var heading_font: FontVariation
 static var body_font: FontVariation
 static var bold_font: FontVariation
+
+const EIGHTBIT := preload("res://shaders/eightbit.gdshader")
+const PIXELS_TALL := 240.0
+static var world_pixels: ShaderMaterial
+static var art_pixels: ShaderMaterial
+
+
+static func _static_init() -> void:
+	set_style(true)
+
+
+static func set_style(on: bool) -> void:
+	eightbit = on
+	Fonts.pixel = on
+	# The 8-bit colors are all in the palette in shaders/eightbit.gdshader.
+	INK = Color("1a1a4e") if on else Color("4a3428")
+	CREAM = Color("fffbe0") if on else Color("fbf3e4")
+	PAPER = Color("ffe89e") if on else Color("f3e6cc")
+	AMBER = Color("ffc800") if on else Color("e8a33d")
+	AMBER_DARK = Color("ff9a00") if on else Color("c7832a")
+	TEAL = Color("00b3a4") if on else Color("3f8f8f")
+	SAGE = Color("23d160") if on else Color("8fae7e")
+	ROSE = Color("ff7ab8") if on else Color("e48aa0")
+	MUTED = Color("5a5a8c") if on else Color("8a7565")
+	GOOD = Color("0b8f4d") if on else Color("5f9e6e")
+	BAD = Color("e0182d") if on else Color("c8643f")
+
+
+## `--classic` and `--eightbit` override the player's saved choice for screenshots and checks.
+static func load_style(args: PackedStringArray) -> void:
+	var settings := ConfigFile.new()
+	settings.load(SETTINGS)
+	var on: bool = settings.get_value("display", "eightbit", true)
+	if "--classic" in args or "--eightbit" in args:
+		on = "--eightbit" in args
+	set_style(on)
+
+
+static func save_style() -> void:
+	var settings := ConfigFile.new()
+	settings.set_value("display", "eightbit", eightbit)
+	settings.save(SETTINGS)
 
 
 static func build_theme() -> Theme:
@@ -74,6 +121,42 @@ static func build_theme() -> Theme:
 	return t
 
 
+static func build_pixels() -> void:
+	world_pixels = ShaderMaterial.new()
+	world_pixels.shader = EIGHTBIT
+	art_pixels = ShaderMaterial.new()
+	art_pixels.shader = EIGHTBIT
+	art_pixels.set_shader_parameter("saturation", 1.6)
+
+
+## Keeps chunky pixels the same share of the screen at any window size.
+static func size_pixels(window_height: int) -> void:
+	var cell := maxf(2.0, round(window_height / PIXELS_TALL))
+	world_pixels.set_shader_parameter("cell", cell)
+	art_pixels.set_shader_parameter("cell", cell)
+
+
+## Turns everything drawn so far inside `c` into chunky palette pixels. Call after adding its art.
+static func pixelate(c: Control) -> void:
+	if not eightbit:
+		return
+	var copy := BackBufferCopy.new()
+	copy.copy_mode = BackBufferCopy.COPY_MODE_VIEWPORT
+	c.add_child(copy)
+	var cover := full(ColorRect.new())
+	cover.material = art_pixels
+	cover.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.add_child(cover)
+
+
+## A full-screen rect behind a dialog: `classic_dim` in the classic style. It stays clear in 8-bit,
+## where a translucent dim would wash out the palette, and blocks clicks either way.
+static func shade(classic_dim: Color) -> ColorRect:
+	var r := full(ColorRect.new())
+	r.color = Color.TRANSPARENT if eightbit else classic_dim
+	return r
+
+
 static func detect_device(window: Window, args: PackedStringArray) -> void:
 	if OS.has_feature("web"):
 		touch = JavaScriptBridge.eval("matchMedia('(pointer: coarse)').matches", true)
@@ -117,10 +200,22 @@ static func reach() -> float:
 static func box(color: Color, radius: int, pad: int, shadow := false, border := Color(0, 0, 0, 0)) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = color
-	s.set_corner_radius_all(radius)
 	s.set_content_margin_all(pad)
 	s.content_margin_left = pad + 4
 	s.content_margin_right = pad + 4
+	if eightbit:
+		# Nearly opaque panels would let the world bleed in as off-palette tints.
+		s.bg_color = Color(color, 1.0) if color.a > 0.9 else color
+		s.anti_aliasing = false
+		if border.a > 0:
+			s.set_border_width_all(3)
+			s.border_width_bottom = 6
+			s.border_color = border
+		elif shadow:
+			s.set_border_width_all(4)
+			s.border_color = INK
+		return s
+	s.set_corner_radius_all(radius)
 	if border.a > 0:
 		s.set_border_width_all(2)
 		s.border_width_bottom = 4
@@ -187,6 +282,7 @@ static func icon(tex: Texture2D, size: float) -> TextureRect:
 	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	t.custom_minimum_size = Vector2(size, size)
+	pixelate(t)
 	return t
 
 

@@ -127,7 +127,7 @@ func _draw_area() -> void:
 		for y in [22, area.size.y - 26]:
 			area.draw_circle(Vector2(x, y), 6, Color("6e7177"))
 	area.draw_polyline(_path, Color("3b3d42"), 5.0, true)
-	area.draw_polyline(_path, Color(1, 0.75, 0.4, 0.18), _tolerance() * 2, true)
+	area.draw_polyline(_path, Color(1, 0.78, 0, 0.6) if UI.eightbit else Color(1, 0.75, 0.4, 0.18), _tolerance() * 2, true)
 	for b in _bead:
 		var c: Color = Color("ffcf6b").lerp(Color("d0603a"), clampf(1.0 - b[1], 0, 1) * 1.6)
 		area.draw_circle(b[0], 7, c.darkened(0.3))

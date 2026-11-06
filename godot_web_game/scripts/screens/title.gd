@@ -46,6 +46,11 @@ func _ready() -> void:
 	UI.place(_menu, Control.PRESET_BOTTOM_LEFT, Vector2(70, -220), Vector2(300, 0))
 	ui.add_child(_menu)
 
+	var style := UI.button("Art style: %s" % ("8-bit" if UI.eightbit else "Classic"),
+		func(): Router.set_art_style(not UI.eightbit), 20)
+	UI.place(style, Control.PRESET_BOTTOM_RIGHT, Vector2(-270, -70), Vector2(250, 50))
+	ui.add_child(style)
+
 	_build_setup()
 	if _open_credits:
 		_show_credits()

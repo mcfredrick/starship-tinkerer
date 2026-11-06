@@ -16,6 +16,7 @@ func _ready() -> void:
 	mat.shader = NOOK
 	bg.material = mat
 	ui.add_child(bg)
+	UI.pixelate(bg)
 	ui.add_child(Hud.new())
 
 	_teas = UI.hbox([], 14)

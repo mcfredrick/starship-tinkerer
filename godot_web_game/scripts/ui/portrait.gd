@@ -14,9 +14,10 @@ func show_pilot(pilot: Dictionary, expression: String) -> void:
 	var expr := expression if expression else "neutral"
 	if not pilot.has("look"):
 		_layer(Content.portrait(pilot.id, expr), Color.WHITE)
-		return
-	for l in Walkins.doll_layers(pilot.look, expr):
-		_layer(load("res://assets/dolls/%s.png" % l[0]), l[1])
+	else:
+		for l in Walkins.doll_layers(pilot.look, expr):
+			_layer(load("res://assets/dolls/%s.png" % l[0]), l[1])
+	UI.pixelate(self)
 
 
 func _layer(tex: Texture2D, tint: Color) -> void:

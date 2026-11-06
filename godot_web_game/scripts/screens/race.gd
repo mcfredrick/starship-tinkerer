@@ -269,9 +269,9 @@ func _build_hud() -> void:
 	UI.place(pause, Control.PRESET_TOP_RIGHT, Vector2(-130 if UI.touch else -214, 20), Vector2(110, 48))
 	ui.add_child(pause)
 
-	var keys := "A/D or arrows steer   ·   S brake   ·   hold Space while turning to drift, release for a burst"
-	keys += "   ·   Shift boost   ·   E gadget   ·   Esc pause"
-	var hint := UI.label(keys, 16, Color(UI.CREAM, 0.8))
+	var keys := "A/D or arrows steer  ·  S brake  ·  hold Space while turning to drift, release for a burst"
+	keys += "  ·  Shift boost  ·  E gadget  ·  Esc pause"
+	var hint := UI.label(keys, 14, Color(UI.CREAM, 0.8))
 	UI.place(hint, Control.PRESET_BOTTOM_WIDE, Vector2(340, -40), Vector2(-360, 30))
 	hint.visible = not UI.touch
 	ui.add_child(hint)

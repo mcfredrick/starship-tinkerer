@@ -1,12 +1,12 @@
-## The translucent tablet: letters, stories, the bulletin and manuals, on frosted glass.
+## The tablet: letters, stories, the bulletin and manuals, on frosted glass (a solid panel in 8-bit).
 ## Reading a manual for the first time teaches something (its `unlock` flag) and some XP.
 class_name Tablet
 extends Control
 
-const FROST := preload("res://shaders/frost.gdshader")
 const KINDS := {"letter": "Letter", "story": "Story", "bulletin": "Bulletin", "manual": "Manual", "guide": "Field guide"}
 ## Illustrations (assets/illustrations, rendered by blender/illustrations.py) fill the reading column.
 const IMAGE_WIDTH := 600
+const FROST := preload("res://shaders/frost.gdshader")
 const SIZE := Vector2(1040, 600)
 
 var _list: VBoxContainer
@@ -85,15 +85,19 @@ static func unread() -> int:
 
 func _ready() -> void:
 	UI.full(self)
-	var shade := UI.full(ColorRect.new())
-	shade.color = Color(0.05, 0.03, 0.1, 0.3)
+	var shade := UI.shade(Color(0.05, 0.03, 0.1, 0.3))
 	add_child(shade)
 
-	var glass := ColorRect.new()
-	var mat := ShaderMaterial.new()
-	mat.shader = FROST
-	mat.set_shader_parameter("rect_size", SIZE)
-	glass.material = mat
+	var glass: Control
+	if UI.eightbit:
+		glass = Panel.new()
+		glass.add_theme_stylebox_override("panel", UI.box(UI.CREAM, 0, 0, true))
+	else:
+		glass = ColorRect.new()
+		var mat := ShaderMaterial.new()
+		mat.shader = FROST
+		mat.set_shader_parameter("rect_size", SIZE)
+		glass.material = mat
 	UI.place(glass, Control.PRESET_CENTER, -SIZE / 2, SIZE)
 	UI.fit(glass)
 	add_child(glass)
@@ -134,7 +138,7 @@ func _ready() -> void:
 
 func _vline() -> Control:
 	var r := ColorRect.new()
-	r.color = Color(1, 1, 1, 0.5)
+	r.color = UI.INK if UI.eightbit else Color(1, 1, 1, 0.5)
 	r.custom_minimum_size = Vector2(2, 0)
 	return r
 
@@ -157,10 +161,10 @@ func _fill_list() -> void:
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		b.add_theme_font_override("font", UI.body_font)
 		b.add_theme_font_size_override("font_size", 17)
-		var normal := UI.box(Color(1, 1, 1, 0.35), 12, 8)
+		var normal := UI.box(UI.PAPER if UI.eightbit else Color(1, 1, 1, 0.35), 12, 8)
 		b.add_theme_stylebox_override("normal", normal)
-		b.add_theme_stylebox_override("hover", UI.box(Color(1, 1, 1, 0.6), 12, 8))
-		b.add_theme_stylebox_override("pressed", UI.box(Color(1, 1, 1, 0.75), 12, 8))
+		b.add_theme_stylebox_override("hover", UI.box(UI.AMBER if UI.eightbit else Color(1, 1, 1, 0.6), 12, 8))
+		b.add_theme_stylebox_override("pressed", UI.box(UI.AMBER_DARK if UI.eightbit else Color(1, 1, 1, 0.75), 12, 8))
 		b.add_theme_stylebox_override("focus", UI.box(Color(0, 0, 0, 0), 12, 8))
 		b.pressed.connect(_open.bind(id))
 		_list.add_child(b)

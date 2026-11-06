@@ -38,6 +38,7 @@ Run from `godot_web_game/` unless noted. `B` is `/Applications/Blender.app/Conte
 | Compile every script | `godot --headless res://tools/check_scripts.tscn` |
 | Race balance report | `godot --headless --script res://tools/race_report.gd` |
 | Screenshot a screen | `godot --path . -- --fixture=<name> --screen=<name> --shot=out.png [--wait=2] [--tablet[=entry]] [--talk=scene]` plus screen params: workbench `--ship= --tab= --repair=N --focus=N` (lean in on a fault) `--fixfx=N` (play its fix) `--demo=paint\|part\|scrub\|<livery>`, race `--race=<id> --at=<meters> --paused`, title `--form=[custom]` |
+| Screenshot in a given art style | add `--eightbit` or `--classic` after `--` (otherwise the saved choice applies, 8-bit by default) |
 | Screenshot at phone size | add `--resolution 1170x540` before `--` and `--phone` after it (portrait: `--resolution 390x844`) |
 | Hull gallery (every hull, sample loadouts) | `godot --path . --resolution 640x400 res://tools/hull_gallery.tscn -- --out=<png> [--hull=id] [--yaw=rad]` |
 | Ship kit | `$B -b --python blender/export_ship_kit.py` (repo root); preview with `preview_kit.py -- out.png [--front]` |
@@ -101,6 +102,12 @@ Fixtures (`scripts/debug/fixtures.gd`): `fresh`, `job`, `scanned`, `finished`, `
   larger (`UI.detect_device`). Centered overlays go through `UI.fit` so they center and shrink when
   taller than the screen, and touch hit areas scale by `UI.reach()`. Check new overlays at phone size. New screen states
   go in `CASES` in `tools/layout_check.gd` (and `tools/sweep.sh`) so the layout check covers them.
+
+- Two art styles, chosen on the title screen and saved in `user://settings.cfg`: 8-bit (the default)
+  and Classic. `UI.set_style` swaps the `UI` colors and fonts; screens read them as they build, so
+  branch on `UI.eightbit` for other differences. New art should go through `UI.pixelate`, and colors
+  in new UI should come from `UI` so both styles keep working. Low-contrast or translucent cues can
+  vanish in the 8-bit palette, so check them in both.
 
 ## Verifying visual changes
 

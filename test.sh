@@ -5,8 +5,11 @@
 cd "$(dirname "$0")/godot_web_game" || exit 1
 godot --headless --import >/dev/null 2>&1
 out=$(godot --headless res://tools/check_scripts.tscn 2>&1; godot --headless --script res://tests/run_tests.gd 2>&1;
-	godot --headless res://tools/soak.tscn 2>&1; godot --headless res://tools/layout_check.tscn 2>&1;
-	godot --headless res://tools/layout_check.tscn -- --phone 2>&1)
+	godot --headless res://tools/soak.tscn 2>&1;
+	godot --headless res://tools/layout_check.tscn -- --eightbit 2>&1;
+	godot --headless res://tools/layout_check.tscn -- --eightbit --phone 2>&1;
+	godot --headless res://tools/layout_check.tscn -- --classic 2>&1;
+	godot --headless res://tools/layout_check.tscn -- --classic --phone 2>&1)
 echo "$out" | grep -E "SCRIPT ERROR|Failed to load|does not compile|ERROR: [^PRB1]|FAILED|passed|compile|^seed" | grep -v "leaked\|Pages in use"
 if echo "$out" | grep -qE "SCRIPT ERROR|Failed to load|does not compile|FAILED"; then
   echo "TESTS FAILED"

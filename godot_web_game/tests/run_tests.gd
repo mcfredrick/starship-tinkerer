@@ -211,7 +211,11 @@ func test_empty_boost_stays_off_until_it_refills() -> void:
 ## Web builds have no system fonts, so a glyph missing from the bundled fonts draws as a box there
 ## while looking fine on desktop. Every character the game can show must be covered.
 func test_every_shown_character_has_a_glyph() -> void:
-	var faces := [Fonts.make(Fonts.HEADING, 600), Fonts.make(Fonts.BODY, 600), Fonts.make(Fonts.ITALIC, 600)]
+	var faces := []
+	for pixel in [true, false]:
+		Fonts.pixel = pixel
+		faces.append_array([Fonts.make(Fonts.HEADING, 600), Fonts.make(Fonts.BODY, 600), Fonts.make(Fonts.ITALIC, 600)])
+	Fonts.pixel = true
 	var strings := RegEx.create_from_string("\"(?:[^\"\\\\]|\\\\.)*\"")
 	var text := ""
 	for dir in ["res://data", "res://data/dialogue"]:

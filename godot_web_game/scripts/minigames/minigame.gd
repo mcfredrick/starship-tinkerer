@@ -18,13 +18,13 @@ var _done := false
 
 func _ready() -> void:
 	UI.full(self)
-	var shade := UI.full(ColorRect.new())
-	shade.color = Color(0.06, 0.04, 0.1, 0.55)
+	var shade := UI.shade(Color(0.06, 0.04, 0.1, 0.55))
 	add_child(shade)
 	area = Control.new()
 	area.custom_minimum_size = Vector2(760, 330)
 	area.draw.connect(_draw_area)
 	area.gui_input.connect(_area_input)
+	UI.pixelate(area)
 	_status = UI.label("", 20, UI.MUTED)
 	var heading := UI.hbox([UI.heading(title(), 30), UI.spacer(), UI.label(step_note, 18, UI.TEAL)])
 	var card := UI.panel(UI.vbox([heading, UI.label(instructions(), 19, UI.INK, true), area,

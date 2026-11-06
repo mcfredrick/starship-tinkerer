@@ -15,19 +15,17 @@ var dialogue: DialogueBox
 var _fade: ColorRect
 var overlay: CanvasLayer
 var _toasts: VBoxContainer
+var _world_pixels: CanvasLayer
 
 
 func _ready() -> void:
 	UI.detect_device(get_window(), OS.get_cmdline_user_args())
-	theme = UI.build_theme()
+	UI.load_style(OS.get_cmdline_user_args())
+	_add_world_pixels()
 	overlay = CanvasLayer.new()
 	overlay.layer = 10
 	add_child(overlay)
-	dialogue = DialogueBox.new()
-	dialogue.theme = theme
-	overlay.add_child(dialogue)
 	_toasts = UI.vbox([], 8)
-	_toasts.theme = theme
 	UI.place(_toasts, Control.PRESET_CENTER_TOP, Vector2(-320, 86), Vector2(640, 0))
 	_toasts.alignment = BoxContainer.ALIGNMENT_BEGIN
 	_toasts.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -36,8 +34,47 @@ func _ready() -> void:
 	_fade.color = Color("1b1626")
 	_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.add_child(_fade)
+	_apply_style()
 	if UI.compact:
 		_add_rotate_prompt()
+
+
+## This layer sits under the default canvas, so it catches the 3D world and leaves the UI above it sharp.
+func _add_world_pixels() -> void:
+	UI.build_pixels()
+	_world_pixels = CanvasLayer.new()
+	_world_pixels.layer = -1
+	add_child(_world_pixels)
+	var rect := UI.full(ColorRect.new())
+	rect.material = UI.world_pixels
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_world_pixels.add_child(rect)
+	var resize := func(): UI.size_pixels(get_window().size.y)
+	get_window().size_changed.connect(resize)
+	resize.call()
+
+
+## Saves the choice and rebuilds the current screen in the new style.
+func set_art_style(eightbit: bool) -> void:
+	UI.set_style(eightbit)
+	UI.save_style()
+	_apply_style()
+	go(current)
+
+
+func _apply_style() -> void:
+	theme = UI.build_theme()
+	_toasts.theme = theme
+	_world_pixels.visible = UI.eightbit
+	# Chunky pixels sample one point each, so smoothing their edges would be wasted work.
+	get_window().msaa_3d = Viewport.MSAA_DISABLED if UI.eightbit else Viewport.MSAA_2X
+	# The dialogue box builds its panels once, in whichever style is current.
+	if dialogue:
+		dialogue.queue_free()
+	dialogue = DialogueBox.new()
+	dialogue.theme = theme
+	overlay.add_child(dialogue)
+	overlay.move_child(dialogue, 0)
 
 
 ## The shop is laid out for a wide screen; a phone held upright gets a nudge to turn it.

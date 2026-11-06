@@ -39,7 +39,7 @@ func _card(offer: Dictionary, index: int) -> PanelContainer:
 		pay += ", plus %s" % Content.item(item).name
 	var hull: String = Content.parts.hulls[offer.ship.hull].name
 	var info := UI.vbox([
-		UI.heading(who.name, 22),
+		UI.heading(who.name, 22, UI.INK, true),
 		UI.label("A regular" if who.get("regular", false) else "New face", 14, UI.ROSE if who.get("regular", false) else UI.MUTED),
 		UI.label(who.blurb, 15, UI.MUTED, true),
 		UI.label("The %s, a %s" % [offer.ship.name, hull.to_lower()], 16, UI.TEAL, true),
