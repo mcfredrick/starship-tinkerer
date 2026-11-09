@@ -106,5 +106,5 @@ tablet open. For each, check it reads well, looks right, and isn't too close to 
 
 ## 5. Launch (after the play-test)
 
-Point `starship-tinkerer.crap.games` at the game (CNAME and DNS), set the `REGISTRY_UPDATE_TOKEN`
+Point `starship.crap.games` at the game (CNAME and DNS), set the `REGISTRY_UPDATE_TOKEN`
 secret, then run the register workflow.

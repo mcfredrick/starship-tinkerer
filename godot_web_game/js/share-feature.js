@@ -1,5 +1,5 @@
 // Share Feature Configuration
-const url = "starship-tinkerer.crap.games";
+const url = "starship.crap.games";
 
 const remarks = [
     "Check out this crap game on " + url,

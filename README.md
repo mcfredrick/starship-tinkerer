@@ -4,7 +4,7 @@ A cozy starship repair shop. Fix, modify and upgrade ships for friendly pilots, 
 (or jam), take tea breaks with a good book, and rebuild and race your own ship if you like.
 
 Development builds play at https://mcfredrick.github.io/starship-tinkerer/, and the release will
-live at https://starship-tinkerer.crap.games. See [docs/DESIGN.md](docs/DESIGN.md) for the design.
+live at https://starship.crap.games. See [docs/DESIGN.md](docs/DESIGN.md) for the design.
 
 ## Development
 

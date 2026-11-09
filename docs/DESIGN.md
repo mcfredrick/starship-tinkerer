@@ -487,4 +487,4 @@ really left.
    Pip, Tam and Juniper Okafor and Dr. Yaneva, each with two commissions, a choice or a cup, and
    letters; three special events: the Moon-plum Harvest in the drum gardens (day 7), the Close Pass
    (day 11) and the Lighthouse of Lumen Reach (day 15). An illustrated field guide on the tablet.
-9. **Polish and launch** on starship-tinkerer.crap.games.
+9. **Polish and launch** on starship.crap.games.

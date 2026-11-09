@@ -1,6 +1,6 @@
 # Starship Tinkerer
 
-Cozy starship repair shop game for crap.games (starship-tinkerer.crap.games; dev builds at
+Cozy starship repair shop game for crap.games (starship.crap.games; dev builds at
 mcfredrick.github.io/starship-tinkerer). Design lives in `docs/DESIGN.md`. Read it before adding
 features or content.
 
